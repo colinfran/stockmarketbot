@@ -1,7 +1,7 @@
 import React, { FC } from "react"
 import { Logo } from "@/components/logo"
 import HeaderDropdown from "./header-dropdown"
-import { auth } from "@/lib/auth"
+import { auth } from "@/lib/auth/auth"
 
 import { headers } from "next/headers"
 

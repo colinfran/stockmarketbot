@@ -5,7 +5,7 @@ import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema, LoginSchema } from "@/lib/form-schemas/login-schema"
-import { signIn, useSession } from "@/lib/auth-client"
+import { signIn, useSession } from "@/lib/auth/auth-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -36,17 +36,12 @@ const Page = () => {
   const onSubmit = async ({ email, password }: LoginSchema) => {
     setError("")
     setIsLoading(true)
-
     try {
-      const result = await signIn.email({ email, password })
-      console.log("Sign in result:", result)
-      router.push("/dashboard")
+      await signIn(email, password)
     } catch (err: unknown) {
       setIsLoading(false)
       console.error("Authentication error:", err)
       setError(err instanceof Error ? err.message : "Authentication failed")
-    } finally {
-      // dont set isLoading to false here to avoid flicker on success
     }
   }
 

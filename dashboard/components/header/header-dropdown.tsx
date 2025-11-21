@@ -13,7 +13,7 @@ import LogOutButton from "@/components/header/logout-button"
 import Link from "next/link"
 import { HomeIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
-import { useSession } from "@/lib/auth-client"
+import { useSession } from "@/lib/auth/auth-client"
 
 
 const HeaderDropdown: FC = () => {
