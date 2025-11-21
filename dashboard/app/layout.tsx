@@ -26,7 +26,7 @@ export default function RootLayout({
         <title>trading bot dashboard</title>
 
       </head>
-      <body className={`font-sans antialiased`}>
+      <body className="flex min-h-screen w-full flex-col">
         <NextTopLoader color={"#808080"} showSpinner={false} zIndex={100} />
         <ThemeProvider attribute="class" defaultTheme="system" disableTransitionOnChange enableSystem>
           <div className="flex flex-col sm:gap-4 sm:px-7 sm:py-4">
