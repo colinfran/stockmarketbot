@@ -15,7 +15,12 @@ const signOut = async () => {
 }
 
 const signIn = async (email: string, password: string) => {
-  return await authClient.signIn.email({ email, password, callbackURL: "/dashboard", rememberMe: true })
+  return await authClient.signIn.email({ 
+    email, 
+    password, 
+    callbackURL: "/dashboard", 
+    rememberMe: true 
+  })
 }
 
 export { useSession, signIn, signOut }
