@@ -10,8 +10,14 @@ const LogOutButton: FC = () => {
   const [loading, setLoading] = useState(false)
   const onClick = async (): Promise<void> => {
     setLoading(true)
-    await signOut()
-    router.push("/")
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/"); // redirect to login page
+        },
+      },
+    });
+
   }
   return (
     <button className="flex w-full flex-row items-center gap-2" type="submit" onClick={onClick}>

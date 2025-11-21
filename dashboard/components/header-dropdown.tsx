@@ -49,7 +49,7 @@ const HeaderDropdown: FC = () => {
             <DropdownMenuSeparator />
             <ThemeButton />
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
               <LogOutButton />
             </DropdownMenuItem>
           </DropdownMenuContent>

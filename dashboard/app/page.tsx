@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema, LoginSchema } from "@/lib/form-schemas/login-schema"
@@ -42,10 +42,11 @@ const Page = () => {
       console.log("Sign in result:", result)
       router.push("/dashboard")
     } catch (err: unknown) {
+      setIsLoading(false)
       console.error("Authentication error:", err)
       setError(err instanceof Error ? err.message : "Authentication failed")
     } finally {
-      setIsLoading(false)
+      // dont set isLoading to false here to avoid flicker on success
     }
   }
 
@@ -105,7 +106,8 @@ const Page = () => {
 
             {/* Submit */}
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Loading..." : "Sign in"}
+              {isLoading ? <Loader2 className="animate-spin" size={16} /> : "Sign in"}
+              
             </Button>
           </form>
         </CardContent>
