@@ -3,7 +3,7 @@
 import React, { FC } from "react"
 import { MoonIcon, SunIcon } from "lucide-react"
 import { useTheme } from "next-themes"
-import { DropdownMenuItem } from "./ui/dropdown-menu"
+import { DropdownMenuItem } from "../ui/dropdown-menu"
 
 const ThemeButton: FC = () => {
   const { resolvedTheme, setTheme } = useTheme()

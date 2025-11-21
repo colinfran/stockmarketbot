@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { redirect } from "next/navigation"
-import LogoutButton from "@/components/logout-button"
+import LogoutButton from "@/components/header/logout-button"
 import { headers } from "next/headers"
 
 const Page = async () => {

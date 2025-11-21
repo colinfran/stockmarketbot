@@ -1,9 +1,8 @@
 "use client"
 
 import React, { FC } from "react"
-import { ThemeProvider as NextThemesProvider } from "next-themes"
+import { ThemeProvider as NextThemesProvider, type ThemeProviderProps, } from "next-themes"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const ThemeProvider: FC<any> = ({ children, ...props }) => {
+export const ThemeProvider: FC<ThemeProviderProps> = ({ children, ...props }) => {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>
 }

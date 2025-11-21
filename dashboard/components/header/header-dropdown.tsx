@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import LogOutButton from "@/components/logout-button"
+import LogOutButton from "@/components/header/logout-button"
 import Link from "next/link"
 import { HomeIcon } from "lucide-react"
 import ThemeButton from "./theme-button"

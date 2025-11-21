@@ -7,8 +7,8 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import Header from "@/components/header"
+import { ThemeProvider } from "@/providers/theme-provider"
+import Header from "@/components/header/header"
 
 export default function RootLayout({
   children,
