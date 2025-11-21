@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { redirect } from "next/navigation"
-import { LogoutButton } from "@/components/loggout-button"
+import LogoutButton from "@/components/logout-button"
 import { headers } from "next/headers"
 
 const Page = async () => {
@@ -21,7 +21,7 @@ const Page = async () => {
           <CardTitle className="text-2xl font-bold text-center">Hello {session?.user?.name}!</CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center">
-          <LogoutButton />
+          Lorem Ipsum
         </CardContent>
       </Card>
     </div>

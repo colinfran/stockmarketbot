@@ -1,6 +1,10 @@
 import { ReactNode } from "react"
 import { Analytics } from "@vercel/analytics/next"
 import NextTopLoader from "nextjs-toploader"
+import { Geist, Geist_Mono } from "next/font/google"
+
+const _geist = Geist({ subsets: ["latin"] })
+const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
