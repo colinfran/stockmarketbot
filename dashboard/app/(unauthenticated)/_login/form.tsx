@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 
 const LoginForm: FC = () => {
-
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
@@ -22,8 +21,8 @@ const LoginForm: FC = () => {
   } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   })
-  
-  const onSubmit = async ({ email, password }: LoginSchema) => {
+
+  const onSubmit = async ({ email, password }: LoginSchema): Promise<void> => {
     setError("")
     setIsLoading(true)
     try {
@@ -36,19 +35,12 @@ const LoginForm: FC = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
       {/* Email */}
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="you@example.com"
-          {...register("email")}
-        />
-        {errors.email && (
-          <p className="text-red-600 text-sm">{errors.email.message}</p>
-        )}
+        <Input id="email" placeholder="you@example.com" type="email" {...register("email")} />
+        {errors.email && <p className="text-red-600 text-sm">{errors.email.message}</p>}
       </div>
 
       {/* Password */}
@@ -57,36 +49,31 @@ const LoginForm: FC = () => {
         <div className="relative">
           <Input
             id="password-toggle"
-            type={showPassword ? "text" : "password"}
             placeholder="••••••••"
+            type={showPassword ? "text" : "password"}
             {...register("password")}
           />
           <Button
-            type="button"
-            size="icon"
             className="absolute top-0 right-0 h-full px-3"
+            size="icon"
+            type="button"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
         </div>
-        {errors.password && (
-          <p className="text-red-600 text-sm">{errors.password.message}</p>
-        )}
+        {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
       </div>
 
       {/* Server error */}
-      {error && (
-        <div className="text-red-600 bg-red-50 p-3 rounded-md text-sm">{error}</div>
-      )}
+      {error && <div className="text-red-600 bg-red-50 p-3 rounded-md text-sm">{error}</div>}
 
       {/* Submit */}
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button className="w-full" disabled={isLoading} type="submit">
         {isLoading ? <Loader2 className="animate-spin" size={16} /> : "Sign in"}
-        
       </Button>
     </form>
   )
 }
 
-export default LoginForm;
+export default LoginForm

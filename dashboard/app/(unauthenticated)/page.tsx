@@ -1,11 +1,12 @@
+import { FC } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { redirect } from "next/navigation"
 import LoginForm from "./_login/form"
 import { auth } from "@/lib/auth/auth"
 import { headers } from "next/headers"
 
-const Page = async () => {
-  const session = await auth.api.getSession({headers: await headers()})
+const Page: FC = async () => {
+  const session = await auth.api.getSession({ headers: await headers() })
   if (session) {
     return redirect("/dashboard")
   }
@@ -27,4 +28,4 @@ const Page = async () => {
   )
 }
 
-export default Page;
+export default Page

@@ -9,7 +9,7 @@ const LogOutButton: FC = () => {
   const onClick = async (): Promise<void> => {
     try {
       setLoading(true)
-      await signOut();      
+      await signOut()
     } catch (error) {
       console.error("Error during sign out:", error)
       setLoading(false)
@@ -23,4 +23,4 @@ const LogOutButton: FC = () => {
   )
 }
 
-export default LogOutButton;
+export default LogOutButton

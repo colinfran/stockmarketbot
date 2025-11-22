@@ -15,8 +15,7 @@ import { HomeIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
 import { useSession } from "@/lib/auth/auth-client"
 import { Skeleton } from "../ui/skeleton"
-import { usePathname } from 'next/navigation'
-
+import { usePathname } from "next/navigation"
 
 const HeaderDropdown: FC = () => {
   const { data: session, isPending } = useSession()
@@ -26,14 +25,14 @@ const HeaderDropdown: FC = () => {
   // Show skeleton while session is loading
   if (isPending) {
     return (
-       <div className="flex w-full items-center justify-end gap-8">
+      <div className="flex w-full items-center justify-end gap-8">
         <div className="">
           <Skeleton className="h-[36px] w-[36px] rounded-full" />
         </div>
-       </div>
+      </div>
     )
   }
-  
+
   return (
     <div className="flex w-full items-center justify-end gap-8">
       <div className="">
@@ -63,7 +62,11 @@ const HeaderDropdown: FC = () => {
             <DropdownMenuSeparator />
             <ThemeButton />
             <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault()
+              }}
+            >
               <LogOutButton />
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -2,24 +2,26 @@ import { createAuthClient } from "better-auth/react"
 
 export const authClient = createAuthClient()
 
-const { useSession, } = createAuthClient()
+const { useSession } = createAuthClient()
 
-const signOut = async () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const signOut = async (): Promise<any> => {
   return await authClient.signOut({
     fetchOptions: {
       onSuccess: () => {
-        window.location.href = "/"; // redirect to login page
+        window.location.href = "/" // redirect to login page
       },
     },
-  });
+  })
 }
 
-const signIn = async (email: string, password: string) => {
-  return await authClient.signIn.email({ 
-    email, 
-    password, 
-    callbackURL: "/dashboard", 
-    rememberMe: true 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const signIn = async (email: string, password: string): Promise<any> => {
+  return await authClient.signIn.email({
+    email,
+    password,
+    callbackURL: "/dashboard",
+    rememberMe: true,
   })
 }
 
