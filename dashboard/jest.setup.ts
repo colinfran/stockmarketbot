@@ -12,3 +12,10 @@ jest.mock('better-auth/react', () => ({
     signOut: jest.fn(),
   }),
 }))
+
+class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+window.ResizeObserver = ResizeObserver

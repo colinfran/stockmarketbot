@@ -1,11 +1,11 @@
 import React from 'react'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
-
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react'
 import Header from '@/components/header/header'
 import HeaderDropdown from '@/components/header/header-dropdown'
 import ThemeButton from '@/components/header/theme-button'
 import LogOutButton from '@/components/header/logout-button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import userEvent from '@testing-library/user-event'
 
 jest.mock('@/components/logo', () => ({
   Logo: () => <img alt="logo" src="/logo.png" />,
@@ -75,23 +75,59 @@ describe('Header components', () => {
     expect(avatar.getAttribute('src')).toEqual(expect.stringContaining('placeholder-user.jpg'))
   })
 
-  // it('ThemeButton toggles theme via setTheme', async () => {
-  //   const setTheme = jest.fn()
-  //   useTheme.mockReturnValue({ resolvedTheme: 'dark', setTheme })
-  //   render(
-  //     <DropdownMenu>
-  //       <DropdownMenuTrigger asChild>
-  //           <button>Toggle Menu</button>
-  //         </DropdownMenuTrigger>
-  //       <DropdownMenuContent>
-  //         <ThemeButton />
-  //       </DropdownMenuContent>
-  //     </DropdownMenu>
-  //   )
-  //   const themeNode = screen.getByText('Theme')
-  //   fireEvent.click(themeNode)
-  //   expect(setTheme).toHaveBeenCalledWith('light')
-  // })
+  it('ThemeButton toggles theme via setTheme', async () => {
+    const setTheme = jest.fn()
+    ;(useTheme as jest.Mock).mockReturnValue({ resolvedTheme: 'dark', setTheme })
+
+    render(
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button>Toggle Menu</button>
+        </DropdownMenuTrigger>
+
+        {/* The content is what Radix will portal to document.body */}
+        <DropdownMenuContent data-testid="dropdown-content">
+          <ThemeButton />
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+
+    // Open the dropdown
+    await userEvent.click(screen.getByText('Toggle Menu'))
+
+    // Wait for the portal-mounted menu content to exist
+    const menu = await screen.findByTestId('dropdown-content')
+
+    // Find actionable menu items within the menu
+    // There may be different structures; try to find by accessible role first
+    let menuItems = within(menu).queryAllByRole('menuitem')
+
+    // If nothing with role=menuitem, fall back to any clickable elements inside the content
+    if (menuItems.length === 0) {
+      menuItems = within(menu).queryAllByRole('button')
+    }
+
+    // Try to find the item that mentions theme/light/dark (case-insensitive)
+    let targetItem = menuItems.find((el) =>
+      /theme|light|dark|system/i.test(el.textContent ?? '')
+    )
+
+    // If none match, fall back to the first menu item
+    if (!targetItem) {
+      if (menuItems.length === 0) {
+        throw new Error('No menu items found inside dropdown content')
+      }
+      targetItem = menuItems[0]
+    }
+
+    // Click the target item
+    await userEvent.click(targetItem)
+
+    // Assert theme was toggled from 'dark' -> 'light'
+    await waitFor(() => {
+      expect(setTheme).toHaveBeenCalledWith('light')
+    })
+  })
 
   it('LogOutButton calls signOut and shows loader while signing out', async () => {
     signOut.mockResolvedValue(undefined)
