@@ -14,12 +14,26 @@ import Link from "next/link"
 import { HomeIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
 import { useSession } from "@/lib/auth/auth-client"
+import { Skeleton } from "../ui/skeleton"
+import { usePathname } from 'next/navigation'
 
 
 const HeaderDropdown: FC = () => {
-   const { data: session } = useSession()
-
-  if (!session?.user) return null
+  const { data: session, isPending } = useSession()
+  const pathname = usePathname()
+  // Don't show dropdown if not logged in
+  if (pathname == "/") return null
+  // Show skeleton while session is loading
+  if (isPending) {
+    return (
+       <div className="flex w-full items-center justify-end gap-8">
+        <div className="">
+          <Skeleton className="h-[36px] w-[36px] rounded-full" />
+        </div>
+       </div>
+    )
+  }
+  
   return (
     <div className="flex w-full items-center justify-end gap-8">
       <div className="">

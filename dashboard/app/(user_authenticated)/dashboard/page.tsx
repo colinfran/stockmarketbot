@@ -1,15 +1,10 @@
 import { auth } from "@/lib/auth/auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { redirect } from "next/navigation"
-import LogoutButton from "@/components/header/logout-button"
 import { headers } from "next/headers"
 
 const Page = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers()
-  })
-
-
+  const session = await auth.api.getSession({headers: await headers()})
   if (!session) {
     return redirect("/")
   }
