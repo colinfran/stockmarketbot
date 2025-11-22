@@ -10,6 +10,7 @@ type Props = {
 const Icon: FC<Props> = ({ size = 32 }) => {
   const { resolvedTheme } = useTheme()
   const [isDark, setIsDark] = useState(false)
+  
   useEffect(() => {
     if (resolvedTheme === "dark") {
       setIsDark(true)

@@ -1,3 +1,6 @@
 cd dashboard
+echo "Running pre-commit hook"
+echo "Running linting..."
 npm run lint:fix
+echo "Running tests..."
 npm run test
