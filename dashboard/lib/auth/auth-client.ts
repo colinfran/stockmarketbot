@@ -4,11 +4,11 @@ export const authClient = createAuthClient()
 
 const { useSession, } = createAuthClient()
 
-const signOut = async () => {
+const signOut = async (win) => {
   return await authClient.signOut({
     fetchOptions: {
-      onSuccess: () => {
-        window.location.href = "/"; // redirect to login page
+      onSuccess: (window) => {
+        win.location.href = "/"; // redirect to login page
       },
     },
   });
