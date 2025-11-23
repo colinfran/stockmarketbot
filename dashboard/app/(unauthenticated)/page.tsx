@@ -1,7 +1,7 @@
 import { FC } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { redirect } from "next/navigation"
-import LoginForm from "./_login/form"
+import LoginForm from "../../components/form"
 import { auth } from "@/lib/auth/auth"
 import { headers } from "next/headers"
 

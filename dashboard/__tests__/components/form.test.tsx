@@ -1,6 +1,6 @@
 // __tests__/login-form.test.tsx
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
-import LoginForm from "@/app/(unauthenticated)/_login/form"
+import LoginForm from "@/components/form"
 import { signIn } from "@/lib/auth/auth-client"
 
 // Mock the signIn function
