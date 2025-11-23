@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getSessionCookie } from "better-auth/cookies";
-
+import { getSessionCookie } from "better-auth/cookies"
 
 const proxy = async (request: NextRequest): Promise<NextResponse> => {
-  const sessionCookie = getSessionCookie(request);
-
+  const sessionCookie = getSessionCookie(request)
 
   // THIS IS NOT SECURE!
   // This is the recommended approach to optimistically redirect users
