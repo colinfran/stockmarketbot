@@ -3,10 +3,6 @@ import { getSessionCookie } from "better-auth/cookies"
 
 const proxy = async (request: NextRequest): Promise<NextResponse> => {
   const sessionCookie = getSessionCookie(request)
-
-  // THIS IS NOT SECURE!
-  // This is the recommended approach to optimistically redirect users
-  // We recommend handling auth checks in each page/route
   const isOnHome = request.nextUrl.pathname === "/"
   const isOnDashboard = request.nextUrl.pathname.startsWith("/dashboard")
 
@@ -26,5 +22,5 @@ const proxy = async (request: NextRequest): Promise<NextResponse> => {
 export default proxy
 
 export const config = {
-  matcher: ["/", "/dashboard"], // Specify the routes the middleware applies to
+  matcher: ["/", "/dashboard"], // Specify the routes the proxy applies to
 }
