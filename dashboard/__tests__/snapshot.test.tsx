@@ -27,7 +27,7 @@ jest.mock('@/components/logo', () => ({
 
 
 it('renders homepage unchanged', async () => {
-  const jsx = await UnauthPage() // don't use render here
+  const jsx = await UnauthPage({}) // don't use render here
   const { container: PageContainer } = render(jsx)
   const { container: HeaderContainer } = render(<Header />)
   expect(PageContainer).toMatchSnapshot()
@@ -38,7 +38,7 @@ it('renders dashboard unchanged', async () => {
   ;(require('@/lib/auth/auth').auth.api.getSession as jest.Mock).mockResolvedValue({
     user: { name: 'Colin' },
   })
-  const jsx = await AuthPage()
+  const jsx = await AuthPage({})
   const { container: PageContainer } = render(jsx)
   const { container: HeaderContainer } = render(<Header />)
   expect(PageContainer).toMatchSnapshot()
