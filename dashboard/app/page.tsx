@@ -14,6 +14,8 @@ import {
 import DashboardSkeleton from "@/components/dashboard-skeleton"
 import TextWithLinks from "@/components/text-with-link"
 import { useReport } from "@/providers/report-provider"
+import CountdownTimer from "@/components/countdown-timer"
+import { nextMonday, nextFriday } from "date-fns"
 
 const getRiskColor = (risk: string): string => {
   const lower = risk.toLowerCase()
@@ -53,35 +55,48 @@ const Page: FC = () => {
       {/* Header */}
       <div className="border-b border-border">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-4">
             <div>
               <h1 className="text-3xl font-bold text-balance">Market Analysis Dashboard</h1>
               <p className="text-muted-foreground mt-1">AI-powered weekly market insights</p>
             </div>
-            <div className="w-full md:w-[280px]">
-              <Select value={selectedReportId} onValueChange={setSelectedReportId}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select report" />
-                </SelectTrigger>
-                <SelectContent>
-                  {reports.map((report) => (
-                    <SelectItem key={report.id} value={report.id}>
-                      Week of{" "}
-                      {new Date(report.created_at).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            {/* Countdown Timer */}
+            <div className="grid gap-4 md:grid-cols-2">
+              <CountdownTimer
+                description="AI analysis runs after market close"
+                label="Next Market Analysis"
+                targetDate={nextFriday(new Date())}
+              />
+              <CountdownTimer
+                description="Automated purchase execution"
+                label="Next Stock Purchase"
+                targetDate={nextMonday(new Date())}
+              />
             </div>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        <div className="w-full md:w-[280px] py-6">
+          <Select value={selectedReportId} onValueChange={setSelectedReportId}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select report" />
+            </SelectTrigger>
+            <SelectContent>
+              {reports.map((report) => (
+                <SelectItem key={report.id} value={report.id}>
+                  Week of{" "}
+                  {new Date(report.created_at).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div className="grid gap-6">
           {/* Executive Summary */}
           <Card className="border-border">
