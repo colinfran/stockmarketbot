@@ -16,8 +16,14 @@ const DashboardSkeleton: FC = () => {
               <p className="text-muted-foreground mt-1">AI-powered weekly market insights</p>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
-              {[{label: "Next Market Analysis", description: "AI analysis runs after market close"}, {label: "Next Stock Purchase", description: "Automated purchase execution"}].map(({ label, description}, i) => (
-                <Card key={i} className="border-border bg-card/50">
+              {[
+                {
+                  label: "Next Market Analysis",
+                  description: "AI analysis runs after market close",
+                },
+                { label: "Next Stock Purchase", description: "Automated purchase execution" },
+              ].map(({ label, description }, i) => (
+                <Card className="border-border bg-card/50" key={i}>
                   <CardContent className="p-6">
                     <div className="flex items-start gap-3">
                       <Clock className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
@@ -90,14 +96,14 @@ const DashboardSkeleton: FC = () => {
           {/* Sector Analysis Skeleton */}
           <div className="grid gap-6 md:grid-cols-2">
             {[1, 2].map((i) => (
-              <Card key={i} className="border-border">
+              <Card className="border-border" key={i}>
                 <CardHeader>
                   <Skeleton className="h-5 w-[140px]" />
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {[1, 2, 3].map((j) => (
-                      <div key={j} className="space-y-2">
+                      <div className="space-y-2" key={j}>
                         <Skeleton className="h-4 w-[180px]" />
                         <Skeleton className="h-12 w-full" />
                       </div>
@@ -145,7 +151,10 @@ const DashboardSkeleton: FC = () => {
             <CardContent>
               <div className="space-y-4">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="flex items-start justify-between gap-4 pb-4 border-b border-border">
+                  <div
+                    className="flex items-start justify-between gap-4 pb-4 border-b border-border"
+                    key={i}
+                  >
                     <div className="space-y-2 flex-1">
                       <div className="flex items-center gap-2">
                         <Skeleton className="h-6 w-[60px]" />
@@ -170,7 +179,7 @@ const DashboardSkeleton: FC = () => {
             <CardContent>
               <div className="space-y-2">
                 {[1, 2, 3, 4].map((i) => (
-                  <Skeleton key={i} className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" key={i} />
                 ))}
               </div>
             </CardContent>

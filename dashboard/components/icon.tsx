@@ -2,7 +2,6 @@
 import React, { FC, useEffect, useState } from "react"
 import Image from "next/image"
 import { useTheme } from "next-themes"
-import { Skeleton } from "./ui/skeleton"
 
 type Props = {
   size?: number
