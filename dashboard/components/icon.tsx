@@ -2,6 +2,7 @@
 import React, { FC, useEffect, useState } from "react"
 import Image from "next/image"
 import { useTheme } from "next-themes"
+import { Skeleton } from "./ui/skeleton"
 
 type Props = {
   size?: number
@@ -18,6 +19,7 @@ const Icon: FC<Props> = ({ size = 32 }) => {
       setIsDark(false)
     }
   }, [resolvedTheme])
+
   return (
     <Image
       alt="logo"
