@@ -107,7 +107,7 @@ const Page: FC = () => {
             <SelectContent>
               {reports.map((report) => (
                 <SelectItem key={report.id} value={report.id}>
-                  Week of{" "}
+                  {"Friday "}
                   {new Date(report.created_at).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
@@ -127,7 +127,7 @@ const Page: FC = () => {
                 <CardTitle>Executive Summary</CardTitle>
               </div>
               <CardDescription>
-                Week of {new Date(selectedReport.created_at).toLocaleDateString()}
+                {`Friday ${new Date(selectedReport.created_at).toLocaleDateString()}`}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

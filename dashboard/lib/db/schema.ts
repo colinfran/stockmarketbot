@@ -1,4 +1,4 @@
-import { jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { jsonb, numeric, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
 
 export const marketReports = pgTable("market_reports", {
   id: text("id").primaryKey(),
@@ -9,4 +9,23 @@ export const marketReports = pgTable("market_reports", {
   recommendations: jsonb("recommendations").notNull(),
   assessment_sources: jsonb("assessment_sources").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
+})
+
+export const tradeOrders = pgTable("trade_orders", {
+  id: uuid("id").primaryKey(),
+  market_report_id: text("market_report_id")
+    .notNull()
+    .references(() => marketReports.id), // foreign key to market_reports
+  symbol: text("symbol").notNull(),
+  side: text("side").notNull(), // "buy" or "sell"
+  notional: numeric("notional"),
+  qty: numeric("qty"),
+  filled_qty: numeric("filled_qty"),
+  filled_avg_price: numeric("filled_avg_price"),
+  status: text("status").notNull(), // e.g. "accepted", "filled"
+  order_type: text("order_type"),
+  created_at: timestamp("created_at"),
+  submitted_at: timestamp("submitted_at"),
+  filled_at: timestamp("filled_at"),
+  expires_at: timestamp("expires_at"),
 })

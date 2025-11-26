@@ -13,7 +13,7 @@ export const fetchAllReports = async (): Promise<Response> => {
   try {
     const data = await db.select().from(marketReports)
     console.log("Successfully fetched reports from database")
-    return { success: true, data: data }
+    return { success: true, data: data as unknown as MarketReport[] }
   } catch (error) {
     console.error("Error fetching reports from database:", error)
     return { success: false, error: (error as Error).message }

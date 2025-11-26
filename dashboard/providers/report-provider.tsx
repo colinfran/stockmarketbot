@@ -43,7 +43,7 @@ export const ReportProvider: FC<{ children: ReactNode }> = ({ children }) => {
       if (!data) {
         setReports([])
       } else if (Array.isArray(data)) {
-        setReports(data as MarketReport[])
+        setReports(data.reverse() as MarketReport[])
       } else {
         // If API returns a single report object, wrap it in an array
         setReports([data as MarketReport])
