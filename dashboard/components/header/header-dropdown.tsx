@@ -9,28 +9,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import LogOutButton from "@/components/header/logout-button"
 import Link from "next/link"
-import { HomeIcon } from "lucide-react"
+import { ChartSplineIcon, DollarSignIcon, HomeIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
-import { useSession } from "@/lib/auth/auth-client"
-import { Skeleton } from "../ui/skeleton"
-import { usePathname } from "next/navigation"
 
 const HeaderDropdown: FC = () => {
-  const { data: session, isPending } = useSession()
-  const pathname = usePathname()
-  // Don't show dropdown if not logged in
-  if (pathname == "/") return null
-  // Show skeleton while session is loading
-  if (isPending) {
-    return (
-      <div className="flex w-full items-center justify-end gap-8">
-        <div className="">
-          <Skeleton className="h-[36px] w-[36px] rounded-full" />
-        </div>
-      </div>
-    )
+  const session = {
+    user: {
+      image: undefined,
+    },
   }
 
   return (
@@ -59,16 +46,34 @@ const HeaderDropdown: FC = () => {
                 <span>Home</span>
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex w-full cursor-pointer flex-row items-center gap-2"
+              asChild
+            >
+              <Link href="/investments">
+                <DollarSignIcon size={16} />
+                <span>Investments</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex w-full cursor-pointer flex-row items-center gap-2"
+              asChild
+            >
+              <Link href="/charts">
+                <ChartSplineIcon size={16} />
+                <span>Charts</span>
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <ThemeButton />
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator />
             <DropdownMenuItem
               onSelect={(e) => {
                 e.preventDefault()
               }}
             >
               <LogOutButton />
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

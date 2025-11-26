@@ -9,6 +9,7 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 import "./globals.css"
 import { ThemeProvider } from "@/providers/theme-provider"
 import Header from "@/components/header/header"
+import { ReportProvider } from "@/providers/report-provider"
 
 const RootLayout: FC<{
   children: ReactNode
@@ -35,10 +36,12 @@ const RootLayout: FC<{
           disableTransitionOnChange
           enableSystem
         >
-          <div className="flex flex-col sm:gap-4 sm:px-7 sm:py-4">
-            <Header />
-            <main className="grid flex-1 items-start gap-2 md:gap-4">{children}</main>
-          </div>
+          <ReportProvider>
+            <div className="flex flex-col sm:gap-4 sm:px-7 sm:py-4">
+              <Header />
+              <main className="grid flex-1 items-start gap-2 md:gap-4">{children}</main>
+            </div>
+          </ReportProvider>
         </ThemeProvider>
         <Analytics />
       </body>
