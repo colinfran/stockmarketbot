@@ -92,12 +92,12 @@ const Page: FC = () => {
               <CountdownTimer
                 description="AI analysis runs after market close"
                 label="Next Market Analysis"
-                targetDate={new Date(friday8pmPST)}
+                targetDate={friday8pm}
               />
               <CountdownTimer
                 description="Automated purchase execution"
                 label="Next Stock Purchase"
-                targetDate={new Date(monday630amPST)}
+                targetDate={monday630am}
               />
             </div>
           </div>
