@@ -19,7 +19,7 @@ const HeaderDropdown: FC = () => {
     <div className="flex w-full items-center justify-end gap-8">
       <div className="">
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-          <DropdownMenuTrigger asChild className="flex">
+          <DropdownMenuTrigger className="flex" asChild>
             <MenuButton isOpen={isOpen} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
