@@ -11,8 +11,14 @@ export type PortfolioPosition = {
   profitLossPercent: number
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const calculatePositions = (ordersList: AlpacaOrder[], prices: Prices): any => {
+export type CalculateType = {
+  positions: PortfolioPosition[],
+  totalValue: number,
+  totalCost: number,
+  totalProfitLoss: number,
+}
+
+export const calculatePositions = (ordersList: AlpacaOrder[], prices: Prices): CalculateType => {
   // Aggregate orders by symbol
   const positionMap = new Map<string, { shares: number; totalCost: number }>()
 
