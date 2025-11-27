@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
-import { ChartSplineIcon, DollarSignIcon, HomeIcon } from "lucide-react"
+import { ChartSplineIcon, DollarSignIcon, HomeIcon, InfoIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
 
 const HeaderDropdown: FC = () => {
@@ -66,6 +66,16 @@ const HeaderDropdown: FC = () => {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <ThemeButton />
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="flex w-full cursor-pointer flex-row items-center gap-2"
+              asChild
+            >
+              <Link href="/about">
+                <InfoIcon size={16} />
+                <span>About</span>
+              </Link>
+            </DropdownMenuItem>
             {/* <DropdownMenuSeparator />
             <DropdownMenuItem
               onSelect={(e) => {
