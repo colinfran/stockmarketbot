@@ -45,6 +45,7 @@ const Page: FC = () => {
       <Header />
 
       <div className="container mx-auto px-4 py-8">
+        {/* Report Picker */}
         <Picker selectedReportId={selectedReportId} setSelectedReportId={setSelectedReportId} />
         <div className="grid gap-6">
           {/* Executive Summary */}

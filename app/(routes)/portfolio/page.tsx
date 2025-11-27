@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, type FC } from "react"
+import { useMemo, useState, type FC } from "react"
 import { Card, CardHeader } from "@/components/ui/card"
 import { useData } from "@/providers/data-provider"
 import PortfolioSkeleton from "@/components/skeletons/portfolio-skeleton"
@@ -10,14 +10,17 @@ import Summary from "@/components/portfolio/summary"
 
 const Page: FC = () => {
   const { portfolio, loading, prices } = useData()
+  const [calculateLoading, setCalculateLoading] = useState(false)
 
   const calculations = useMemo(() => {
+    setCalculateLoading(true)
     const val = calculatePositions(portfolio, prices)
+    setCalculateLoading(false)
     console.log("calcuations", val)
     return val
   }, [portfolio, prices])
 
-  if (loading.portfolio) {
+  if (loading.portfolio || calculateLoading) {
     return <PortfolioSkeleton />
   }
 
