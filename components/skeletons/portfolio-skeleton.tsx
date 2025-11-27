@@ -23,7 +23,7 @@ const PortfolioSkeleton: FC = () => {
       </div>
 
       {/* Holdings Table Skeleton */}
-      <Card>
+      <Card className="mt-4">
         <CardHeader>
           <CardTitle>
             <Skeleton className="h-6 w-32" />

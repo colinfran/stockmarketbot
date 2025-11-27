@@ -12,7 +12,7 @@ type TableType = {
 
 const HoldingsTable: FC<TableType> = ({ data }) => {
   return (
-    <Card>
+    <Card className="mt-4">
       <CardHeader>
         <CardTitle>Holdings</CardTitle>
         <CardDescription>Detailed breakdown of your stock positions</CardDescription>

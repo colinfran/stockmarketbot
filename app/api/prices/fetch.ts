@@ -46,12 +46,12 @@ function buildPriceMap(rows: any[]): Prices {
 export const fetchPrices = async (): Promise<Response<Prices>> => {
   try {
     console.log("Fetching prices from NASDAQ and NYSE")
-    const nasdaq = await fetch("https://api.nasdaq.com/api/screener/stocks?exchange=NASDAQ&limit=10000").then(
-      (r) => r.json(),
-    )
-    const nyse = await fetch("https://api.nasdaq.com/api/screener/stocks?exchange=NYSE&limit=10000").then((r) =>
-      r.json(),
-    )
+    const nasdaq = await fetch(
+      "https://api.nasdaq.com/api/screener/stocks?exchange=NASDAQ&limit=10000",
+    ).then((r) => r.json())
+    const nyse = await fetch(
+      "https://api.nasdaq.com/api/screener/stocks?exchange=NYSE&limit=10000",
+    ).then((r) => r.json())
     const nasdaqRows = nasdaq.data.table.rows
     const nyseRows = nyse.data.table.rows
     const allRows = [...nasdaqRows, ...nyseRows]
