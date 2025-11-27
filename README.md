@@ -1,6 +1,6 @@
-# dashboard
+# stockmarketbot
 
-The stockmarketbot dashboard provides a real-time view of the paper-trading bot’s performance, enabling the ability to safely test algorithmic trading strategies without risking real capital. It visualizes daily and monthly returns, displays recent trades and open positions, and offers clear insights into strategy effectiveness and portfolio growth over time.
+The stockmarketbot app provides a real-time view of the paper-trading bot’s performance, enabling the ability to safely test algorithmic trading strategies without risking real capital. It visualizes daily and monthly returns, displays recent trades and open positions, and offers clear insights into strategy effectiveness and portfolio growth over time.
 
 
 ## Technologies Used

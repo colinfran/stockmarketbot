@@ -24,7 +24,7 @@ const RootLayout: FC<Layout> = ({ children }) => {
         <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
         <link href="/favicon-96x96.png" rel="icon" sizes="96x96" type="image/png" />
         <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
-        <title>trading bot dashboard</title>
+        <title>stockmarketbot | ai trading bot</title>
       </head>
       <body className="flex min-h-screen w-full flex-col">
         <NextTopLoader color={"#808080"} showSpinner={false} zIndex={100} />
