@@ -2,6 +2,20 @@ import { db } from "@/lib/db"
 import { tradeOrders } from "@/lib/db/schema"
 import { AlpacaOrder, NoData, Response } from "../../types"
 
+/**
+ * Inserts an array of Alpaca trade orders into the database.
+ * @description Cleans and formats each AlpacaOrder object, converts numeric fields to strings,
+ * converts date strings to Date objects, and associates each order with a `market_report_id`.
+ * Inserts the array into the `tradeOrders` table using Drizzle ORM.
+ * 
+ * @function addToDb
+ * @param {AlpacaOrder[]} arr Array of AlpacaOrder objects to store in the database.
+ * @param {string} id The market report ID to associate with these trade orders.
+ * @returns {Promise<Response<NoData>>} A promise resolving to a Response object.
+ * If successful, `success` is true and no data is returned.
+ * If there is an error, `success` is false and `error` contains the error message.
+ */
+
 export const addToDb = async (arr: AlpacaOrder[], id: string): Promise<Response<NoData>> => {
   console.log("Adding purchase to database")
   try {

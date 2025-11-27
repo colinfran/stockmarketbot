@@ -2,6 +2,16 @@ import { db } from "@/lib/db"
 import { tradeOrders } from "@/lib/db/schema"
 import { AlpacaOrder, Response } from "../types"
 
+/**
+ * Fetches all trade orders from the database.
+ * @description Uses the database client to select all entries from the tradeOrders table.
+ * Returns a Response object containing either the list of trade orders or an error message.
+ * @function fetchAllTradeOrders
+ * @returns {Promise<Response<AlpacaOrder[]>>} A promise resolving to a Response object.
+ * If successful, `success` is true and `data` contains an array of AlpacaOrder objects.
+ * If there is an error, `success` is false and `error` contains the error message.
+ */
+
 export const fetchAllTradeOrders = async (): Promise<Response<AlpacaOrder[]>> => {
   console.log("Get all tradeOrders from database")
   try {
