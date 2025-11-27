@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
-import { ChartSplineIcon, DollarSignIcon, HomeIcon, InfoIcon } from "lucide-react"
+import { DollarSignIcon, HomeIcon, InfoIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
 import MenuButton from "./menu-button"
 

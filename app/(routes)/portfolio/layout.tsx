@@ -1,5 +1,5 @@
 "use client"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { FC, ReactNode } from "react"
@@ -21,7 +21,7 @@ const Layout: FC<Layout> = ({ children }) => {
           </div>
         </div>
 
-        <Tabs value={activeTab!} className="w-full pb-4">
+        <Tabs className="w-full pb-4" value={activeTab!}>
           <TabsList>
             <TabsTrigger value="overview" asChild>
               <Link href="/portfolio">Overview</Link>
