@@ -16,12 +16,7 @@ import {
 } from "@/components/ui/table"
 
 const Page: FC = () => {
-  const { portfolio, loading, fetchPortfolio, prices } = useData()
-
-  useEffect(() => {
-    if (!portfolio.length) fetchPortfolio()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [portfolio])
+  const { portfolio, loading, prices } = useData()
 
   const calculations = useMemo(() => {
     const val = calculatePositions(portfolio, prices)

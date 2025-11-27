@@ -26,14 +26,7 @@ const getRiskColor = (risk: string): string => {
 }
 
 const Page: FC = () => {
-  const { reports, loading, fetchReports } = useData()
-
-  useEffect(() => {
-    if (!reports.length) {
-      fetchReports()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reports])
+  const { reports, loading } = useData()
 
   const [selectedReportId, setSelectedReportId] = useState<undefined | string>(undefined)
 

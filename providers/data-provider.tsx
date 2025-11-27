@@ -17,8 +17,6 @@ type ContextProps = {
   reports: MarketReport[]
   portfolio: AlpacaOrder[]
   prices: Prices
-  fetchReports: () => Promise<void> | null
-  fetchPortfolio: () => Promise<void> | null
 }
 
 const defaultContextValue: ContextProps = {
@@ -30,8 +28,6 @@ const defaultContextValue: ContextProps = {
   reports: [],
   portfolio: [],
   prices: {},
-  fetchReports: () => null,
-  fetchPortfolio: () => null,
 }
 
 const DataContext = createContext<ContextProps>(defaultContextValue)
@@ -42,7 +38,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const pricesUrl = "/api/prices"
   const [reports, setReports] = useState<MarketReport[]>([])
   const [portfolio, setPortfolio] = useState<AlpacaOrder[]>([])
-  const [prices, setPrices] = useState<Prices>()
+  const [prices, setPrices] = useState<Prices>({})
   const [loading, setLoading] = useState<{
     reports: boolean
     portfolio: boolean
@@ -95,10 +91,8 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
         throw new Error(`Fetch failed: ${res.status} ${res.statusText}`)
       }
       const json = await res.json()
-      // If API wraps data, use json.data, otherwise fallback to json
       const data = (json && json.data) || json
       console.log("portfolio", data)
-      // Normalize the payload to an array and ensure we never set undefined
       if (!data) {
         setPortfolio([])
       } else if (Array.isArray(data)) {
@@ -138,12 +132,14 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }
 
   useEffect(() => {
+    fetchReports()
     fetchPrices()
+    fetchPortfolio()
   }, [])
 
   return (
     <DataContext.Provider
-      value={{ fetchReports, fetchPortfolio, loading, reports, portfolio, prices, error }}
+      value={{ loading, reports, portfolio, prices, error }}
     >
       {children}
     </DataContext.Provider>
