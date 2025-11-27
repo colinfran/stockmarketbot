@@ -1,4 +1,6 @@
+import { Badge } from "@/components/ui/badge"
 import { Github, Linkedin, Globe, Twitter } from "lucide-react"
+import Link from "next/link"
 import { FC } from "react"
 
 const Page: FC = () => {
@@ -10,7 +12,7 @@ const Page: FC = () => {
           <h1 className="text-4xl font-bold mb-4 text-balance">trader-bot</h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
             A fully autonomous stock-market bot that turns cutting-edge AI reasoning into real
-            (paper) trades – every single week, without any human intervention.
+            (paper) trades - every single week, without any human intervention.
           </p>
         </div>
 
@@ -45,47 +47,67 @@ const Page: FC = () => {
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-4">Built by Colin Franceschini</h2>
           <div className="flex flex-wrap gap-4">
-            <a
+            <Link
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               href="https://github.com/colinfran"
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Github className="h-4 w-4" />
-              GitHub
-            </a>
-            <a
+              <Badge>
+                <Github className="h-4 w-4" />
+                GitHub
+              </Badge>
+            </Link>
+            <Link
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               href="https://www.linkedin.com/in/colinfranceschini/"
               rel="noopener noreferrer"
               target="_blank"
             >
+              <Badge>
               <Linkedin className="h-4 w-4" />
               LinkedIn
-            </a>
-            <a
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              href="https://colinfran.com/"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <Globe className="h-4 w-4" />
-              Website
-            </a>
-            <a
+              </Badge>
+            </Link>
+            <Link
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               href="https://x.com/colinfran"
               rel="noopener noreferrer"
               target="_blank"
             >
-              <Twitter className="h-4 w-4" />X
-            </a>
+              <Badge>
+                <svg
+                  className="h-[10px]! w-[10px]! transition-all"
+                  stroke="currentColor"
+                  strokeWidth=".25px"
+                  viewBox="0 0 24 24"
+                  width="6px"
+                >
+                  <path
+                    d="M14.095479,10.316482L22.286354,1h-1.940718l-7.115352,8.087682L7.551414,1H1l8.589488,12.231093L1,23h1.940717  l7.509372-8.542861L16.448587,23H23L14.095479,10.316482z M11.436522,13.338465l-0.871624-1.218704l-6.924311-9.68815h2.981339  l5.58978,7.82155l0.867949,1.218704l7.26506,10.166271h-2.981339L11.436522,13.338465z"
+                    fill="currentColor"
+                  />
+                </svg>
+                x.com
+              </Badge>
+            </Link>
+            <Link
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              href="https://colinfran.com/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <Badge>
+                <Globe className="h-4 w-4" />
+                Website
+              </Badge>
+            </Link>
           </div>
         </div>
 
         {/* Disclaimer */}
         <p className="text-sm text-muted-foreground italic">
-          This is not financial advice – it's an experiment in autonomous AI-driven investing, built
+          This is not financial advice - it's an experiment in autonomous AI-driven investing, built
           for fun, learning, and transparency.
         </p>
       </div>
