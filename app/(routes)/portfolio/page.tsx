@@ -6,7 +6,14 @@ import { TrendingUp, TrendingDown, Wallet, DollarSign } from "lucide-react"
 import { useData } from "@/providers/data-provider"
 import PortfolioSkeleton from "@/components/skeletons/portfolio-skeleton"
 import { calculatePositions } from "./calculatePositions"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 const Page: FC = () => {
@@ -35,7 +42,8 @@ const Page: FC = () => {
     )
   }
 
-  const totalPLPercent = calculations.totalCost > 0 ? (calculations.totalProfitLoss / calculations.totalCost) * 100 : 0
+  const totalPLPercent =
+    calculations.totalCost > 0 ? (calculations.totalProfitLoss / calculations.totalCost) * 100 : 0
 
   return (
     <>
@@ -107,103 +115,87 @@ const Page: FC = () => {
 
       {/* Holdings Table */}
       <Card>
-  <CardHeader>
-    <CardTitle>Holdings</CardTitle>
-    <CardDescription>Detailed breakdown of your stock positions</CardDescription>
-  </CardHeader>
+        <CardHeader>
+          <CardTitle>Holdings</CardTitle>
+          <CardDescription>Detailed breakdown of your stock positions</CardDescription>
+        </CardHeader>
 
-  {/* Scroll wrapper (shadcn recommended) */}
-  <CardContent className="w-full overflow-x-auto">
-    <ScrollArea className="min-screen-w">
-    <Table className="min-w-max">
-      <TableHeader>
-        <TableRow className="border-b border-border">
-          <TableHead className="text-left py-3 px-2 sm:px-4">
-            Symbol
-          </TableHead>
-          <TableHead className="text-right py-3 px-2 sm:px-4">
-            Shares
-          </TableHead>
-          <TableHead className="text-right py-3 px-2 sm:px-4">
-            Avg Cost
-          </TableHead>
-          <TableHead className="text-right py-3 px-2 sm:px-4">
-            Current Price
-          </TableHead>
-          <TableHead className="text-right py-3 px-2 sm:px-4">
-            Total Value
-          </TableHead>
-          <TableHead className="text-right py-3 px-2 sm:px-4">
-            P/L
-          </TableHead>
-          <TableHead className="text-right py-3 px-2 sm:px-4">
-            P/L %
-          </TableHead>
-        </TableRow>
-      </TableHeader>
+        {/* Scroll wrapper (shadcn recommended) */}
+        <CardContent className="w-full overflow-x-auto">
+          <ScrollArea className="min-screen-w">
+            <Table className="min-w-max">
+              <TableHeader>
+                <TableRow className="border-b border-border">
+                  <TableHead className="text-left py-3 px-2 sm:px-4">Symbol</TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4">Shares</TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4">Avg Cost</TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4">Current Price</TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4">Total Value</TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4">P/L</TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4">P/L %</TableHead>
+                </TableRow>
+              </TableHeader>
 
-      <TableBody>
-        {calculations.positions.map((position) => (
-          <TableRow
-            key={position.symbol}
-            className="border-b border-border hover:bg-muted/50 transition-colors"
-          >
-            {/* Symbol should stay nowrap */}
-            <TableCell className="py-3 px-2 sm:px-4 font-semibold whitespace-nowrap">
-              {position.symbol}
-            </TableCell>
+              <TableBody>
+                {calculations.positions.map((position) => (
+                  <TableRow
+                    className="border-b border-border hover:bg-muted/50 transition-colors"
+                    key={position.symbol}
+                  >
+                    {/* Symbol should stay nowrap */}
+                    <TableCell className="py-3 px-2 sm:px-4 font-semibold whitespace-nowrap">
+                      {position.symbol}
+                    </TableCell>
 
-            <TableCell className="text-right py-3 px-2 sm:px-4">
-              {position.shares}
-            </TableCell>
+                    <TableCell className="text-right py-3 px-2 sm:px-4">
+                      {position.shares}
+                    </TableCell>
 
-            <TableCell className="text-right py-3 px-2 sm:px-4">
-              ${position.avgCost.toFixed(2)}
-            </TableCell>
+                    <TableCell className="text-right py-3 px-2 sm:px-4">
+                      ${position.avgCost.toFixed(2)}
+                    </TableCell>
 
-            <TableCell className="text-right py-3 px-2 sm:px-4">
-              ${position.currentPrice.toFixed(2)}
-            </TableCell>
+                    <TableCell className="text-right py-3 px-2 sm:px-4">
+                      ${position.currentPrice.toFixed(2)}
+                    </TableCell>
 
-            <TableCell className="text-right py-3 px-2 sm:px-4 font-medium">
-              {position.totalValue.toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}
-            </TableCell>
+                    <TableCell className="text-right py-3 px-2 sm:px-4 font-medium">
+                      {position.totalValue.toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </TableCell>
 
-            <TableCell
-              className={`text-right py-3 px-2 sm:px-4 font-medium ${
-                position.profitLoss >= 0 ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              {position.profitLoss >= 0 ? "+" : ""}
-              ${position.profitLoss.toFixed(2)}
-            </TableCell>
+                    <TableCell
+                      className={`text-right py-3 px-2 sm:px-4 font-medium ${
+                        position.profitLoss >= 0 ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {position.profitLoss >= 0 ? "+" : ""}${position.profitLoss.toFixed(2)}
+                    </TableCell>
 
-            <TableCell
-              className={`text-right py-3 px-2 sm:px-4 font-medium ${
-                position.profitLossPercent >= 0 ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              <div className="flex items-center justify-end gap-1">
-                {position.profitLossPercent >= 0 ? (
-                  <TrendingUp className="h-3 w-3" />
-                ) : (
-                  <TrendingDown className="h-3 w-3" />
-                )}
-                {position.profitLossPercent >= 0 ? "+" : ""}
-                {position.profitLossPercent.toFixed(2)}%
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-    </ScrollArea>
-  </CardContent>
-</Card>
-
+                    <TableCell
+                      className={`text-right py-3 px-2 sm:px-4 font-medium ${
+                        position.profitLossPercent >= 0 ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      <div className="flex items-center justify-end gap-1">
+                        {position.profitLossPercent >= 0 ? (
+                          <TrendingUp className="h-3 w-3" />
+                        ) : (
+                          <TrendingDown className="h-3 w-3" />
+                        )}
+                        {position.profitLossPercent >= 0 ? "+" : ""}
+                        {position.profitLossPercent.toFixed(2)}%
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </ScrollArea>
+        </CardContent>
+      </Card>
     </>
   )
 }

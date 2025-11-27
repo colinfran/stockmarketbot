@@ -63,7 +63,7 @@ const PortfolioSkeleton: FC = () => {
 
               <TableBody>
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <TableRow key={i} className="border-b border-border">
+                  <TableRow className="border-b border-border" key={i}>
                     <TableCell className="py-3 px-2 sm:px-4 whitespace-nowrap">
                       <Skeleton className="h-5 w-12" />
                     </TableCell>
