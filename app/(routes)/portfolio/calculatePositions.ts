@@ -12,10 +12,10 @@ export type PortfolioPosition = {
 }
 
 export type CalculateType = {
-  positions: PortfolioPosition[],
-  totalValue: number,
-  totalCost: number,
-  totalProfitLoss: number,
+  positions: PortfolioPosition[]
+  totalValue: number
+  totalCost: number
+  totalProfitLoss: number
 }
 
 export const calculatePositions = (ordersList: AlpacaOrder[], prices: Prices): CalculateType => {
