@@ -1,5 +1,5 @@
 "use client"
-import React, { FC } from "react"
+import React, { FC, useState } from "react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import {
@@ -12,29 +12,19 @@ import {
 import Link from "next/link"
 import { ChartSplineIcon, DollarSignIcon, HomeIcon, InfoIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
+import { cn } from "@/lib/utils"
+import MenuButton from "../menu-button"
 
 const HeaderDropdown: FC = () => {
-  const session = {
-    user: {
-      image: undefined,
-    },
-  }
+
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <div className="flex w-full items-center justify-end gap-8">
       <div className="">
-        <DropdownMenu>
+        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
           <DropdownMenuTrigger asChild>
-            <Button className="overflow-hidden rounded-full" size="icon" variant="outline">
-              <Image
-                alt="Avatar"
-                className="overflow-hidden rounded-full"
-                height={36}
-                src={session?.user.image ?? "/placeholder-user.jpg"}
-                width={36}
-                priority
-              />
-            </Button>
+            <MenuButton isOpen={isOpen}/>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
