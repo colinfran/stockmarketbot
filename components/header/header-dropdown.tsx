@@ -41,7 +41,7 @@ const HeaderDropdown: FC = () => {
                 <span>Portfolio</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               className="flex w-full cursor-pointer flex-row items-center gap-2"
               asChild
             >
@@ -49,7 +49,7 @@ const HeaderDropdown: FC = () => {
                 <ChartSplineIcon size={16} />
                 <span>Charts</span>
               </Link>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuSeparator />
             <ThemeButton />
             <DropdownMenuSeparator />
