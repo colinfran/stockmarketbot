@@ -1,4 +1,3 @@
-// get the latest report
 import { NextResponse } from "next/server"
 import { fetchPrices } from "./fetch"
 
