@@ -105,12 +105,12 @@ const Page: FC = () => {
           </div>
         </div>
 
-          {/* Project Status */}
+        {/* Project Status */}
         <div className="mb-6">
           <p className="text-muted-foreground leading-relaxed">
-            This project was started on November 24th, 2025. It's an experiment to see how well AI can
-            autonomously generate stock trades over time. We'll continue to monitor its performance
-            and share updates.
+            This project was started on November 24th, 2025. It's an experiment to see how well AI
+            can autonomously generate stock trades over time. We'll continue to monitor its
+            performance and share updates.
           </p>
         </div>
 
