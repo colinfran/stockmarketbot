@@ -1,7 +1,5 @@
 "use client"
 import React, { FC, useState } from "react"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +10,9 @@ import {
 import Link from "next/link"
 import { ChartSplineIcon, DollarSignIcon, HomeIcon, InfoIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
-import { cn } from "@/lib/utils"
 import MenuButton from "../menu-button"
 
 const HeaderDropdown: FC = () => {
-
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -24,7 +20,7 @@ const HeaderDropdown: FC = () => {
       <div className="">
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
           <DropdownMenuTrigger asChild>
-            <MenuButton isOpen={isOpen}/>
+            <MenuButton isOpen={isOpen} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem

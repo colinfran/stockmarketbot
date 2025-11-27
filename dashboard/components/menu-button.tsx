@@ -15,11 +15,11 @@ type HamburgerMenuProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 const MenuButton: FC<HamburgerMenuProps> = ({ className, isOpen = false, onToggle, ...props }) => {
   return (
     <Button
-      variant="outline"
-      size="icon"
-      className={cn("relative h-10 w-10", className)}
-      aria-label="Toggle menu"
       aria-expanded={isOpen}
+      aria-label="Toggle menu"
+      className={cn("relative h-10 w-10", className)}
+      size="icon"
+      variant="outline"
       {...props}
     >
       <Menu
