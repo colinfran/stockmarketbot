@@ -16,7 +16,7 @@ import TextWithLinks from "@/components/text-with-link"
 import { useData } from "@/providers/data-provider"
 import CountdownTimer from "@/components/countdown-timer"
 import { nextMonday, nextFriday, set } from "date-fns"
-import { formatInTimeZone, fromZonedTime, toDate } from "date-fns-tz"
+import { fromZonedTime } from "date-fns-tz"
 
 const getRiskColor = (risk: string): string => {
   const lower = risk.toLowerCase()
