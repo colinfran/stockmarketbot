@@ -1,7 +1,8 @@
 # stockmarketbot
 
-The stockmarketbot app provides a real-time view of the paper-trading bot’s performance, enabling the ability to safely test algorithmic trading strategies without risking real capital. It visualizes daily and monthly returns, displays recent trades and open positions, and offers clear insights into strategy effectiveness and portfolio growth over time.
-
+StockMarketBot is a proof-of-concept application designed to explore whether AI models can generate reliable and actionable stock market insights.
+It runs fully automated paper-trading strategies powered by AI decisions in real-time market conditions — without risking any real money. The app provides a transparent, live view of the bot’s performance, including daily and monthly returns, recent trades, open positions, and overall portfolio growth.
+The goal is simple: observe, measure, and evaluate how effectively (or not) AI can interpret markets and make profitable trading decisions over time.
 
 ## Technologies Used
 
