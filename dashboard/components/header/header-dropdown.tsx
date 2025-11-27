@@ -10,7 +10,7 @@ import {
 import Link from "next/link"
 import { ChartSplineIcon, DollarSignIcon, HomeIcon, InfoIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
-import MenuButton from "../menu-button"
+import MenuButton from "./menu-button"
 
 const HeaderDropdown: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -19,7 +19,7 @@ const HeaderDropdown: FC = () => {
     <div className="flex w-full items-center justify-end gap-8">
       <div className="">
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild className="flex">
             <MenuButton isOpen={isOpen} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
