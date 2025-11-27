@@ -9,7 +9,7 @@ const Page: FC = () => {
       <div className="container mx-auto px-4 py-12 max-w-3xl">
         {/* Hero */}
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-balance">trader-bot</h1>
+          <h1 className="text-4xl font-bold mb-4 text-balance">stockmarketbot</h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
             A fully autonomous stock-market bot that turns cutting-edge AI reasoning into real
             (paper) trades - every single week, without any human intervention.

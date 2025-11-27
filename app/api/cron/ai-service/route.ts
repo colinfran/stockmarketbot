@@ -7,13 +7,13 @@ import { addToDb } from "./update"
  * @description This GET endpoint is intended to be called by a scheduled cron job.
  * It validates a secret authorization header, generates a weekly market report using AI,
  * stores the report in the database, and returns a JSON response indicating success or failure.
- * 
+ *
  * Steps:
  * 1. Validate the Authorization header against `process.env.CRON_SECRET`.
  * 2. Call `generateWeeklyReport` to generate the market report.
  * 3. If successful, call `addToDb` to insert the report into the database.
  * 4. Return a JSON response indicating the result.
- * 
+ *
  * @function GET
  * @param {Request} request The incoming Next.js Request object.
  * @returns {Promise<NextResponse>} A Next.js Response object.

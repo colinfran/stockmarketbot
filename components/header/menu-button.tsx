@@ -12,7 +12,7 @@ type HamburgerMenuProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   onToggle?: (isOpen: boolean) => void
 }
 
-const MenuButton: FC<HamburgerMenuProps> = ({ className, isOpen = false, onToggle, ...props }) => {
+const MenuButton: FC<HamburgerMenuProps> = ({ className, isOpen = false, ...props }) => {
   return (
     <Button
       aria-expanded={isOpen}

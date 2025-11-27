@@ -7,7 +7,7 @@ import { AlpacaOrder, NoData, Response } from "../../types"
  * @description Cleans and formats each AlpacaOrder object, converts numeric fields to strings,
  * converts date strings to Date objects, and associates each order with a `market_report_id`.
  * Inserts the array into the `tradeOrders` table using Drizzle ORM.
- * 
+ *
  * @function addToDb
  * @param {AlpacaOrder[]} arr Array of AlpacaOrder objects to store in the database.
  * @param {string} id The market report ID to associate with these trade orders.

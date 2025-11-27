@@ -9,7 +9,7 @@ import { Response, NoData } from "../../types"
  * @description Converts a MarketReportSchema object into the database format
  * and inserts it into the `marketReports` table using Drizzle ORM. Returns a
  * Response object indicating success or failure.
- * 
+ *
  * @function addToDb
  * @param {MarketReportSchema} report The market report object to insert.
  * @returns {Promise<Response<NoData>>} A promise resolving to a Response object.

@@ -7,13 +7,13 @@ import { alpaca } from "../../alpaca"
  * @description Takes a MarketReportSchema object containing stock recommendations,
  * validates that allocations sum to 100%, and places fractional buy orders through the Alpaca API.
  * Logs progress at each step and returns a Response object with all submitted orders or an error.
- * 
+ *
  * Steps:
  * 1. Set test equity amount (currently $100 for simulation purposes).
  * 2. Validate that allocation percentages total 100.
  * 3. Loop through each recommendation and calculate the dollar allocation.
  * 4. Place fractional buy orders via Alpaca for each ticker.
- * 
+ *
  * @function purchase
  * @param {MarketReportSchema} latestReport The latest market report containing stock recommendations.
  * @returns {Promise<Response<AlpacaOrder[]>>} A promise resolving to a Response object.

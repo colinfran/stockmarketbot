@@ -8,13 +8,12 @@ type Report = MarketReportSchema & {
   id: string
 }
 
-
 /**
  * Fetches the most recent market report from the database.
  * @description Queries the `marketReports` table and returns the latest report
  * based on the `created_at` timestamp. Returns a Response object containing either
  * the most recent report or an error message.
- * 
+ *
  * @function fetchLatestReport
  * @returns {Promise<Response<Report>>} A promise resolving to a Response object.
  * If successful, `success` is true and `data` contains the latest report.

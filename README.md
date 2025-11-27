@@ -17,12 +17,12 @@ The stockmarketbot dashboard provides a real-time view of the paper-trading botâ
 
 ## Installation
 
-To run the trading-bot dashboard:
+To run the stockmarketbot dashboard:
 
 1. Navigate to the project directory:
 
    ```bash
-   cd dashboard
+   cd stockmarketbot
    ```
 
 2. Install dependencies:

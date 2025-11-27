@@ -6,11 +6,11 @@ import { z } from "zod"
  * It ensures that all fields expected in the market report—executive summary, market overview,
  * sector analysis, risk assessment, recommendations, and referenced sources—adhere to the
  * correct types and structure.
- * 
+ *
  * Usage:
  * The schema is provided to the AI report generation function to validate and shape the
  * generated output, ensuring that the returned object matches the expected report format.
- * 
+ *
  * Sections:
  * - executive_summary: General sentiment and key drivers of market movements.
  * - market_overview: Near-term outlook and potential risks.

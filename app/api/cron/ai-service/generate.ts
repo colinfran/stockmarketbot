@@ -6,17 +6,17 @@ import { Response } from "../../types"
 /**
  * Generates a weekly US stock market report using AI analysis.
  * @description Uses AI to analyze historical and real-time market data, economic indicators, and social media sentiment.
- * The function predicts the stock market direction for the upcoming week, identifies promising and weak sectors, 
+ * The function predicts the stock market direction for the upcoming week, identifies promising and weak sectors,
  * and provides actionable recommendations with suggested allocations. All predictions are generated using real-time data
  * and tools, following a structured multi-step process.
- * 
+ *
  * Steps performed:
  * 1. Fetch Historical and Real-Time Market Data for major indices and top tickers.
  * 2. Analyze Economic Indicators including CPI, unemployment, GDP, and Fed rate decisions.
  * 3. Gauge Social Media Sentiment from X (Twitter) and other sources for market trends.
  * 4. Identify Trends, Sectors, and Risks using momentum, volatility, sentiment, and short-term catalysts.
  * 5. Generate Predictions and Recommendations for next week’s market.
- * 
+ *
  * Note: This is an educational simulation only and does not constitute financial advice.
  * @function generateWeeklyReport
  * @returns {Promise<Response<MarketReportSchema>>} A promise resolving to a Response object.

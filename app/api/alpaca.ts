@@ -6,11 +6,11 @@ import Alpaca from "@alpacahq/alpaca-trade-api"
  * placing fractional stock orders, retrieving account information, and other
  * trading-related operations. It is configured to use a paper trading account
  * for testing purposes (`paper: true`) and does not use Polygon data (`usePolygon: false`).
- * 
+ *
  * API keys are read from environment variables:
  * - `ALPACA_API_KEY`
  * - `ALPACA_SECRET_KEY`
- * 
+ *
  * @constant {Alpaca} alpaca
  */
 

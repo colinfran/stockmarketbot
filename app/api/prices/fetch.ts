@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from "@/lib/db"
 import { tradeOrders } from "@/lib/db/schema"
 import { AlpacaOrder, Prices, Response } from "../types"
