@@ -16,7 +16,7 @@ const PortfolioSkeleton: FC = () => {
             </CardHeader>
             <CardContent>
               <Skeleton className="h-8 w-32 mb-2" />
-              <Skeleton className="h-3 w-40" />
+              <Skeleton className="h-4 w-40" />
             </CardContent>
           </Card>
         ))}
