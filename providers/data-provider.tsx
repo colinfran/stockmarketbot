@@ -42,14 +42,12 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [loading, setLoading] = useState<{
     reports: boolean
     portfolio: boolean
-  }>({ reports: true, portfolio: true })
+    prices: boolean
+  }>({ reports: true, portfolio: true, prices: true })
   const [error, setError] = useState<Error | null>(null)
 
   const fetchReports = async (): Promise<void> => {
-    setLoading({
-      ...loading,
-      reports: true,
-    })
+    setLoading((prev) => ({ ...prev, reports: true }))
     setError(null)
     try {
       const res = await fetch(reportsUrl)
@@ -72,18 +70,12 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
       if (err?.name === "AbortError") return
       setError(err)
     } finally {
-      setLoading({
-        ...loading,
-        reports: false,
-      })
+      setLoading((prev) => ({ ...prev, reports: false }))
     }
   }
 
   const fetchPortfolio = async (): Promise<void> => {
-    setLoading({
-      ...loading,
-      portfolio: true,
-    })
+    setLoading((prev) => ({ ...prev, portfolio: true }))
     setError(null)
     try {
       const res = await fetch(portfolioUrl)
@@ -104,15 +96,13 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
       if (err?.name === "AbortError") return
       setError(err)
     } finally {
-      setLoading({
-        ...loading,
-        portfolio: false,
-      })
+      setLoading((prev) => ({ ...prev, portfolio: false }))
     }
   }
 
   const fetchPrices = async (): Promise<void> => {
     try {
+      setLoading((prev) => ({ ...prev, prices: true }))
       const res = await fetch(pricesUrl)
       if (!res.ok) {
         throw new Error(`Fetch failed: ${res.status} ${res.statusText}`)
@@ -128,6 +118,8 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
       // Ignore abort error
       if (err?.name === "AbortError") return
       setError(err)
+    } finally {
+      setLoading((prev) => ({ ...prev, prices: false }))
     }
   }
 

@@ -1,9 +1,5 @@
 "use client"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FC, useEffect, useMemo, useState } from "react"
-import { AlertTriangle, BarChart3, BookOpen, Target, TrendingUp } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 import {
   Select,
   SelectContent,
@@ -12,18 +8,16 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import DashboardSkeleton from "@/components/skeletons/dashboard-skeleton"
-import TextWithLinks from "@/components/text-with-link"
 import { useData } from "@/providers/data-provider"
 import CountdownTimer from "@/components/countdown-timer"
 import { nextMonday, nextFriday, set } from "date-fns"
 import { fromZonedTime } from "date-fns-tz"
-
-const getRiskColor = (risk: string): string => {
-  const lower = risk.toLowerCase()
-  if (lower.includes("low")) return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-  if (lower.includes("moderate")) return "bg-amber-500/10 text-amber-500 border-amber-500/20"
-  return "bg-red-500/10 text-red-500 border-red-500/20"
-}
+import Recommendations from "@/components/reports/recommendations"
+import Sources from "@/components/reports/sources"
+import Risk from "@/components/reports/risk"
+import Sector from "@/components/reports/sector"
+import Overview from "@/components/reports/overview"
+import Summary from "@/components/reports/summary"
 
 const Page: FC = () => {
   const { reports, loading } = useData()
@@ -117,195 +111,25 @@ const Page: FC = () => {
         </div>
         <div className="grid gap-6">
           {/* Executive Summary */}
-          <Card className="border-border">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-primary" />
-                <CardTitle>Executive Summary</CardTitle>
-              </div>
-              <CardDescription>
-                {`Friday ${new Date(selectedReport.created_at).toLocaleDateString()}`}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-2">Market Sentiment</p>
-                <p className="text-sm leading-relaxed">
-                  <TextWithLinks text={selectedReport.executive_summary.market_sentiment} />
-                </p>
-              </div>
-              <Separator />
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-3">Key Drivers</p>
-                <ul className="space-y-2">
-                  {selectedReport.executive_summary.key_drivers.map((driver, idx) => (
-                    <li className="flex items-start gap-2 text-sm leading-relaxed" key={idx}>
-                      <span className="text-primary mt-1">•</span>
-                      <span>
-                        <TextWithLinks text={driver} />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
+          <Summary
+            createdAt={selectedReport.created_at}
+            summary={selectedReport.executive_summary}
+          />
 
           {/* Market Overview */}
-          <Card className="border-border">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
-                <CardTitle>Market Overview</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-2">Near-Term Outlook</p>
-                <p className="text-sm leading-relaxed">
-                  <TextWithLinks text={selectedReport.market_overview.near_term_outlook} />
-                </p>
-              </div>
-              <Separator />
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-2">Key Risks</p>
-                <p className="text-sm leading-relaxed">
-                  <TextWithLinks text={selectedReport.market_overview.risks} />
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <Overview overview={selectedReport.market_overview} />
 
           {/* Sector Analysis */}
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card className="border-border">
-              <CardHeader>
-                <CardTitle className="text-lg">Promising Sectors</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {selectedReport.sector_analysis.promising_sectors.map((sector, idx) => (
-                    <div className="space-y-1" key={idx}>
-                      <p className="font-medium text-sm text-emerald-500">{sector.sector}</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        <TextWithLinks text={sector.rationale} />
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border">
-              <CardHeader>
-                <CardTitle className="text-lg">Weak Sectors</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {selectedReport.sector_analysis.weak_sectors.map((sector, idx) => (
-                    <div className="space-y-1" key={idx}>
-                      <p className="font-medium text-sm text-red-500">{sector.sector}</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        <TextWithLinks text={sector.rationale} />
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Sector sector={selectedReport.sector_analysis} />
 
           {/* Risk Assessment */}
-          <Card className="border-border">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-primary" />
-                <CardTitle>Risk Assessment</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-2">Overall Risk Level</p>
-                <Badge
-                  className={getRiskColor(selectedReport.risk_assessment.overall_risk)}
-                  variant="outline"
-                >
-                  {selectedReport.risk_assessment.overall_risk}
-                </Badge>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-3">Risk Notes</p>
-                <ul className="space-y-2">
-                  {selectedReport.risk_assessment.notes.map((note, idx) => (
-                    <li className="flex items-start gap-2 text-sm leading-relaxed" key={idx}>
-                      <span className="text-primary mt-1">•</span>
-                      <span>
-                        <TextWithLinks text={note} />
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </CardContent>
-          </Card>
+          <Risk risk={selectedReport.risk_assessment} />
 
           {/* Recommendations */}
-          <Card className="border-border">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-primary" />
-                <CardTitle>Stock Recommendations</CardTitle>
-              </div>
-              <CardDescription>Suggested portfolio allocation</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {selectedReport.recommendations.map((rec, idx) => (
-                  <div
-                    className="flex items-start justify-between gap-4 pb-4 border-b border-border last:border-0 last:pb-0"
-                    key={idx}
-                  >
-                    <div className="space-y-1 flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-semibold text-lg">{rec.ticker}</p>
-                        <Badge className="text-xs" variant="secondary">
-                          {rec.allocation}%
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        <TextWithLinks text={rec.rationale} />
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <Recommendations recommendations={selectedReport.recommendations} />
 
           {/* Sources */}
-          <Card className="border-border">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-primary" />
-                <CardTitle>Assessment Sources</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {selectedReport.assessment_sources.map((source, idx) => (
-                  <a
-                    className="flex items-center gap-2 text-sm text-primary hover:underline break-all"
-                    href={source.url}
-                    key={idx}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <span>{source.title}</span>
-                  </a>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <Sources sources={selectedReport.assessment_sources} />
         </div>
       </div>
     </div>
