@@ -14,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ScrollArea } from "@/components/ui/scroll-area"
 
 const Page: FC = () => {
   const { portfolio, loading, fetchPortfolio, prices } = useData()
@@ -119,47 +118,59 @@ const Page: FC = () => {
           <CardTitle>Holdings</CardTitle>
           <CardDescription>Detailed breakdown of your stock positions</CardDescription>
         </CardHeader>
-
-        {/* Scroll wrapper (shadcn recommended) */}
-        <CardContent className="w-full overflow-x-auto">
-          <ScrollArea className="min-screen-w">
-            <Table className="min-w-max">
+        <CardContent>
+          <div className="overflow-x-auto -mx-6 px-6">
+            <Table className="w-full">
               <TableHeader>
                 <TableRow className="border-b border-border">
-                  <TableHead className="text-left py-3 px-2 sm:px-4">Symbol</TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4">Shares</TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4">Avg Cost</TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4">Current Price</TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4">Total Value</TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4">P/L</TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4">P/L %</TableHead>
+                  <TableHead className="text-left py-3 px-2 sm:px-4 whitespace-nowrap">
+                    Symbol
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    Shares
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    Avg Cost
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    Current Price
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    Total Value
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    P/L
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    P/L %
+                  </TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
-                {calculations.positions.map((position) => (
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                {calculations.positions.map((position: any) => (
                   <TableRow
                     className="border-b border-border hover:bg-muted/50 transition-colors"
                     key={position.symbol}
                   >
-                    {/* Symbol should stay nowrap */}
                     <TableCell className="py-3 px-2 sm:px-4 font-semibold whitespace-nowrap">
                       {position.symbol}
                     </TableCell>
 
-                    <TableCell className="text-right py-3 px-2 sm:px-4">
+                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
                       {position.shares}
                     </TableCell>
 
-                    <TableCell className="text-right py-3 px-2 sm:px-4">
+                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
                       ${position.avgCost.toFixed(2)}
                     </TableCell>
 
-                    <TableCell className="text-right py-3 px-2 sm:px-4">
+                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
                       ${position.currentPrice.toFixed(2)}
                     </TableCell>
 
-                    <TableCell className="text-right py-3 px-2 sm:px-4 font-medium">
+                    <TableCell className="text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap">
                       {position.totalValue.toLocaleString("en-US", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
@@ -167,7 +178,7 @@ const Page: FC = () => {
                     </TableCell>
 
                     <TableCell
-                      className={`text-right py-3 px-2 sm:px-4 font-medium ${
+                      className={`text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap ${
                         position.profitLoss >= 0 ? "text-green-500" : "text-red-500"
                       }`}
                     >
@@ -175,7 +186,7 @@ const Page: FC = () => {
                     </TableCell>
 
                     <TableCell
-                      className={`text-right py-3 px-2 sm:px-4 font-medium ${
+                      className={`text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap ${
                         position.profitLossPercent >= 0 ? "text-green-500" : "text-red-500"
                       }`}
                     >
@@ -193,7 +204,7 @@ const Page: FC = () => {
                 ))}
               </TableBody>
             </Table>
-          </ScrollArea>
+          </div>
         </CardContent>
       </Card>
     </>

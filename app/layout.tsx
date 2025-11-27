@@ -37,7 +37,7 @@ const RootLayout: FC<Layout> = ({ children }) => {
           <DataProvider>
             <div className="flex flex-col sm:gap-4 sm:px-7 sm:py-4">
               <Header />
-              <main className="grid flex-1 items-start gap-2 md:gap-4">{children}</main>
+              <main className="flex-1 items-start gap-2 md:gap-4">{children}</main>
             </div>
           </DataProvider>
         </ThemeProvider>

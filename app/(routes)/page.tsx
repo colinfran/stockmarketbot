@@ -16,7 +16,7 @@ import TextWithLinks from "@/components/text-with-link"
 import { useData } from "@/providers/data-provider"
 import CountdownTimer from "@/components/countdown-timer"
 import { nextMonday, nextFriday, set } from "date-fns"
-import { formatInTimeZone } from "date-fns-tz"
+import { formatInTimeZone, fromZonedTime, toDate } from "date-fns-tz"
 
 const getRiskColor = (risk: string): string => {
   const lower = risk.toLowerCase()
@@ -37,25 +37,21 @@ const Page: FC = () => {
 
   const [selectedReportId, setSelectedReportId] = useState<undefined | string>(undefined)
 
-  const friday8pm = set(nextFriday(new Date()), {
+  const friday8pmLocal = set(nextFriday(new Date()), {
     hours: 20,
     minutes: 0,
     seconds: 0,
     milliseconds: 0,
   })
-  const friday8pmPST = formatInTimeZone(friday8pm, "America/Los_Angeles", "yyyy-MM-dd HH:mm:ss zzz")
+  const friday8pmPST = fromZonedTime(friday8pmLocal, "America/Los_Angeles")
 
-  const monday630am = set(nextMonday(new Date()), {
+  const monday630amLocal = set(nextMonday(new Date()), {
     hours: 6,
     minutes: 30,
     seconds: 0,
     milliseconds: 0,
   })
-  const monday630amPST = formatInTimeZone(
-    monday630am,
-    "America/Los_Angeles",
-    "yyyy-MM-dd HH:mm:ss zzz",
-  )
+  const monday630amPST = fromZonedTime(monday630amLocal, "America/Los_Angeles")
 
   useEffect(() => {
     if (reports.length) {
@@ -94,12 +90,12 @@ const Page: FC = () => {
               <CountdownTimer
                 description="AI analysis runs after market close"
                 label="Next Market Analysis"
-                targetDate={friday8pm}
+                targetDate={friday8pmPST}
               />
               <CountdownTimer
                 description="Automated purchase execution"
                 label="Next Stock Purchase"
-                targetDate={monday630am}
+                targetDate={monday630amPST}
               />
             </div>
           </div>

@@ -23,7 +23,7 @@ const CountdownTimer: FC<CountdownProps> = ({ targetDate, label, description }) 
     targetDate,
     "America/Los_Angeles",
     "EEE M/d/yyyy 'at' h:mma 'PST'",
-  ).replace(/AM|PM/, (m) => m.toUpperCase())
+  ).replace(/AM|PM/, (m) => m.toLowerCase())
 
   useEffect(() => {
     const calculateTimeLeft = (): void => {
