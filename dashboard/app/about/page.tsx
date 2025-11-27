@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge"
-import { Github, Linkedin, Globe, Twitter } from "lucide-react"
+import { Github, Linkedin, Globe } from "lucide-react"
 import Link from "next/link"
 import { FC } from "react"
 
@@ -65,8 +65,8 @@ const Page: FC = () => {
               target="_blank"
             >
               <Badge>
-              <Linkedin className="h-4 w-4" />
-              LinkedIn
+                <Linkedin className="h-4 w-4" />
+                LinkedIn
               </Badge>
             </Link>
             <Link
