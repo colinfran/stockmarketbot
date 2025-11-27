@@ -1,4 +1,4 @@
-import { AlpacaOrder, Prices } from "../api/types"
+import { AlpacaOrder, Prices } from "../../api/types"
 
 export type PortfolioPosition = {
   symbol: string
