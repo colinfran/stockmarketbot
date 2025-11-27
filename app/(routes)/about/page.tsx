@@ -105,6 +105,15 @@ const Page: FC = () => {
           </div>
         </div>
 
+          {/* Project Status */}
+        <div className="mb-6">
+          <p className="text-muted-foreground leading-relaxed">
+            This project was started on November 24th, 2025. It's an experiment to see how well AI can
+            autonomously generate stock trades over time. We'll continue to monitor its performance
+            and share updates.
+          </p>
+        </div>
+
         {/* Disclaimer */}
         <p className="text-sm text-muted-foreground italic">
           This is not financial advice - it's an experiment in autonomous AI-driven investing, built
