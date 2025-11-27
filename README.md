@@ -17,7 +17,7 @@ The stockmarketbot app provides a real-time view of the paper-trading bot’s pe
 
 ## Installation
 
-To run the stockmarketbot dashboard:
+To run the stockmarketbot app:
 
 1. Navigate to the project directory:
 

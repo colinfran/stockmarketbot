@@ -12,7 +12,7 @@ const DashboardSkeleton: FC = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-balance">Market Analysis Dashboard</h1>
+              <h1 className="text-3xl font-bold text-balance">Market Analysis</h1>
               <p className="text-muted-foreground mt-1">AI-powered weekly market insights</p>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
