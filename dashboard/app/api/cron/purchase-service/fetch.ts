@@ -2,18 +2,13 @@ import { db } from "@/lib/db"
 import { marketReports } from "@/lib/db/schema"
 import { desc } from "drizzle-orm"
 import { MarketReportSchema } from "../ai-service/schema"
+import { Response } from "../../types"
 
 type Report = MarketReportSchema & {
   id: string
 }
 
-type Response = {
-  success: boolean
-  data?: Report
-  error?: string
-}
-
-export const fetchLatestReport = async (): Promise<Response> => {
+export const fetchLatestReport = async (): Promise<Response<Report>> => {
   try {
     // get the most recent report
     const rows = await db

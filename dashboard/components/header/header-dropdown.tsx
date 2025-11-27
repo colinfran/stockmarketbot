@@ -50,9 +50,9 @@ const HeaderDropdown: FC = () => {
               className="flex w-full cursor-pointer flex-row items-center gap-2"
               asChild
             >
-              <Link href="/investments">
+              <Link href="/portfolio">
                 <DollarSignIcon size={16} />
-                <span>Investments</span>
+                <span>Portfolio</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem

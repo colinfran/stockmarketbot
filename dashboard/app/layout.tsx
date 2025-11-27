@@ -9,15 +9,13 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 import "./globals.css"
 import { ThemeProvider } from "@/providers/theme-provider"
 import Header from "@/components/header/header"
-import { ReportProvider } from "@/providers/report-provider"
+import { DataProvider } from "@/providers/data-provider"
 
-const RootLayout: FC<{
+type Layout = {
   children: ReactNode
-}> = ({
-  children,
-}: Readonly<{
-  children: ReactNode
-}>) => {
+}
+
+const RootLayout: FC<Layout> = ({ children }) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -36,12 +34,12 @@ const RootLayout: FC<{
           disableTransitionOnChange
           enableSystem
         >
-          <ReportProvider>
+          <DataProvider>
             <div className="flex flex-col sm:gap-4 sm:px-7 sm:py-4">
               <Header />
               <main className="grid flex-1 items-start gap-2 md:gap-4">{children}</main>
             </div>
-          </ReportProvider>
+          </DataProvider>
         </ThemeProvider>
         <Analytics />
       </body>

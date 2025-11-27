@@ -1,22 +1,11 @@
-import Alpaca from "@alpacahq/alpaca-trade-api"
 import { MarketReportSchema } from "../ai-service/schema"
+import { AlpacaOrder, Response } from "../../types"
+import { alpaca } from "../../alpaca"
 
-const alpaca = new Alpaca({
-  keyId: process.env.ALPACA_API_KEY,
-  secretKey: process.env.ALPACA_SECRET_KEY,
-  paper: true,
-  usePolygon: false,
-})
-
-type Response = {
-  success: boolean
-  data?: any // eslint-disable-line @typescript-eslint/no-explicit-any
-  error?: string
-}
-
-export async function purchase(latestReport: MarketReportSchema): Promise<Response> {
+export async function purchase(latestReport: MarketReportSchema): Promise<Response<AlpacaOrder[]>> {
   try {
-    // STEP 1 — get account info
+    // STEP 1 — set equity amount
+    // we are only ever testing with $100
     const equity = 100
 
     console.log("Account equity:", equity)
@@ -43,13 +32,13 @@ export async function purchase(latestReport: MarketReportSchema): Promise<Respon
       console.log(`Buying ~$${allocationAmount.toFixed(2)} of ${ticker}`)
 
       // STEP 4 — fractional (notional) buy order
-      const order = await alpaca.createOrder({
+      const order = (await alpaca.createOrder({
         symbol: ticker,
-        notional: allocationAmount, // 👈 fractional trade
+        notional: allocationAmount,
         side: "buy",
         type: "market",
         time_in_force: "day",
-      })
+      })) as AlpacaOrder
 
       console.log("Order submitted:", order.id)
       purchases.push(order)

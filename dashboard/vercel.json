@@ -1,6 +1,12 @@
 {
-  "crons": [{
-    "path": "/api/cron/ai-service",
-    "schedule": "0 4 * * 6"
-  }]
+  "crons": [
+    {
+      "path": "/api/cron/ai-service",
+      "schedule": "0 4 * * 6"
+    },
+    {
+      "path": "/api/cron/purchase-service",
+      "schedule": "30 14 * * 1"
+    }
+  ]
 }

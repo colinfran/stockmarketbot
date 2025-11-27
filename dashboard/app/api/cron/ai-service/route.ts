@@ -18,5 +18,6 @@ export async function GET(request: Request): Promise<NextResponse> {
   if (!update.success) {
     return NextResponse.json({ success: false, error: update.error })
   }
+  console.log("Finished ai service cron")
   return NextResponse.json({ success: true })
 }

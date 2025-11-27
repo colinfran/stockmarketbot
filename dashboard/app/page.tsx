@@ -11,9 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import DashboardSkeleton from "@/components/dashboard-skeleton"
+import DashboardSkeleton from "@/components/skeletons/dashboard-skeleton"
 import TextWithLinks from "@/components/text-with-link"
-import { useReport } from "@/providers/report-provider"
+import { useData } from "@/providers/data-provider"
 import CountdownTimer from "@/components/countdown-timer"
 import { nextMonday, nextFriday, set } from "date-fns"
 import { formatInTimeZone } from "date-fns-tz"
@@ -26,7 +26,13 @@ const getRiskColor = (risk: string): string => {
 }
 
 const Page: FC = () => {
-  const { reports, loading } = useReport()
+  const { reports, loading, fetchReports } = useData()
+
+  useEffect(() => {
+    fetchReports()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const [selectedReportId, setSelectedReportId] = useState<undefined | string>(undefined)
 
   const friday8pm = set(nextFriday(new Date()), {
@@ -59,7 +65,7 @@ const Page: FC = () => {
     return reports?.find((report) => report.id === selectedReportId)
   }, [reports, selectedReportId])
 
-  if (!reports.length && !loading) {
+  if (!reports.length && !loading.reports) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-muted-foreground">No market reports available</p>
@@ -67,7 +73,7 @@ const Page: FC = () => {
     )
   }
 
-  if (loading || !selectedReport) {
+  if (loading.reports || !selectedReport) {
     return <DashboardSkeleton />
   }
 

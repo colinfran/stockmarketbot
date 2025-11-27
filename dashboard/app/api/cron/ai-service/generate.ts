@@ -1,14 +1,9 @@
 import { generateObject } from "ai"
 import { MarketReportSchema, marketReportSchema } from "./schema"
 import { nextMonday } from "date-fns"
+import { Response } from "../../types"
 
-type Response = {
-  success: boolean
-  data?: MarketReportSchema
-  error?: string
-}
-
-export const generateWeeklyReport = async (): Promise<Response> => {
+export const generateWeeklyReport = async (): Promise<Response<MarketReportSchema>> => {
   const startDate = nextMonday(new Date())
 
   const prompt = `

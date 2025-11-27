@@ -1,7 +1,7 @@
 import { FC } from "react"
-import { Skeleton } from "./ui/skeleton"
-import { Card, CardContent, CardHeader } from "./ui/card"
-import { Separator } from "./ui/separator"
+import { Skeleton } from "../ui/skeleton"
+import { Card, CardContent, CardHeader } from "../ui/card"
+import { Separator } from "../ui/separator"
 import { Clock } from "lucide-react"
 
 const DashboardSkeleton: FC = () => {
@@ -24,14 +24,19 @@ const DashboardSkeleton: FC = () => {
                 { label: "Next Stock Purchase", description: "Automated purchase execution" },
               ].map(({ label, description }, i) => (
                 <Card className="border-border bg-card/50" key={i}>
-                  <CardContent className="p-6">
+                  <CardContent className="flex flex-col p-6 gap-3">
                     <div className="flex items-start gap-3">
                       <Clock className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-sm mb-1">{label}</h3>
                         <p className="text-xs text-muted-foreground mb-3">{description}</p>
-                        <Skeleton className="h-[48px] w-[408px]" />
                       </div>
+                    </div>
+                    <div>
+                      <Skeleton className="h-[48px] w-full" />
+                    </div>
+                    <div className="flex justify-center">
+                      <Skeleton className="h-[24px] w-full" />
                     </div>
                   </CardContent>
                 </Card>

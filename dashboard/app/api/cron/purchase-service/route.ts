@@ -19,9 +19,10 @@ export async function GET(request: Request): Promise<NextResponse> {
   if (!purchasedStocks.success) {
     return NextResponse.json({ success: false, error: latestReport.error })
   }
-  const submitted = await addToDb(purchasedStocks.data, latestReport!.data!.id!)
+  const submitted = await addToDb(purchasedStocks.data!, latestReport!.data!.id!)
   if (!submitted.success) {
     return NextResponse.json({ success: false, error: latestReport.error })
   }
+  console.log("Running successfully finished with no errors.")
   return NextResponse.json({ success: true })
 }

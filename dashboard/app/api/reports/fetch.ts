@@ -1,14 +1,9 @@
 import { db } from "@/lib/db"
 import { marketReports } from "@/lib/db/schema"
-import { MarketReport } from "@/providers/report-provider"
+import { MarketReport } from "@/providers/data-provider"
+import { Response } from "../types"
 
-type Response = {
-  success: boolean
-  data?: MarketReport[]
-  error?: string
-}
-
-export const fetchAllReports = async (): Promise<Response> => {
+export const fetchAllReports = async (): Promise<Response<MarketReport[]>> => {
   console.log("Get all reports from database")
   try {
     const data = await db.select().from(marketReports)

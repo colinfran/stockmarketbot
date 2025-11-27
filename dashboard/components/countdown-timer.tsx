@@ -3,6 +3,7 @@
 import { FC, useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Clock } from "lucide-react"
+import { formatInTimeZone } from "date-fns-tz"
 
 type CountdownProps = {
   targetDate: Date
@@ -17,6 +18,12 @@ const CountdownTimer: FC<CountdownProps> = ({ targetDate, label, description }) 
     minutes: number
     seconds: number
   } | null>(null)
+
+  const formattedDate = formatInTimeZone(
+    targetDate,
+    "America/Los_Angeles",
+    "EEE M/d/yyyy 'at' h:mma 'PST'",
+  ).replace(/AM|PM/, (m) => m.toUpperCase())
 
   useEffect(() => {
     const calculateTimeLeft = (): void => {
@@ -58,31 +65,36 @@ const CountdownTimer: FC<CountdownProps> = ({ targetDate, label, description }) 
 
   return (
     <Card className="border-border bg-card/50">
-      <CardContent className="p-6">
+      <CardContent className="flex flex-col p-6 gap-3">
         <div className="flex items-start gap-3">
           <Clock className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-sm mb-1">{label}</h3>
             <p className="text-xs text-muted-foreground mb-3">{description}</p>
-            <div className="grid grid-cols-4 gap-2">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">{timeLeft.days}</div>
-                <div className="text-xs text-muted-foreground">days</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">{timeLeft.hours}</div>
-                <div className="text-xs text-muted-foreground">hours</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">{timeLeft.minutes}</div>
-                <div className="text-xs text-muted-foreground">mins</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">{timeLeft.seconds}</div>
-                <div className="text-xs text-muted-foreground">secs</div>
-              </div>
+          </div>
+        </div>
+        <div className="">
+          <div className="grid grid-cols-4 gap-2">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">{timeLeft.days}</div>
+              <div className="text-xs text-muted-foreground">days</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">{timeLeft.hours}</div>
+              <div className="text-xs text-muted-foreground">hours</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">{timeLeft.minutes}</div>
+              <div className="text-xs text-muted-foreground">mins</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">{timeLeft.seconds}</div>
+              <div className="text-xs text-muted-foreground">secs</div>
             </div>
           </div>
+        </div>
+        <div className="flex justify-center">
+          <div>{formattedDate}</div>
         </div>
       </CardContent>
     </Card>
