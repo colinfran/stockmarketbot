@@ -1,6 +1,7 @@
-import { FC } from "react"
-import { Card, CardContent, CardHeader } from "../ui/card"
+import type { FC } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Skeleton } from "../ui/skeleton"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 
 const PortfolioSkeleton: FC = () => {
   return (
@@ -21,26 +22,73 @@ const PortfolioSkeleton: FC = () => {
         ))}
       </div>
 
-      {/* Table Skeleton */}
+      {/* Holdings Table Skeleton */}
       <Card>
         <CardHeader>
-          <Skeleton className="h-6 w-32 mb-2" />
-          <Skeleton className="h-4 w-64" />
+          <CardTitle>
+            <Skeleton className="h-6 w-32" />
+          </CardTitle>
+          <CardDescription>
+            <Skeleton className="h-4 w-64" />
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-                <Skeleton className="h-4 w-20" key={i} />
-              ))}
-            </div>
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div className="flex justify-between" key={i}>
-                {[1, 2, 3, 4, 5, 6, 7].map((j) => (
-                  <Skeleton className="h-8 w-20" key={j} />
+          <div className="overflow-x-auto -mx-6 px-6">
+            <Table className="w-full">
+              <TableHeader>
+                <TableRow className="border-b border-border">
+                  <TableHead className="text-left py-3 px-2 sm:px-4 whitespace-nowrap">
+                    <Skeleton className="h-4 w-16" />
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    <Skeleton className="h-4 w-14 ml-auto" />
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    <Skeleton className="h-4 w-16 ml-auto" />
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    <Skeleton className="h-4 w-20 ml-auto" />
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    <Skeleton className="h-4 w-18 ml-auto" />
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    <Skeleton className="h-4 w-10 ml-auto" />
+                  </TableHead>
+                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                    <Skeleton className="h-4 w-12 ml-auto" />
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <TableRow key={i} className="border-b border-border">
+                    <TableCell className="py-3 px-2 sm:px-4 whitespace-nowrap">
+                      <Skeleton className="h-5 w-12" />
+                    </TableCell>
+                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                      <Skeleton className="h-5 w-12 ml-auto" />
+                    </TableCell>
+                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                      <Skeleton className="h-5 w-16 ml-auto" />
+                    </TableCell>
+                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                      <Skeleton className="h-5 w-16 ml-auto" />
+                    </TableCell>
+                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                      <Skeleton className="h-5 w-20 ml-auto" />
+                    </TableCell>
+                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                      <Skeleton className="h-5 w-16 ml-auto" />
+                    </TableCell>
+                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                      <Skeleton className="h-5 w-20 ml-auto" />
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </div>
-            ))}
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>

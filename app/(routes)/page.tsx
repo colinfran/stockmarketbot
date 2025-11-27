@@ -29,9 +29,11 @@ const Page: FC = () => {
   const { reports, loading, fetchReports } = useData()
 
   useEffect(() => {
-    fetchReports()
+    if (!reports.length){
+      fetchReports()      
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [reports])
 
   const [selectedReportId, setSelectedReportId] = useState<undefined | string>(undefined)
 
