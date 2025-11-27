@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { fetchLatestReport } from "./fetch"
-import { purchase } from "./alpaca"
+import { purchase } from "./purchase"
 import { addToDb } from "./update"
 
 export async function GET(request: Request): Promise<NextResponse> {
@@ -23,6 +23,6 @@ export async function GET(request: Request): Promise<NextResponse> {
   if (!submitted.success) {
     return NextResponse.json({ success: false, error: latestReport.error })
   }
-  console.log("Running successfully finished with no errors.")
+  console.log("Finished purchase service cron")
   return NextResponse.json({ success: true })
 }
