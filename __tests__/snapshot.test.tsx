@@ -3,13 +3,6 @@ import UnauthPage from '@/app/(unauthenticated)/page'
 import AuthPage from '@/app/(authenticated)/dashboard/page'
 import Header from '@/components/header/header'
 
-jest.mock('@/lib/auth/auth', () => ({
-  auth: {
-    api: {
-      getSession: jest.fn().mockResolvedValue(null),
-    },
-  },
-}))
 
 jest.mock('next/headers', () => ({
   headers: jest.fn().mockReturnValue(new Headers()),
