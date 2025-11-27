@@ -17,7 +17,7 @@ function parsePrice(value: string): number {
   // "$180.26" → 180.26
   return Number(value.replace(/[$,]/g, ""))
 }
- 
+
 /**
  * Build a price lookup map from an array of rows returned by the screener API.
  *
@@ -49,7 +49,7 @@ function buildPriceMap(rows: any[]): Prices {
 
   return prices
 }
- 
+
 /**
  * Fetch stock prices for NASDAQ and NYSE and return a combined price mapping.
  *
