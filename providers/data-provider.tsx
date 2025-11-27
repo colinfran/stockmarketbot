@@ -138,9 +138,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }, [])
 
   return (
-    <DataContext.Provider
-      value={{ loading, reports, portfolio, prices, error }}
-    >
+    <DataContext.Provider value={{ loading, reports, portfolio, prices, error }}>
       {children}
     </DataContext.Provider>
   )

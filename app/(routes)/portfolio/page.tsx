@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, type FC } from "react"
+import { useMemo, type FC } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TrendingUp, TrendingDown, Wallet, DollarSign } from "lucide-react"
 import { useData } from "@/providers/data-provider"
