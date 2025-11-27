@@ -10,7 +10,7 @@ type Layout = {
 
 const Layout: FC<Layout> = ({ children }) => {
   const pathname = usePathname()
-  const activeTab = pathname.endsWith("/charts") ? "charts" : "overview"
+  const activeTab = pathname.endsWith("/chart") ? "chart" : "overview"
   return (
     <div className="min-h-screen bg-background">
       <div className="w-full px-4 py-6">
@@ -27,8 +27,8 @@ const Layout: FC<Layout> = ({ children }) => {
               <Link href="/portfolio">Overview</Link>
             </TabsTrigger>
 
-            <TabsTrigger value="charts" asChild>
-              <Link href="/portfolio/charts">Charts</Link>
+            <TabsTrigger value="chart" asChild>
+              <Link href="/portfolio/chart">Chart</Link>
             </TabsTrigger>
           </TabsList>
         </Tabs>
