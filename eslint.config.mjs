@@ -23,6 +23,7 @@ export default tseslint.config(
       "postcss.config.js",
       "./components/ui/**",
       "__tests__/**",
+      "./next-env.d.ts"
     ],
   },
   js.configs.recommended,

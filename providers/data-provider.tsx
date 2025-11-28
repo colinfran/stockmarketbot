@@ -22,6 +22,7 @@ type ContextProps = {
   loading: {
     portfolio: boolean
     reports: boolean
+    prices: boolean
   }
   error: Error | null
   reports: MarketReport[]
@@ -34,6 +35,7 @@ const defaultContextValue: ContextProps = {
   loading: {
     portfolio: true,
     reports: true,
+    prices: true,
   },
   error: null,
   reports: [],
@@ -142,7 +144,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   const calculations = useMemo(() => {
     const val = calculatePositions(portfolio, prices)
-    console.log("calcuations", val)
+    // console.log("calcuations", val)
     return val
   }, [portfolio, prices])
 

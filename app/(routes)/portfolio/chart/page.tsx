@@ -1,7 +1,111 @@
+"use client"
+
+import PortfolioChart from "@/components/portfolio/chart"
+import { ChartSkeleton } from "@/components/skeletons/chart-skeleton"
+import { useData } from "@/providers/data-provider"
 import { FC } from "react"
 
+type StockChartData = {
+  symbol: string
+  data: { date: string; price: number }[]
+  currentPrice: number
+  changePercent: number
+}
+
+// Mock function to generate fake historical price data
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function generateFakeHistoricalData(symbol: string, currentPrice: number, days = 30): any {
+  const data: { date: string; price: number }[] = []
+  const today = new Date()
+  let price = currentPrice * 0.9 // Start at 90% of current price
+
+  for (let i = days; i >= 0; i--) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+
+    // Random walk with slight upward bias
+    const change = (Math.random() - 0.48) * (price * 0.03)
+    price = Math.max(price + change, price * 0.8)
+
+    data.push({
+      date: date.toISOString().split("T")[0],
+      price: Number(price.toFixed(2)),
+    })
+  }
+
+  // Make sure last price matches current price
+  data[data.length - 1].price = currentPrice
+
+  return data
+}
+
+type PortfolioChartData = {
+  data: { date: string; value: number }[]
+  currentValue: number
+  changePercent: number
+}
+
 const Page: FC = () => {
-  return <div>Chart page</div>
+  const { loading, calculations, prices } = useData()
+
+  if (loading.portfolio || !calculations || loading.prices) {
+    return <ChartSkeleton />
+  }
+
+  const symbols = calculations.positions.map((pos) => pos.symbol)
+
+  const chartData: StockChartData[] = symbols.map((symbol) => {
+    const position = calculations.positions.find((pos) => pos.symbol === symbol)
+    const currentPrice = position?.currentPrice || prices[symbol] || 100
+    const historicalData = generateFakeHistoricalData(symbol, currentPrice, 30)
+    const firstPrice = historicalData[0].price
+    const changePercent = ((currentPrice - firstPrice) / firstPrice) * 100
+
+    return {
+      symbol,
+      data: historicalData,
+      currentPrice,
+      changePercent,
+    }
+  })
+
+  const portfolioValueData: { date: string; value: number }[] = []
+  const dates = chartData[0]?.data.map((d) => d.date) || []
+
+  dates.forEach((date, index) => {
+    let totalValue = 0
+    chartData.forEach((stock) => {
+      const position = calculations.positions.find((pos) => pos.symbol === stock.symbol)
+      if (position) {
+        const priceAtDate = stock.data[index]?.price || stock.currentPrice
+        totalValue += priceAtDate * position.shares
+      }
+    })
+    portfolioValueData.push({ date, value: Number(totalValue.toFixed(2)) })
+  })
+
+  const firstValue = portfolioValueData[0]?.value || 0
+  const currentValue = calculations.totalValue
+  const portfolioChangePercent =
+    firstValue > 0 ? ((currentValue - firstValue) / firstValue) * 100 : 0
+
+  const portfolioData: PortfolioChartData = {
+    data: portfolioValueData,
+    currentValue,
+    changePercent: portfolioChangePercent,
+  }
+
+  if (!portfolioData) {
+    return null
+  }
+
+  return (
+    <PortfolioChart
+      changePercent={portfolioData.changePercent}
+      currentValue={portfolioData.currentValue}
+      data={portfolioData.data}
+    />
+  )
 }
 
 export default Page

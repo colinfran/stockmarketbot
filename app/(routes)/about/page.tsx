@@ -1,3 +1,4 @@
+import { currentModel } from "@/app/api/model"
 import { Badge } from "@/components/ui/badge"
 import { Github, Linkedin, Globe } from "lucide-react"
 import Link from "next/link"
@@ -21,8 +22,8 @@ const Page: FC = () => {
           <div>
             <h3 className="text-lg font-semibold mb-2">Every Friday at 8:00 PM PST</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Grok-4-fast-reasoning analyzes the market using live data, financial reports, and
-              social sentiment to generate a $100 stock allocation.
+              {`The AI model (${currentModel}) analyzes the market using live data, financial reports, and
+              social sentiment to generate a $100 stock allocation.`}
             </p>
           </div>
 
@@ -38,8 +39,8 @@ const Page: FC = () => {
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-4">Tech Stack</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Next.js, Vercel, PostgreSQL, Tailwind CSS, shadcn/ui, Grok API (grok-4-fast-reasoning),
-            Alpaca Sandbox API
+            {`Next.js, Vercel, PostgreSQL, Tailwind CSS, shadcn/ui, Grok API (${currentModel}),
+            Alpaca Sandbox API`}
           </p>
         </div>
 
