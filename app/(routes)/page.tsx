@@ -11,6 +11,7 @@ import Overview from "@/components/reports/overview"
 import Summary from "@/components/reports/summary"
 import Picker from "@/components/reports/picker"
 import Header from "@/components/reports/header"
+import Model from "@/components/reports/model"
 
 const Page: FC = () => {
   const { reports, loading } = useData()
@@ -68,6 +69,9 @@ const Page: FC = () => {
 
           {/* Sources */}
           <Sources sources={selectedReport.assessment_sources} />
+
+          {/* Model */}
+          <Model model={selectedReport.ai_model} />
         </div>
       </div>
     </div>

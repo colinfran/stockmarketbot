@@ -1,11 +1,21 @@
 "use client"
 import { MarketReportSchema } from "@/app/api/cron/ai-service/schema"
 import { AlpacaOrder, Prices } from "@/app/api/types"
-import React, { createContext, FC, ReactNode, useContext, useEffect, useState } from "react"
+import { calculatePositions, CalculateType } from "@/lib/utils"
+import React, {
+  createContext,
+  FC,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
 
 export type MarketReport = MarketReportSchema & {
   id: string
   created_at: string
+  ai_model: string
 }
 
 type ContextProps = {
@@ -17,6 +27,7 @@ type ContextProps = {
   reports: MarketReport[]
   portfolio: AlpacaOrder[]
   prices: Prices
+  calculations?: CalculateType
 }
 
 const defaultContextValue: ContextProps = {
@@ -129,8 +140,14 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     fetchPortfolio()
   }, [])
 
+  const calculations = useMemo(() => {
+    const val = calculatePositions(portfolio, prices)
+    console.log("calcuations", val)
+    return val
+  }, [portfolio, prices])
+
   return (
-    <DataContext.Provider value={{ loading, reports, portfolio, prices, error }}>
+    <DataContext.Provider value={{ loading, reports, portfolio, prices, calculations, error }}>
       {children}
     </DataContext.Provider>
   )

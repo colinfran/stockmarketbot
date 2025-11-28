@@ -9,6 +9,7 @@ export const marketReports = pgTable("market_reports", {
   recommendations: jsonb("recommendations").notNull(),
   assessment_sources: jsonb("assessment_sources").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
+  ai_model: text("ai_model"),
 })
 
 export const tradeOrders = pgTable("trade_orders", {

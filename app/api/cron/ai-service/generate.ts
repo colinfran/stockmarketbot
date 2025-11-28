@@ -2,6 +2,7 @@ import { generateObject } from "ai"
 import { MarketReportSchema, marketReportSchema } from "./schema"
 import { nextMonday } from "date-fns"
 import { Response } from "../../types"
+import { currentModel } from "../../model"
 
 /**
  * Generates a weekly US stock market report using AI analysis.
@@ -79,7 +80,7 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
   try {
     console.log("Running weekly AI market report...")
     const { object } = await generateObject({
-      model: "xai/grok-4-fast-reasoning",
+      model: currentModel,
       schema: marketReportSchema,
       prompt,
       temperature: 1,
