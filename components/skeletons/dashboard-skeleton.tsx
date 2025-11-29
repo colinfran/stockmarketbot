@@ -8,7 +8,7 @@ const DashboardSkeleton: FC = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header Skeleton */}
-      <div className="border-b border-border">
+      <div className="">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col gap-4">
             <div>
@@ -46,7 +46,8 @@ const DashboardSkeleton: FC = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4">
+        <Separator className="container mx-auto" />
         <div className="w-full md:w-[280px] py-6">
           <Skeleton className="h-9 w-full" />
         </div>
