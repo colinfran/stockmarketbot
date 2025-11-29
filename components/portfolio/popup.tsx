@@ -18,7 +18,7 @@ const Popup: FC<PopupType> = ({ open, setOpen, children, position }) => {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogOverlay className="backdrop-blur-sm" />
-        <DialogContent className="flex flex-col sm:max-w-[70dvw] sm:max-h-[90dvh] [&>div>div>div>div]:!flex [&>div>div>div>div]:!flex-col">
+        <DialogContent className="flex flex-col sm:max-w-[70dvw] md:max-w-[80dvw] sm:max-h-[90dvh] [&>div>div>div>div]:!flex [&>div>div>div>div]:!flex-col">
           <DialogHeader>
             <DialogTitle>{position?.symbol}</DialogTitle>
           </DialogHeader>
@@ -30,11 +30,11 @@ const Popup: FC<PopupType> = ({ open, setOpen, children, position }) => {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent>
+      <DrawerContent className="flex flex-col [&>div>div>div>div]:!flex [&>div>div>div>div]:!flex-col">
         <DrawerHeader className="text-left">
           <DrawerTitle>{position?.symbol}</DrawerTitle>
         </DrawerHeader>
-        <div className="p-8">{children}</div>
+        <div className="flex flex-col p-8">{children}</div>
       </DrawerContent>
     </Drawer>
   )

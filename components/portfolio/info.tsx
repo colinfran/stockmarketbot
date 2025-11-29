@@ -6,18 +6,24 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } fro
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart"
 import { Card, CardContent } from "../ui/card"
 import { ScrollArea } from "../ui/scroll-area"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
+import { useMediaQuery } from "@/hooks/useMediaQuery"
 
 type InfoType = {
   position: PortfolioPosition
 }
 
 const Info: FC<InfoType> = ({ position }) => {
-  const { priceHistory } = useData()
+  const { priceHistory, portfolio } = useData()
   const chartData = priceHistory[position.symbol]
   const priceChange = position.currentPrice - chartData[0].close
   const priceChangePercent = (priceChange / chartData[0].close) * 100
+
+  const stockOrders = portfolio.filter((item) => item.symbol === position.symbol)
+  const isDesktop = useMediaQuery("(min-width: 768px)")
+  
   return (
-    <ScrollArea className="h-[calc(90vh-8rem)]">
+    <ScrollArea className={`${isDesktop ? "h-[calc(90vh-8rem)]" : "h-[calc(90vh-12rem)]"} w-full`}>
       {/* Current Price Section */}
       <div>
         <p className="text-sm text-muted-foreground mb-1">Current Price</p>
@@ -133,6 +139,46 @@ const Info: FC<InfoType> = ({ position }) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Purchase History */}
+      <div className="pt-4">
+        <p className="text-sm text-muted-foreground mb-3">Purchase History</p>
+        <div className="border border-border rounded-lg overflow-hidden mb-6">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-left">Date</TableHead>
+                <TableHead className="text-right">Shares</TableHead>
+                <TableHead className="text-right">Price</TableHead>
+                <TableHead className="text-right">Total</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {stockOrders.map((order) => {
+                const filledQty =
+                  typeof order.filled_qty === "string" ? Number.parseFloat(order.filled_qty) : order.filled_qty
+                const price = Number(order.filled_avg_price) || 0
+                const total = filledQty * price
+                const date = new Date(order.filled_at || order.created_at).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })
+
+                return (
+                  <TableRow key={order.id}>
+                    <TableCell>{date}</TableCell>
+                    <TableCell className="text-right">{filledQty}</TableCell>
+                    <TableCell className="text-right">${price.toFixed(2)}</TableCell>
+                    <TableCell className="text-right font-medium">${total.toFixed(2)}</TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
     </ScrollArea>
   )
 }
