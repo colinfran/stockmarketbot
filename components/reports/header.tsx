@@ -1,13 +1,14 @@
 import { FC } from "react"
 import CountdownTimer from "../countdown-timer"
 import { getNextFriday8pm, getNextMonday630am } from "./time"
+import { Separator } from "../ui/separator"
 
 const Header: FC = () => {
   const friday8pmPST = getNextFriday8pm()
   const monday630amPST = getNextMonday630am()
 
   return (
-    <div className="border-b border-border">
+    <div className="">
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col gap-4">
           <div>

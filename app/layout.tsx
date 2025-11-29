@@ -24,7 +24,40 @@ const RootLayout: FC<Layout> = ({ children }) => {
         <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
         <link href="/favicon-96x96.png" rel="icon" sizes="96x96" type="image/png" />
         <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
-        <title>stockmarketbot | ai trading bot</title>
+        <title>StockMarketBot | Live AI Trading Experiment (Paper Trading)</title>
+
+        {/* <!-- SEO Meta Tags --> */}
+        <meta
+          content="StockMarketBot is a live proof-of-concept that tests whether AI models can generate profitable stock trading decisions. Watch a fully automated AI trader run in real market conditions using only paper money."
+          name="description"
+        />
+        <meta
+          content="StockMarketBot, AI stock trading, AI trading bot, paper trading bot, AI stock picker, algorithmic trading PoC, AI vs stock market, live AI trader, stockmarketbot"
+          name="keywords"
+        />
+        <meta content="StockMarketBot" name="author" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+
+        {/* <!-- Open Graph Meta Tags --> */}
+        <meta content="website" property="og:type" />
+        <meta content="StockMarketBot - Can AI Actually Trade Stocks Profitably?" property="og:title" />
+        <meta
+          content="A real-time proof-of-concept: an AI-powered bot making fully automated stock trades with paper money. See live performance, returns, trades, and positions as the experiment unfolds."
+          property="og:description"
+        />
+        <meta content="https://stockmarketbot.app" property="og:url" />
+        <meta content="/ogimage-stockmarketbot.jpg" property="og:image" />
+        <meta content="/icon.png" property="og:logo" />
+
+        {/* <!-- Twitter Card Meta Tags --> */}
+        <meta content="summary_large_image" name="twitter:card" />
+        <meta content="StockMarketBot - Can AI Actually Trade Stocks Profitably?" name="twitter:title" />
+        <meta
+          content="Live AI trading bot running 100% on paper money. Watch it make decisions, track performance, and find out if AI can beat the market."
+          name="twitter:description"
+        />
+        <meta content="/ogimage-stockmarketbot.jpg" name="twitter:image" />
+        <meta content="Live view of an AI stock trading experiment" property="twitter:image:alt" />
       </head>
       <body className="flex min-h-screen w-full flex-col">
         <NextTopLoader color={"#808080"} showSpinner={false} zIndex={100} />

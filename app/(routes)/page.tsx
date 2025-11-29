@@ -12,6 +12,7 @@ import Summary from "@/components/reports/summary"
 import Picker from "@/components/reports/picker"
 import Header from "@/components/reports/header"
 import Model from "@/components/reports/model"
+import { Separator } from "@/components/ui/separator"
 
 const Page: FC = () => {
   const { reports, loading } = useData()
@@ -45,7 +46,8 @@ const Page: FC = () => {
       {/* Header */}
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-4">
+        <Separator className="container mx-auto"/>
         {/* Report Picker */}
         <Picker selectedReportId={selectedReportId} setSelectedReportId={setSelectedReportId} />
         <div className="grid gap-6">
