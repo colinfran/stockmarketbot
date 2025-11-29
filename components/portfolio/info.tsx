@@ -21,7 +21,7 @@ const Info: FC<InfoType> = ({ position }) => {
 
   const stockOrders = portfolio.filter((item) => item.symbol === position.symbol)
   const isDesktop = useMediaQuery("(min-width: 768px)")
-  
+
   return (
     <ScrollArea className={`${isDesktop ? "h-[calc(90vh-8rem)]" : "h-[calc(90vh-12rem)]"} w-full`}>
       {/* Current Price Section */}
@@ -156,14 +156,19 @@ const Info: FC<InfoType> = ({ position }) => {
             <TableBody>
               {stockOrders.map((order) => {
                 const filledQty =
-                  typeof order.filled_qty === "string" ? Number.parseFloat(order.filled_qty) : order.filled_qty
+                  typeof order.filled_qty === "string"
+                    ? Number.parseFloat(order.filled_qty)
+                    : order.filled_qty
                 const price = Number(order.filled_avg_price) || 0
                 const total = filledQty * price
-                const date = new Date(order.filled_at || order.created_at).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })
+                const date = new Date(order.filled_at || order.created_at).toLocaleDateString(
+                  "en-US",
+                  {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  },
+                )
 
                 return (
                   <TableRow key={order.id}>
@@ -178,7 +183,6 @@ const Info: FC<InfoType> = ({ position }) => {
           </Table>
         </div>
       </div>
-
     </ScrollArea>
   )
 }
