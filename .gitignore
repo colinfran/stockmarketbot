@@ -31,3 +31,5 @@ urlshortener-13868-firebase-adminsdk-3nbqz-02db864afc.json
 public/sitemap.xml
 
 .vercel
+
+next-env.d.ts
