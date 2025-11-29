@@ -1,14 +1,7 @@
 import { FC, ReactNode } from "react"
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "../ui/drawer"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "../ui/drawer"
 import { useMediaQuery } from "@/hooks/useMediaQuery"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogOverlay,
-} from "../ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogOverlay } from "../ui/dialog"
 import { PortfolioPosition } from "@/lib/utils"
 
 type PopupType = {

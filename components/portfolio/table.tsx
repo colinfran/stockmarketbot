@@ -106,11 +106,11 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
       <div className="relative">
         <Popup
           open={isOpen}
+          position={selectedPosition!}
           setOpen={(open) => {
             setIsOpen(open)
             setSelectedPosition(undefined)
           }}
-          position={selectedPosition!}
         >
           {selectedPosition ? <Info position={selectedPosition!} /> : <div />}
         </Popup>
