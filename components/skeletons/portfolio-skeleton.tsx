@@ -45,43 +45,42 @@ const PortfolioSkeleton: FC = () => {
 
       {/* Holdings Table Skeleton */}
       <Card className="mt-4">
-  <CardHeader>
-    <CardTitle>Holdings</CardTitle>
-    <CardDescription>Detailed breakdown of your stock positions</CardDescription>
-  </CardHeader>
-  <CardContent>
-    <div className="overflow-x-auto">
-      <Table className="w-full">
-        <TableHeader>
-          <TableRow className="border-b border-border">
-            <TableHead className="text-left">Symbol</TableHead>
-            <TableHead className="text-right">Shares</TableHead>
-            <TableHead className="text-right">Avg Cost</TableHead>
-            <TableHead className="text-right">Current Price</TableHead>
-            <TableHead className="text-right">Total Value</TableHead>
-            <TableHead className="text-right">P/L</TableHead>
-            <TableHead className="text-right">P/L %</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {[1, 2, 3, 4, 5].map((row) => (
-            <TableRow
-              className="border-b border-border hover:bg-muted/50 transition-colors"
-              key={row}
-            >
-              {[...Array(7)].map((_, i) => (
-                <TableCell key={i} className="text-right">
-                  <Skeleton className="h-4 w-full" />
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  </CardContent>
-</Card>
-
+        <CardHeader>
+          <CardTitle>Holdings</CardTitle>
+          <CardDescription>Detailed breakdown of your stock positions</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table className="w-full">
+              <TableHeader>
+                <TableRow className="border-b border-border">
+                  <TableHead className="text-left">Symbol</TableHead>
+                  <TableHead className="text-right">Shares</TableHead>
+                  <TableHead className="text-right">Avg Cost</TableHead>
+                  <TableHead className="text-right">Current Price</TableHead>
+                  <TableHead className="text-right">Total Value</TableHead>
+                  <TableHead className="text-right">P/L</TableHead>
+                  <TableHead className="text-right">P/L %</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {[1, 2, 3, 4, 5].map((row) => (
+                  <TableRow
+                    className="border-b border-border hover:bg-muted/50 transition-colors"
+                    key={row}
+                  >
+                    {[...Array(7)].map((_, i) => (
+                      <TableCell className="text-right" key={i}>
+                        <Skeleton className="h-4 w-full" />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
     </>
   )
 }
