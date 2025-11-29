@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://stockmarketbot.app/
+
+# Sitemaps
+Sitemap: https://stockmarketbot.app/sitemap.xml
