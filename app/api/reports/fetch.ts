@@ -4,7 +4,7 @@ import { MarketReport } from "@/providers/data-provider"
 import { Response } from "../types"
 
 export const fetchAllReports = async (): Promise<Response<MarketReport[]>> => {
-  console.log("Get all reports from database")
+  console.log("Fetch all reports from database")
   try {
     const data = await db.select().from(marketReports)
     console.log("Successfully fetched reports from database")

@@ -11,7 +11,6 @@ import { fetchAllReports } from "./fetch"
  */
 
 export async function GET(): Promise<NextResponse> {
-  console.log("Fetching reports")
   const report = await fetchAllReports()
   if (!report.success) {
     return NextResponse.json({ success: false, error: report.error })

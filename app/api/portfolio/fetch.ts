@@ -19,7 +19,7 @@ import { yahooFinance } from "../index"
  * @returns {Promise<Response<AlpacaOrder[]>>} A wrapped success/error response.
  */
 export const fetchAllTradeOrders = async (): Promise<Response<AlpacaOrder[]>> => {
-  console.log("Get all tradeOrders from database")
+  console.log("Fetch all tradeOrders from database")
   try {
     const data = await db.select().from(tradeOrders)
     console.log("Successfully fetched tradeOrders from database")
@@ -82,10 +82,12 @@ const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
  */
 export const fetchPriceHistory = async (list: string[]): Promise<Response<PriceHistoryType>> => {
   try {
+    console.log("Fetch price history from yahoo")
     const output = await getPricesSince(list)
+    console.log("Successfully fetched price history from yahoo")
     return { success: true, data: output }
   } catch (error) {
-    console.error("Error fetching stock prices:", error)
+    console.error("Error fetching price history from yahoo:", error)
     return { success: false, error: (error as Error).message }
   }
 }
