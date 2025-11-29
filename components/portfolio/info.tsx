@@ -113,7 +113,7 @@ const Info: FC<InfoType> = ({ position }) => {
                   <ChartTooltip
                     content={
                       <ChartTooltipContent
-                        formatter={(value) => [`$${Number(value).toLocaleString()}`, "Value"]}
+                        formatter={(value) => [`$${Number(value).toLocaleString()}`]}
                         labelFormatter={(value) => {
                           const date = new Date(value)
                           return date.toLocaleDateString("en-US", {
@@ -127,7 +127,7 @@ const Info: FC<InfoType> = ({ position }) => {
                   />
                   <Line
                     activeDot={{ r: 4 }}
-                    dataKey="value"
+                    dataKey="close"
                     dot={false}
                     stroke="currentColor"
                     strokeWidth={3}
