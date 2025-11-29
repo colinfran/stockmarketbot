@@ -41,15 +41,6 @@ const HeaderDropdown: FC = () => {
                 <span>Portfolio</span>
               </Link>
             </DropdownMenuItem>
-            {/* <DropdownMenuItem
-              className="flex w-full cursor-pointer flex-row items-center gap-2"
-              asChild
-            >
-              <Link href="/charts">
-                <ChartSplineIcon size={16} />
-                <span>Charts</span>
-              </Link>
-            </DropdownMenuItem> */}
             <DropdownMenuSeparator />
             <ThemeButton />
             <DropdownMenuSeparator />
@@ -62,14 +53,6 @@ const HeaderDropdown: FC = () => {
                 <span>About</span>
               </Link>
             </DropdownMenuItem>
-            {/* <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onSelect={(e) => {
-                e.preventDefault()
-              }}
-            >
-              <LogOutButton />
-            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
