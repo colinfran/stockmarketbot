@@ -9,14 +9,16 @@ import {
   DialogTitle,
   DialogOverlay,
 } from "../ui/dialog"
+import { PortfolioPosition } from "@/lib/utils"
 
 type PopupType = {
   open: boolean
   setOpen: (open: boolean) => void
   children: ReactNode
+  position: PortfolioPosition
 }
 
-const Popup: FC<PopupType> = ({ open, setOpen, children }) => {
+const Popup: FC<PopupType> = ({ open, setOpen, children, position }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {
@@ -25,10 +27,7 @@ const Popup: FC<PopupType> = ({ open, setOpen, children }) => {
         <DialogOverlay className="backdrop-blur-sm" />
         <DialogContent className="flex flex-col sm:max-w-[70dvw] sm:max-h-[90dvh] [&>div>div>div>div]:!flex [&>div>div>div>div]:!flex-col">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re done.
-            </DialogDescription>
+            <DialogTitle>{position?.symbol}</DialogTitle>
           </DialogHeader>
           <div>{children}</div>
         </DialogContent>
@@ -40,10 +39,7 @@ const Popup: FC<PopupType> = ({ open, setOpen, children }) => {
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Edit profile</DrawerTitle>
-          <DrawerDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
-          </DrawerDescription>
+          <DrawerTitle>{position?.symbol}</DrawerTitle>
         </DrawerHeader>
         <div className="p-8">{children}</div>
       </DrawerContent>
