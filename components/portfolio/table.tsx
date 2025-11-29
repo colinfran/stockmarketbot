@@ -1,7 +1,6 @@
 import { FC } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
-import { TrendingDown, TrendingUp } from "lucide-react"
 import { PortfolioPosition } from "@/app/(routes)/portfolio/calculatePositions"
 
 type TableType = {
@@ -47,55 +46,46 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
             </TableHeader>
 
             <TableBody>
-              {data.positions.map((position) => (
+              {data.positions.map((row) => (
                 <TableRow
                   className="border-b border-border hover:bg-muted/50 transition-colors"
-                  key={position.symbol}
+                  key={row}
                 >
+                  {/* Symbol */}
                   <TableCell className="py-3 px-2 sm:px-4 font-semibold whitespace-nowrap">
-                    {position.symbol}
+                    <Skeleton className="h-4 w-16" />
                   </TableCell>
 
+                  {/* Shares */}
                   <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
-                    {position.shares}
+                    <Skeleton className="h-4 w-10 ml-auto" />
                   </TableCell>
 
+                  {/* Avg Cost */}
                   <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
-                    ${position.avgCost.toFixed(2)}
+                    <Skeleton className="h-4 w-12 ml-auto" />
                   </TableCell>
 
+                  {/* Current Price */}
                   <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
-                    ${position.currentPrice.toFixed(2)}
+                    <Skeleton className="h-4 w-12 ml-auto" />
                   </TableCell>
 
+                  {/* Total Value */}
                   <TableCell className="text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap">
-                    {position.totalValue.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+                    <Skeleton className="h-4 w-14 ml-auto" />
                   </TableCell>
 
-                  <TableCell
-                    className={`text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap ${
-                      position.profitLoss >= 0 ? "text-green-500" : "text-red-500"
-                    }`}
-                  >
-                    {position.profitLoss >= 0 ? "+" : ""}${position.profitLoss.toFixed(2)}
+                  {/* P/L */}
+                  <TableCell className="text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap">
+                    <Skeleton className="h-4 w-12 ml-auto" />
                   </TableCell>
 
-                  <TableCell
-                    className={`text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap ${
-                      position.profitLossPercent >= 0 ? "text-green-500" : "text-red-500"
-                    }`}
-                  >
+                  {/* P/L % */}
+                  <TableCell className="text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap">
                     <div className="flex items-center justify-end gap-1">
-                      {position.profitLossPercent >= 0 ? (
-                        <TrendingUp className="h-3 w-3" />
-                      ) : (
-                        <TrendingDown className="h-3 w-3" />
-                      )}
-                      {position.profitLossPercent >= 0 ? "+" : ""}
-                      {position.profitLossPercent.toFixed(2)}%
+                      <Skeleton className="h-3 w-3" />
+                      <Skeleton className="h-4 w-10" />
                     </div>
                   </TableCell>
                 </TableRow>

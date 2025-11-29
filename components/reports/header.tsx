@@ -1,24 +1,11 @@
 import { FC } from "react"
 import CountdownTimer from "../countdown-timer"
-import { nextFriday, nextMonday, set } from "date-fns"
-import { fromZonedTime } from "date-fns-tz"
+import { getNextFriday8pm, getNextMonday630am } from "./time"
 
 const Header: FC = () => {
-  const friday8pmLocal = set(nextFriday(new Date()), {
-    hours: 20,
-    minutes: 0,
-    seconds: 0,
-    milliseconds: 0,
-  })
-  const friday8pmPST = fromZonedTime(friday8pmLocal, "America/Los_Angeles")
+  const friday8pmPST = getNextFriday8pm()
+  const monday630amPST = getNextMonday630am()
 
-  const monday630amLocal = set(nextMonday(new Date()), {
-    hours: 6,
-    minutes: 30,
-    seconds: 0,
-    milliseconds: 0,
-  })
-  const monday630amPST = fromZonedTime(monday630amLocal, "America/Los_Angeles")
   return (
     <div className="border-b border-border">
       <div className="container mx-auto px-4 py-6">

@@ -46,9 +46,9 @@ type PortfolioChartData = {
 }
 
 const Page: FC = () => {
-  const { loading, calculations, prices } = useData()
+  const { loading, calculations, currentPrices } = useData()
 
-  if (loading.portfolio || !calculations || loading.prices) {
+  if (loading.portfolio || !calculations) {
     return <ChartSkeleton />
   }
 
@@ -56,7 +56,7 @@ const Page: FC = () => {
 
   const chartData: StockChartData[] = symbols.map((symbol) => {
     const position = calculations.positions.find((pos) => pos.symbol === symbol)
-    const currentPrice = position?.currentPrice || prices[symbol] || 100
+    const currentPrice = position?.currentPrice || currentPrices[symbol] || 100
     const historicalData = generateFakeHistoricalData(symbol, currentPrice, 30)
     const firstPrice = historicalData[0].price
     const changePercent = ((currentPrice - firstPrice) / firstPrice) * 100

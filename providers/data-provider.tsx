@@ -18,29 +18,43 @@ export type MarketReport = MarketReportSchema & {
   ai_model: string
 }
 
+type PriceHistory = {
+  [ticker: string]: Bar[]
+}
+
+type Bar = {
+  date: string
+  high: number
+  volume: number
+  open: number
+  low: number
+  close: number
+  adjClose: number
+}
+
 type ContextProps = {
   loading: {
     portfolio: boolean
     reports: boolean
-    prices: boolean
   }
   error: Error | null
   reports: MarketReport[]
   portfolio: AlpacaOrder[]
-  prices: Prices
+  currentPrices: Prices
   calculations?: CalculateType
+  priceHistory: PriceHistory
 }
 
 const defaultContextValue: ContextProps = {
   loading: {
     portfolio: true,
     reports: true,
-    prices: true,
   },
   error: null,
   reports: [],
   portfolio: [],
-  prices: {},
+  currentPrices: {},
+  priceHistory: {},
 }
 
 const DataContext = createContext<ContextProps>(defaultContextValue)
@@ -48,15 +62,14 @@ const DataContext = createContext<ContextProps>(defaultContextValue)
 export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const reportsUrl = "/api/reports"
   const portfolioUrl = "/api/portfolio"
-  const pricesUrl = "/api/prices"
   const [reports, setReports] = useState<MarketReport[]>([])
   const [portfolio, setPortfolio] = useState<AlpacaOrder[]>([])
-  const [prices, setPrices] = useState<Prices>({})
+  const [currentPrices, setCurrentPrices] = useState<Prices>({})
+  const [priceHistory, setPriceHistory] = useState<PriceHistory>({})
   const [loading, setLoading] = useState<{
     reports: boolean
     portfolio: boolean
-    prices: boolean
-  }>({ reports: true, portfolio: true, prices: true })
+  }>({ reports: true, portfolio: true })
   const [error, setError] = useState<Error | null>(null)
 
   const fetchReports = async (): Promise<void> => {
@@ -97,12 +110,10 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
       }
       const json = await res.json()
       const data = (json && json.data) || json
-      console.log("portfolio", data)
-      if (!data) {
-        setPortfolio([])
-      } else if (Array.isArray(data)) {
-        setPortfolio(data)
-      }
+      console.log("portfolio data", data)
+      setPortfolio(data.tradeOrders)
+      setPriceHistory(data.priceHistory)
+      setCurrentPrices(data.currentPrices)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       // Ignore abort error
@@ -113,43 +124,20 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }
   }
 
-  const fetchPrices = async (): Promise<void> => {
-    try {
-      setLoading((prev) => ({ ...prev, prices: true }))
-      const res = await fetch(pricesUrl)
-      if (!res.ok) {
-        throw new Error(`Fetch failed: ${res.status} ${res.statusText}`)
-      }
-      const json = await res.json()
-      // If API wraps data, use json.data, otherwise fallback to json
-      const data = (json && json.data) || json
-      console.log("prices", data)
-      // Normalize the payload to an array and ensure we never set undefined
-      setPrices(data)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      // Ignore abort error
-      if (err?.name === "AbortError") return
-      setError(err)
-    } finally {
-      setLoading((prev) => ({ ...prev, prices: false }))
-    }
-  }
-
   useEffect(() => {
     fetchReports()
-    fetchPrices()
     fetchPortfolio()
   }, [])
 
   const calculations = useMemo(() => {
-    const val = calculatePositions(portfolio, prices)
-    // console.log("calcuations", val)
+    const val = calculatePositions(portfolio, currentPrices)
     return val
-  }, [portfolio, prices])
+  }, [portfolio, currentPrices])
 
   return (
-    <DataContext.Provider value={{ loading, reports, portfolio, prices, calculations, error }}>
+    <DataContext.Provider
+      value={{ loading, reports, portfolio, currentPrices, priceHistory, calculations, error }}
+    >
       {children}
     </DataContext.Provider>
   )
