@@ -34,10 +34,10 @@ export async function GET(): Promise<NextResponse> {
   }
   const currentPrices = Object.fromEntries(
     Object.entries(history.data!).map(([t, h]) => {
-      const sorted = [...h].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      return [t, sorted.at(-1)!.close];
-    })
-  );
+      const sorted = [...h].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      return [t, sorted.at(-1)!.close]
+    }),
+  )
   return NextResponse.json({
     success: true,
     data: {

@@ -14,7 +14,7 @@ type PortfolioChartProps = {
 
 const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePercent }) => {
   const sortedData = [...data].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   )
   return (
     <Card className="border-2">
