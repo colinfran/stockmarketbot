@@ -1,4 +1,4 @@
-import { currentModel } from "@/app/api/model"
+import { currentModel } from "@/app/api/index"
 import { Badge } from "@/components/ui/badge"
 import { Github, Linkedin, Globe } from "lucide-react"
 import Link from "next/link"
