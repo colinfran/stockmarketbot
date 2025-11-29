@@ -5,13 +5,6 @@ import { ChartSkeleton } from "@/components/skeletons/chart-skeleton"
 import { useData } from "@/providers/data-provider"
 import { FC } from "react"
 
-// type StockChartData = {
-//   symbol: string
-//   data: { date: string; price: number }[]
-//   currentPrice: number
-//   changePercent: number
-// }
-
 type PortfolioChartData = {
   data: { date: string; value: number }[]
   currentValue: number

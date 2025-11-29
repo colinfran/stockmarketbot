@@ -13,6 +13,9 @@ type PortfolioChartProps = {
 }
 
 const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePercent }) => {
+  const sortedData = [...data].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  )
   return (
     <Card className="border-2">
       <CardHeader>
@@ -44,7 +47,7 @@ const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePer
           }}
         >
           <ResponsiveContainer height="100%" width="100%">
-            <LineChart data={data} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+            <LineChart data={sortedData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <CartesianGrid className="stroke-muted" strokeDasharray="3 3" />
               <XAxis
                 className="text-xs"

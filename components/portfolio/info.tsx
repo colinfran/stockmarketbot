@@ -14,7 +14,7 @@ type InfoType = {
 const Info: FC<InfoType> = ({ position }) => {
   const { priceHistory, portfolio } = useData()
   const chartData = priceHistory[position.symbol].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   )
   const priceChange = position.currentPrice - chartData[0].close
   const priceChangePercent = (priceChange / chartData[0].close) * 100
@@ -27,7 +27,7 @@ const Info: FC<InfoType> = ({ position }) => {
     >
       {/* Current Price Section */}
       <div>
-        <p className="text-sm text-muted-foreground mb-1">Current Price</p>
+        <p className="text-sm text-muted-foreground mb-1">Current Stock Price</p>
         <div className="flex items-baseline gap-3">
           <p className="text-4xl font-bold">${position.currentPrice.toFixed(2)}</p>
           <div

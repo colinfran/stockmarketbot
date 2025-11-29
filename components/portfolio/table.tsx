@@ -42,7 +42,7 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
               <TableBody>
                 {data.positions.map((position) => (
                   <TableRow
-                    className="border-b border-border hover:bg-muted/50 transition-colors"
+                    className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
                     key={position.symbol}
                     onClick={() => {
                       setIsOpen(true)

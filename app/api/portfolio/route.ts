@@ -33,8 +33,11 @@ export async function GET(): Promise<NextResponse> {
     return NextResponse.json({ success: false, error: orders.error })
   }
   const currentPrices = Object.fromEntries(
-    Object.entries(history.data!).map(([t, h]) => [t, h.at(-1)!.close]),
-  )
+    Object.entries(history.data!).map(([t, h]) => {
+      const sorted = [...h].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      return [t, sorted.at(-1)!.close];
+    })
+  );
   return NextResponse.json({
     success: true,
     data: {
