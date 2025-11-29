@@ -8,6 +8,8 @@ import { Card, CardContent } from "../ui/card"
 import { ScrollArea } from "../ui/scroll-area"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 import { useMediaQuery } from "@/hooks/useMediaQuery"
+import StockChart from "./stock-chart"
+import PurchaseHistory from "./purchase-history"
 
 type InfoType = {
   position: PortfolioPosition
@@ -15,15 +17,18 @@ type InfoType = {
 
 const Info: FC<InfoType> = ({ position }) => {
   const { priceHistory, portfolio } = useData()
-  const chartData = priceHistory[position.symbol]
+  const chartData = priceHistory[position.symbol].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  )
   const priceChange = position.currentPrice - chartData[0].close
   const priceChangePercent = (priceChange / chartData[0].close) * 100
-
   const stockOrders = portfolio.filter((item) => item.symbol === position.symbol)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   return (
-    <ScrollArea className={`${isDesktop ? "h-[calc(90vh-8rem)]" : "h-[calc(90vh-12rem)]"} w-full`}>
+    <ScrollArea
+      className={`${isDesktop ? "h-[calc(90vh-8rem)]" : "h-[calc(90vh-12rem)] p-8"} w-full`}
+    >
       {/* Current Price Section */}
       <div>
         <p className="text-sm text-muted-foreground mb-1">Current Price</p>
@@ -81,108 +86,9 @@ const Info: FC<InfoType> = ({ position }) => {
       </div>
 
       {/* Chart */}
-      <div className="pt-4">
-        <Card className="border-2 w-full">
-          <CardContent>
-            <p className="text-sm text-muted-foreground mb-3">30-Day Price History</p>
-            <ChartContainer
-              className="h-[300px] w-full"
-              config={{
-                value: {
-                  label: "Portfolio Value",
-                  color: "red",
-                },
-              }}
-            >
-              <ResponsiveContainer height={300} width="100%">
-                <LineChart data={chartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-                  <CartesianGrid className="stroke-muted" strokeDasharray="3 3" />
-                  <XAxis
-                    className="text-xs"
-                    dataKey="date"
-                    tickFormatter={(value) => {
-                      const date = new Date(value)
-                      return `${date.getMonth() + 1}/${date.getDate()}`
-                    }}
-                  />
-                  <YAxis
-                    className="text-xs"
-                    domain={["auto", "auto"]}
-                    tickFormatter={(value) => `$${value}`}
-                  />
-                  <ChartTooltip
-                    content={
-                      <ChartTooltipContent
-                        formatter={(value) => [`$${Number(value).toLocaleString()}`]}
-                        labelFormatter={(value) => {
-                          const date = new Date(value)
-                          return date.toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })
-                        }}
-                      />
-                    }
-                  />
-                  <Line
-                    activeDot={{ r: 4 }}
-                    dataKey="close"
-                    dot={false}
-                    stroke="currentColor"
-                    strokeWidth={3}
-                    type="monotone"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
-
+      <StockChart chartData={chartData}/>
       {/* Purchase History */}
-      <div className="pt-4">
-        <p className="text-sm text-muted-foreground mb-3">Purchase History</p>
-        <div className="border border-border rounded-lg overflow-hidden mb-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-left">Date</TableHead>
-                <TableHead className="text-right">Shares</TableHead>
-                <TableHead className="text-right">Price</TableHead>
-                <TableHead className="text-right">Total</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {stockOrders.map((order) => {
-                const filledQty =
-                  typeof order.filled_qty === "string"
-                    ? Number.parseFloat(order.filled_qty)
-                    : order.filled_qty
-                const price = Number(order.filled_avg_price) || 0
-                const total = filledQty * price
-                const date = new Date(order.filled_at || order.created_at).toLocaleDateString(
-                  "en-US",
-                  {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  },
-                )
-
-                return (
-                  <TableRow key={order.id}>
-                    <TableCell>{date}</TableCell>
-                    <TableCell className="text-right">{filledQty}</TableCell>
-                    <TableCell className="text-right">${price.toFixed(2)}</TableCell>
-                    <TableCell className="text-right font-medium">${total.toFixed(2)}</TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+      <PurchaseHistory stockOrders={stockOrders} />
     </ScrollArea>
   )
 }

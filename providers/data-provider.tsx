@@ -22,7 +22,7 @@ type PriceHistory = {
   [ticker: string]: Bar[]
 }
 
-type Bar = {
+export type Bar = {
   date: string
   high: number
   volume: number
