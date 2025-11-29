@@ -28,25 +28,24 @@ export const calculatePositions = (ordersList: AlpacaOrder[], prices: Prices): C
   // Aggregate orders by symbol
   const positionMap = new Map<string, { shares: number; totalCost: number }>()
 
-  ordersList
-    .forEach((order) => {
-      const existing = positionMap.get(order.symbol) || { shares: 0, totalCost: 0 }
+  ordersList.forEach((order) => {
+    const existing = positionMap.get(order.symbol) || { shares: 0, totalCost: 0 }
 
-      const filledQty = Number(order.filled_qty)
-      const filledAvg = Number(order.filled_avg_price)
+    const filledQty = Number(order.filled_qty)
+    const filledAvg = Number(order.filled_avg_price)
 
-      if (order.side === "buy") {
-        positionMap.set(order.symbol, {
-          shares: existing.shares + filledQty,
-          totalCost: existing.totalCost + filledQty * filledAvg,
-        })
-      } else if (order.side === "sell") {
-        positionMap.set(order.symbol, {
-          shares: existing.shares - filledQty,
-          totalCost: existing.totalCost - filledQty * filledAvg,
-        })
-      }
-    })
+    if (order.side === "buy") {
+      positionMap.set(order.symbol, {
+        shares: existing.shares + filledQty,
+        totalCost: existing.totalCost + filledQty * filledAvg,
+      })
+    } else if (order.side === "sell") {
+      positionMap.set(order.symbol, {
+        shares: existing.shares - filledQty,
+        totalCost: existing.totalCost - filledQty * filledAvg,
+      })
+    }
+  })
 
   // Calculate position metrics
   const calculatedPositions: PortfolioPosition[] = []

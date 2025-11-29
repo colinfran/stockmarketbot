@@ -23,27 +23,13 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
           <Table className="w-full">
             <TableHeader>
               <TableRow className="border-b border-border">
-                <TableHead className="text-left whitespace-nowrap">
-                  Symbol
-                </TableHead>
-                <TableHead className="text-right whitespace-nowrap">
-                  Shares
-                </TableHead>
-                <TableHead className="text-right whitespace-nowrap">
-                  Avg Cost
-                </TableHead>
-                <TableHead className="text-right whitespace-nowrap">
-                  Current Price
-                </TableHead>
-                <TableHead className="text-right whitespace-nowrap">
-                  Total Value
-                </TableHead>
-                <TableHead className="text-right whitespace-nowrap">
-                  P/L
-                </TableHead>
-                <TableHead className="text-right whitespace-nowrap">
-                  P/L %
-                </TableHead>
+                <TableHead className="text-left whitespace-nowrap">Symbol</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Shares</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Avg Cost</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Current Price</TableHead>
+                <TableHead className="text-right whitespace-nowrap">Total Value</TableHead>
+                <TableHead className="text-right whitespace-nowrap">P/L</TableHead>
+                <TableHead className="text-right whitespace-nowrap">P/L %</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -57,9 +43,7 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
                     {position.symbol}
                   </TableCell>
 
-                  <TableCell className="text-right whitespace-nowrap">
-                    {position.shares}
-                  </TableCell>
+                  <TableCell className="text-right whitespace-nowrap">{position.shares}</TableCell>
 
                   <TableCell className="text-right whitespace-nowrap">
                     ${position.avgCost.toFixed(2)}
@@ -70,7 +54,8 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
                   </TableCell>
 
                   <TableCell className="text-right font-medium whitespace-nowrap">
-                    ${position.totalValue.toLocaleString("en-US", {
+                    $
+                    {position.totalValue.toLocaleString("en-US", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}

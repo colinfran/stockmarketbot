@@ -54,27 +54,13 @@ const PortfolioSkeleton: FC = () => {
             <Table className="w-full">
               <TableHeader>
                 <TableRow className="border-b border-border">
-                  <TableHead className="text-left whitespace-nowrap">
-                    Symbol
-                  </TableHead>
-                  <TableHead className="text-right whitespace-nowrap">
-                    Shares
-                  </TableHead>
-                  <TableHead className="text-right whitespace-nowrap">
-                    Avg Cost
-                  </TableHead>
-                  <TableHead className="text-right whitespace-nowrap">
-                    Current Price
-                  </TableHead>
-                  <TableHead className="text-right whitespace-nowrap">
-                    Total Value
-                  </TableHead>
-                  <TableHead className="text-right whitespace-nowrap">
-                    P/L
-                  </TableHead>
-                  <TableHead className="text-right whitespace-nowrap">
-                    P/L %
-                  </TableHead>
+                  <TableHead className="text-left whitespace-nowrap">Symbol</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">Shares</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">Avg Cost</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">Current Price</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">Total Value</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">P/L</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">P/L %</TableHead>
                 </TableRow>
               </TableHeader>
 
