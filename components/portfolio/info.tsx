@@ -2,11 +2,7 @@ import { PortfolioPosition } from "@/lib/utils"
 import { useData } from "@/providers/data-provider"
 import { TrendingDown, TrendingUp } from "lucide-react"
 import { FC } from "react"
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart"
-import { Card, CardContent } from "../ui/card"
 import { ScrollArea } from "../ui/scroll-area"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 import { useMediaQuery } from "@/hooks/useMediaQuery"
 import StockChart from "./stock-chart"
 import PurchaseHistory from "./purchase-history"
@@ -86,7 +82,7 @@ const Info: FC<InfoType> = ({ position }) => {
       </div>
 
       {/* Chart */}
-      <StockChart chartData={chartData}/>
+      <StockChart chartData={chartData} />
       {/* Purchase History */}
       <PurchaseHistory stockOrders={stockOrders} />
     </ScrollArea>
