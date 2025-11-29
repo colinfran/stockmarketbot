@@ -34,7 +34,7 @@ const Popup: FC<PopupType> = ({ open, setOpen, children, position }) => {
         <DrawerHeader className="text-left">
           <DrawerTitle>{position?.symbol}</DrawerTitle>
         </DrawerHeader>
-        <div className="flex flex-col p-8">{children}</div>
+        <div className="flex flex-col">{children}</div>
       </DrawerContent>
     </Drawer>
   )

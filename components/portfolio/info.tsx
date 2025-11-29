@@ -23,7 +23,7 @@ const Info: FC<InfoType> = ({ position }) => {
 
   return (
     <ScrollArea
-      className={`${isDesktop ? "h-[calc(90vh-8rem)]" : "h-[calc(90vh-12rem)] p-8"} w-full`}
+      className={`${isDesktop ? "h-[calc(90vh-8rem)]" : "h-[calc(90vh-12rem)] p-8 pt-0"} w-full`}
     >
       {/* Current Price Section */}
       <div>
