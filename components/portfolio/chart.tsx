@@ -22,7 +22,7 @@ const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePer
             <CardDescription>Combined value of all positions over 30 days</CardDescription>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold">${currentValue.toLocaleString()}</div>
+            <div className="text-2xl font-bold">${currentValue.toFixed(2)}</div>
             <div
               className={`text-sm flex items-center justify-end gap-1 ${changePercent >= 0 ? "text-green-500" : "text-red-500"}`}
             >
@@ -39,7 +39,7 @@ const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePer
           config={{
             value: {
               label: "Portfolio Value",
-              color: "hsl(var(--chart-2))",
+              color: "red",
             },
           }}
         >
@@ -78,7 +78,7 @@ const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePer
                 activeDot={{ r: 4 }}
                 dataKey="value"
                 dot={false}
-                stroke="var(--color-value)"
+                stroke="currentColor"
                 strokeWidth={3}
                 type="monotone"
               />

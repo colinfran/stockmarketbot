@@ -54,25 +54,25 @@ const PortfolioSkeleton: FC = () => {
             <Table className="w-full">
               <TableHeader>
                 <TableRow className="border-b border-border">
-                  <TableHead className="text-left py-3 px-2 sm:px-4 whitespace-nowrap">
+                  <TableHead className="text-left whitespace-nowrap">
                     Symbol
                   </TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                  <TableHead className="text-right whitespace-nowrap">
                     Shares
                   </TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                  <TableHead className="text-right whitespace-nowrap">
                     Avg Cost
                   </TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                  <TableHead className="text-right whitespace-nowrap">
                     Current Price
                   </TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                  <TableHead className="text-right whitespace-nowrap">
                     Total Value
                   </TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                  <TableHead className="text-right whitespace-nowrap">
                     P/L
                   </TableHead>
-                  <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                  <TableHead className="text-right whitespace-nowrap">
                     P/L %
                   </TableHead>
                 </TableRow>
@@ -85,40 +85,53 @@ const PortfolioSkeleton: FC = () => {
                     key={row}
                   >
                     {/* Symbol */}
-                    <TableCell className="py-3 px-2 sm:px-4 font-semibold whitespace-nowrap">
-                      <Skeleton className="h-4 w-16" /> {/* match font size / weight */}
+                    <TableCell className="text-left font-semibold whitespace-nowrap w-[85px]">
+                      <div className="flex items-center justify-start">
+                        <Skeleton className="h-4 w-12" />
+                      </div>
                     </TableCell>
 
                     {/* Shares */}
-                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
-                      <Skeleton className="h-4 w-10" /> {/* remove ml-auto, text-right aligns */}
+                    <TableCell className="text-right whitespace-nowrap w-[151px]">
+                      <div className="flex items-center justify-end">
+                        <Skeleton className="h-4 w-18" />
+                      </div>
                     </TableCell>
 
                     {/* Avg Cost */}
-                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
-                      <Skeleton className="h-4 w-12" />
+                    <TableCell className="text-right whitespace-nowrap w-[98px]">
+                      <div className="flex items-center justify-end">
+                        <Skeleton className="h-4 w-14" />
+                      </div>
                     </TableCell>
 
                     {/* Current Price */}
-                    <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
-                      <Skeleton className="h-4 w-12" />
+                    <TableCell className="text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end w-[134px]">
+                        <Skeleton className="h-4 w-14" />
+                      </div>
                     </TableCell>
 
                     {/* Total Value */}
-                    <TableCell className="text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap">
-                      <Skeleton className="h-4 w-14" />
+                    <TableCell className="text-right whitespace-nowrap w-[115px]">
+                      <div className="flex items-center justify-end">
+                        <Skeleton className="h-4 w-14" />
+                      </div>
                     </TableCell>
 
                     {/* P/L */}
-                    <TableCell className="text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap">
-                      <Skeleton className="h-4 w-12" />
+                    <TableCell className="text-right whitespace-nowra w-[83px]p">
+                      <div className="flex items-center justify-end">
+                        <Skeleton className="h-4 w-12" />
+                      </div>
                     </TableCell>
 
                     {/* P/L % */}
-                    <TableCell className="text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap">
+                    <TableCell className="text-right whitespace-nowrap w-[107px]">
                       <div className="flex items-center justify-end gap-1">
-                        <Skeleton className="h-3 w-3" />
-                        <Skeleton className="h-4 w-10" />
+                        <div className="flex items-center justify-end">
+                          <Skeleton className="h-4 w-12" />
+                        </div>
                       </div>
                     </TableCell>
                   </TableRow>

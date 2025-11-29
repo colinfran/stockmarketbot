@@ -12,33 +12,6 @@ type StockChartData = {
   changePercent: number
 }
 
-// Mock function to generate fake historical price data
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function generateFakeHistoricalData(symbol: string, currentPrice: number, days = 30): any {
-  const data: { date: string; price: number }[] = []
-  const today = new Date()
-  let price = currentPrice * 0.9 // Start at 90% of current price
-
-  for (let i = days; i >= 0; i--) {
-    const date = new Date(today)
-    date.setDate(date.getDate() - i)
-
-    // Random walk with slight upward bias
-    const change = (Math.random() - 0.48) * (price * 0.03)
-    price = Math.max(price + change, price * 0.8)
-
-    data.push({
-      date: date.toISOString().split("T")[0],
-      price: Number(price.toFixed(2)),
-    })
-  }
-
-  // Make sure last price matches current price
-  data[data.length - 1].price = currentPrice
-
-  return data
-}
-
 type PortfolioChartData = {
   data: { date: string; value: number }[]
   currentValue: number
@@ -46,7 +19,7 @@ type PortfolioChartData = {
 }
 
 const Page: FC = () => {
-  const { loading, calculations, currentPrices } = useData()
+  const { loading, calculations, currentPrices, priceHistory } = useData()
 
   if (loading.portfolio || !calculations) {
     return <ChartSkeleton />
@@ -54,11 +27,11 @@ const Page: FC = () => {
 
   const symbols = calculations.positions.map((pos) => pos.symbol)
 
-  const chartData: StockChartData[] = symbols.map((symbol) => {
+  const chartData = symbols.map((symbol) => {
     const position = calculations.positions.find((pos) => pos.symbol === symbol)
     const currentPrice = position?.currentPrice || currentPrices[symbol] || 100
-    const historicalData = generateFakeHistoricalData(symbol, currentPrice, 30)
-    const firstPrice = historicalData[0].price
+    const historicalData = priceHistory[symbol] //(symbol, currentPrice, 30)
+    const firstPrice = historicalData[0].close
     const changePercent = ((currentPrice - firstPrice) / firstPrice) * 100
 
     return {
@@ -77,7 +50,7 @@ const Page: FC = () => {
     chartData.forEach((stock) => {
       const position = calculations.positions.find((pos) => pos.symbol === stock.symbol)
       if (position) {
-        const priceAtDate = stock.data[index]?.price || stock.currentPrice
+        const priceAtDate = stock.data[index]?.close || stock.currentPrice
         totalValue += priceAtDate * position.shares
       }
     })

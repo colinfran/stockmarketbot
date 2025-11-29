@@ -1,7 +1,8 @@
 import { FC } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
-import { PortfolioPosition } from "@/app/(routes)/portfolio/calculatePositions"
+import { TrendingDown, TrendingUp } from "lucide-react"
+import { PortfolioPosition } from "@/lib/utils"
 
 type TableType = {
   data: {
@@ -10,6 +11,7 @@ type TableType = {
 }
 
 const HoldingsTable: FC<TableType> = ({ data }) => {
+  console.log(data)
   return (
     <Card className="mt-4">
       <CardHeader>
@@ -21,71 +23,80 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
           <Table className="w-full">
             <TableHeader>
               <TableRow className="border-b border-border">
-                <TableHead className="text-left py-3 px-2 sm:px-4 whitespace-nowrap">
+                <TableHead className="text-left whitespace-nowrap">
                   Symbol
                 </TableHead>
-                <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                <TableHead className="text-right whitespace-nowrap">
                   Shares
                 </TableHead>
-                <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                <TableHead className="text-right whitespace-nowrap">
                   Avg Cost
                 </TableHead>
-                <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                <TableHead className="text-right whitespace-nowrap">
                   Current Price
                 </TableHead>
-                <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                <TableHead className="text-right whitespace-nowrap">
                   Total Value
                 </TableHead>
-                <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                <TableHead className="text-right whitespace-nowrap">
                   P/L
                 </TableHead>
-                <TableHead className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
+                <TableHead className="text-right whitespace-nowrap">
                   P/L %
                 </TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {data.positions.map((row) => (
+              {data.positions.map((position) => (
                 <TableRow
                   className="border-b border-border hover:bg-muted/50 transition-colors"
-                  key={row}
+                  key={position.symbol}
                 >
-                  {/* Symbol */}
-                  <TableCell className="py-3 px-2 sm:px-4 font-semibold whitespace-nowrap">
-                    <Skeleton className="h-4 w-16" />
+                  <TableCell className="text-left font-semibold whitespace-nowrap">
+                    {position.symbol}
                   </TableCell>
 
-                  {/* Shares */}
-                  <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
-                    <Skeleton className="h-4 w-10 ml-auto" />
+                  <TableCell className="text-right whitespace-nowrap">
+                    {position.shares}
                   </TableCell>
 
-                  {/* Avg Cost */}
-                  <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
-                    <Skeleton className="h-4 w-12 ml-auto" />
+                  <TableCell className="text-right whitespace-nowrap">
+                    ${position.avgCost.toFixed(2)}
                   </TableCell>
 
-                  {/* Current Price */}
-                  <TableCell className="text-right py-3 px-2 sm:px-4 whitespace-nowrap">
-                    <Skeleton className="h-4 w-12 ml-auto" />
+                  <TableCell className="text-right whitespace-nowrap">
+                    ${position.currentPrice.toFixed(2)}
                   </TableCell>
 
-                  {/* Total Value */}
-                  <TableCell className="text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap">
-                    <Skeleton className="h-4 w-14 ml-auto" />
+                  <TableCell className="text-right font-medium whitespace-nowrap">
+                    ${position.totalValue.toLocaleString("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </TableCell>
 
-                  {/* P/L */}
-                  <TableCell className="text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap">
-                    <Skeleton className="h-4 w-12 ml-auto" />
+                  <TableCell
+                    className={`text-right font-medium whitespace-nowrap ${
+                      position.profitLoss >= 0 ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {position.profitLoss >= 0 ? "+" : ""}${position.profitLoss.toFixed(2)}
                   </TableCell>
 
-                  {/* P/L % */}
-                  <TableCell className="text-right py-3 px-2 sm:px-4 font-medium whitespace-nowrap">
+                  <TableCell
+                    className={`text-right font-medium whitespace-nowrap ${
+                      position.profitLossPercent >= 0 ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
                     <div className="flex items-center justify-end gap-1">
-                      <Skeleton className="h-3 w-3" />
-                      <Skeleton className="h-4 w-10" />
+                      {position.profitLossPercent >= 0 ? (
+                        <TrendingUp className="h-3 w-3" />
+                      ) : (
+                        <TrendingDown className="h-3 w-3" />
+                      )}
+                      {position.profitLossPercent >= 0 ? "+" : ""}
+                      {position.profitLossPercent.toFixed(2)}%
                     </div>
                   </TableCell>
                 </TableRow>

@@ -1,6 +1,6 @@
 "use client"
 
-import { type FC } from "react"
+import { useEffect, useState, type FC } from "react"
 import { Card, CardHeader } from "@/components/ui/card"
 import { useData } from "@/providers/data-provider"
 import PortfolioSkeleton from "@/components/skeletons/portfolio-skeleton"
