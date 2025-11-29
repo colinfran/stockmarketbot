@@ -1,4 +1,25 @@
 import Alpaca from "@alpacahq/alpaca-trade-api"
+import YahooFinance from "yahoo-finance2"
+
+/**
+ * The LLM model used for all AI requests.
+ *
+ * `xai/grok-4-fast-reasoning`:
+ * - High-speed variant of Grok-4 with enhanced reasoning ability
+ * - Supports long context windows (up to ~2M tokens)
+ * - Good for multi-step reasoning, analysis, and structured output
+ * - More cost-efficient than the full Grok-4 reasoning model
+ */
+
+export const currentModel = "xai/grok-4-fast-reasoning"
+
+
+/**
+ * Yahoo Finance client instance.
+ * @description Configured to suppress specific warnings (e.g., "ripHistorical") while fetching data.
+ */
+export const yahooFinance = new YahooFinance({ suppressNotices: ["ripHistorical"] })
+
 
 /**
  * Configured Alpaca client instance for trading operations.

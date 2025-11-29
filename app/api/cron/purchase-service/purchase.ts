@@ -1,6 +1,6 @@
 import { MarketReportSchema } from "../ai-service/schema"
 import { AlpacaOrder, Response } from "../../types"
-import { alpaca } from "../../alpaca"
+import { alpaca } from "../../index"
 
 /**
  * Executes purchase orders based on the latest AI-generated market report.

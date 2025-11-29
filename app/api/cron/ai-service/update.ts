@@ -3,7 +3,7 @@ import { db } from "@/lib/db"
 import { marketReports } from "@/lib/db/schema"
 import { InferInsertModel } from "drizzle-orm"
 import { Response, NoData } from "../../types"
-import { currentModel } from "../../model"
+import { currentModel } from "../../index"
 
 /**
  * Inserts a generated market report into the database.

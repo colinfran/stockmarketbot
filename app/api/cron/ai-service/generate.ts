@@ -2,7 +2,7 @@ import { generateObject } from "ai"
 import { MarketReportSchema, marketReportSchema } from "./schema"
 import { nextMonday } from "date-fns"
 import { Response } from "../../types"
-import { currentModel } from "../../model"
+import { currentModel } from "../../index"
 
 /**
  * Generates a weekly US stock market report using AI analysis.

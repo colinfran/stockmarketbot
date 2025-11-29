@@ -1,19 +1,23 @@
 import { db } from "@/lib/db"
 import { tradeOrders } from "@/lib/db/schema"
 import { AlpacaOrder, Response } from "../types"
-import YahooFinance from "yahoo-finance2"
 import { HistoricalHistoryResult } from "yahoo-finance2/modules/historical"
+import { yahooFinance } from "../index"
 
 /**
  * Fetches all trade orders from the database.
- * @description Uses the database client to select all entries from the tradeOrders table.
- * Returns a Response object containing either the list of trade orders or an error message.
+ *
+ * @description
+ * - Queries the `tradeOrders` table using the database client.
+ * - Returns all stored trade orders, cast into `AlpacaOrder` objects.
+ *
+ * Response Structure:
+ * - On success: `{ success: true, data: AlpacaOrder[] }`
+ * - On failure: `{ success: false, error: string }`
+ *
  * @function fetchAllTradeOrders
- * @returns {Promise<Response<AlpacaOrder[]>>} A promise resolving to a Response object.
- * If successful, `success` is true and `data` contains an array of AlpacaOrder objects.
- * If there is an error, `success` is false and `error` contains the error message.
+ * @returns {Promise<Response<AlpacaOrder[]>>} A wrapped success/error response.
  */
-
 export const fetchAllTradeOrders = async (): Promise<Response<AlpacaOrder[]>> => {
   console.log("Get all tradeOrders from database")
   try {
@@ -26,16 +30,30 @@ export const fetchAllTradeOrders = async (): Promise<Response<AlpacaOrder[]>> =>
   }
 }
 
-export const yahooFinance = new YahooFinance({ suppressNotices: ["ripHistorical"] })
-
+/**
+ * Represents a mapping of tickers to their historical price data.
+ * @typedef PriceHistoryType
+ * @property {HistoricalHistoryResult} [ticker] - The Yahoo Finance historical price array for a ticker.
+ */
 export type PriceHistoryType = {
   [k: string]: HistoricalHistoryResult
 }
 
+/**
+ * Fetches historical price data for a list of tickers.
+ *
+ * @description
+ * - Deduplicates the provided list of tickers.
+ * - Sends all Yahoo Finance historical requests in parallel for performance.
+ * - Fetches daily bars from a fixed start date (2025-11-25) up to now.
+ * - Shapes the result as an object: `{ TICKER: HistoricalHistoryResult }`
+ *
+ * @function getPricesSince
+ * @param {string[]} tickers - List of stock tickers.
+ * @returns {Promise<PriceHistoryType>} A map of ticker → historical data.
+ */
 const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
-  // remove duplicates
   const uniqueTickers = [...new Set(tickers)]
-  // create requests in parallel
   const requests = uniqueTickers.map((ticker) =>
     yahooFinance.historical(ticker, {
       period1: new Date("2025-11-25"),
@@ -44,10 +62,24 @@ const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
     }),
   )
   const results = await Promise.all(requests)
-  // shape the result as: { TICKER: historicalBars[] }
   return Object.fromEntries(uniqueTickers.map((ticker, index) => [ticker, results[index]]))
 }
 
+/**
+ * Retrieves historical price data for a list of tickers and wraps the result.
+ *
+ * @description
+ * - Delegates work to `getPricesSince` to fetch and shape the data.
+ * - Returns a standardized Response object.
+ *
+ * Response Structure:
+ * - On success: `{ success: true, data: PriceHistoryType }`
+ * - On failure: `{ success: false, error: string }`
+ *
+ * @function fetchPriceHistory
+ * @param {string[]} list - The list of tickers to fetch history for.
+ * @returns {Promise<Response<PriceHistoryType>>} Wrapped success/error response.
+ */
 export const fetchPriceHistory = async (list: string[]): Promise<Response<PriceHistoryType>> => {
   try {
     const output = await getPricesSince(list)

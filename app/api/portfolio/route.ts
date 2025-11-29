@@ -3,11 +3,23 @@ import { fetchAllTradeOrders, fetchPriceHistory } from "./fetch"
 
 /**
  * Handles GET requests to the /api/portfolio route.
- * @description Fetches all trade orders using the fetchAllTradeOrders helper.
- * Returns a JSON response containing either the list of trade orders or an error message.
+ *
+ * @description
+ * Fetches all trade orders and their related market data.
+ * - Retrieves all stored trade orders via `fetchAllTradeOrders`.
+ * - Extracts the unique list of tickers from the orders.
+ * - Fetches historical price data for each ticker via `fetchPriceHistory`.
+ * - Computes the current price for each ticker using the latest bar in the history.
+ *
+ * Returns a structured JSON response containing:
+ * - `tradeOrders`: the list of fetched trade orders
+ * - `priceHistory`: historical bars for each ticker
+ * - `currentPrices`: a map of each ticker to its latest closing price
+ *
+ * If any step fails, an error response is returned instead.
+ *
  * @function GET
- * @returns {NextResponse} A Next.js Response object with the fetched trade orders data if successful,
- * or an error message if the fetch fails.
+ * @returns {NextResponse} A Next.js Response with portfolio data or an error payload.
  */
 
 export async function GET(): Promise<NextResponse> {
