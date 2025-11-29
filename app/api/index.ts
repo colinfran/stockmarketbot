@@ -13,13 +13,11 @@ import YahooFinance from "yahoo-finance2"
 
 export const currentModel = "xai/grok-4-fast-reasoning"
 
-
 /**
  * Yahoo Finance client instance.
  * @description Configured to suppress specific warnings (e.g., "ripHistorical") while fetching data.
  */
 export const yahooFinance = new YahooFinance({ suppressNotices: ["ripHistorical"] })
-
 
 /**
  * Configured Alpaca client instance for trading operations.
