@@ -88,7 +88,7 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
       if (!data) {
         setReports([])
       } else if (Array.isArray(data)) {
-        setReports(data.reverse() as MarketReport[])
+        setReports(data as MarketReport[])
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
