@@ -123,3 +123,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+.table-hack > div > div {
+  display: flex;
+  flex-direction: column;
+}
