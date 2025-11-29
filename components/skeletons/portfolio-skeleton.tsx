@@ -45,88 +45,43 @@ const PortfolioSkeleton: FC = () => {
 
       {/* Holdings Table Skeleton */}
       <Card className="mt-4">
-        <CardHeader>
-          <CardTitle>Holdings</CardTitle>
-          <CardDescription>Detailed breakdown of your stock positions</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto -mx-6 px-6">
-            <Table className="w-full">
-              <TableHeader>
-                <TableRow className="border-b border-border">
-                  <TableHead className="text-left whitespace-nowrap">Symbol</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Shares</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Avg Cost</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Current Price</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Total Value</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">P/L</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">P/L %</TableHead>
-                </TableRow>
-              </TableHeader>
+  <CardHeader>
+    <CardTitle>Holdings</CardTitle>
+    <CardDescription>Detailed breakdown of your stock positions</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <div className="overflow-x-auto">
+      <Table className="w-full">
+        <TableHeader>
+          <TableRow className="border-b border-border">
+            <TableHead className="text-left">Symbol</TableHead>
+            <TableHead className="text-right">Shares</TableHead>
+            <TableHead className="text-right">Avg Cost</TableHead>
+            <TableHead className="text-right">Current Price</TableHead>
+            <TableHead className="text-right">Total Value</TableHead>
+            <TableHead className="text-right">P/L</TableHead>
+            <TableHead className="text-right">P/L %</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {[1, 2, 3, 4, 5].map((row) => (
+            <TableRow
+              className="border-b border-border hover:bg-muted/50 transition-colors"
+              key={row}
+            >
+              {[...Array(7)].map((_, i) => (
+                <TableCell key={i} className="text-right">
+                  <Skeleton className="h-4 w-full" />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  </CardContent>
+</Card>
 
-              <TableBody>
-                {[1, 2, 3, 4, 5].map((row) => (
-                  <TableRow
-                    className="border-b border-border hover:bg-muted/50 transition-colors"
-                    key={row}
-                  >
-                    {/* Symbol */}
-                    <TableCell className="text-left font-semibold whitespace-nowrap w-[85px]">
-                      <div className="flex items-center justify-start">
-                        <Skeleton className="h-4 w-12" />
-                      </div>
-                    </TableCell>
-
-                    {/* Shares */}
-                    <TableCell className="text-right whitespace-nowrap w-[151px]">
-                      <div className="flex items-center justify-end">
-                        <Skeleton className="h-4 w-18" />
-                      </div>
-                    </TableCell>
-
-                    {/* Avg Cost */}
-                    <TableCell className="text-right whitespace-nowrap w-[98px]">
-                      <div className="flex items-center justify-end">
-                        <Skeleton className="h-4 w-14" />
-                      </div>
-                    </TableCell>
-
-                    {/* Current Price */}
-                    <TableCell className="text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end w-[134px]">
-                        <Skeleton className="h-4 w-14" />
-                      </div>
-                    </TableCell>
-
-                    {/* Total Value */}
-                    <TableCell className="text-right whitespace-nowrap w-[115px]">
-                      <div className="flex items-center justify-end">
-                        <Skeleton className="h-4 w-14" />
-                      </div>
-                    </TableCell>
-
-                    {/* P/L */}
-                    <TableCell className="text-right whitespace-nowra w-[83px]p">
-                      <div className="flex items-center justify-end">
-                        <Skeleton className="h-4 w-12" />
-                      </div>
-                    </TableCell>
-
-                    {/* P/L % */}
-                    <TableCell className="text-right whitespace-nowrap w-[107px]">
-                      <div className="flex items-center justify-end gap-1">
-                        <div className="flex items-center justify-end">
-                          <Skeleton className="h-4 w-12" />
-                        </div>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
     </>
   )
 }
