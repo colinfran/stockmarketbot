@@ -1,7 +1,6 @@
 import { FC } from "react"
 import CountdownTimer from "../countdown-timer"
 import { getNextFriday8pm, getNextMonday630am } from "./time"
-import { Separator } from "../ui/separator"
 
 const Header: FC = () => {
   const friday8pmPST = getNextFriday8pm()

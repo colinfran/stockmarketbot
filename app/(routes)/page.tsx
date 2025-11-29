@@ -47,7 +47,7 @@ const Page: FC = () => {
       <Header />
 
       <div className="container mx-auto px-4 py-4">
-        <Separator className="container mx-auto"/>
+        <Separator className="container mx-auto" />
         {/* Report Picker */}
         <Picker selectedReportId={selectedReportId} setSelectedReportId={setSelectedReportId} />
         <div className="grid gap-6">

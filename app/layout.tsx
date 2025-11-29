@@ -40,7 +40,10 @@ const RootLayout: FC<Layout> = ({ children }) => {
 
         {/* <!-- Open Graph Meta Tags --> */}
         <meta content="website" property="og:type" />
-        <meta content="StockMarketBot - Can AI Actually Trade Stocks Profitably?" property="og:title" />
+        <meta
+          content="StockMarketBot - Can AI Actually Trade Stocks Profitably?"
+          property="og:title"
+        />
         <meta
           content="A real-time proof-of-concept: an AI-powered bot making fully automated stock trades with paper money. See live performance, returns, trades, and positions as the experiment unfolds."
           property="og:description"
@@ -51,7 +54,10 @@ const RootLayout: FC<Layout> = ({ children }) => {
 
         {/* <!-- Twitter Card Meta Tags --> */}
         <meta content="summary_large_image" name="twitter:card" />
-        <meta content="StockMarketBot - Can AI Actually Trade Stocks Profitably?" name="twitter:title" />
+        <meta
+          content="StockMarketBot - Can AI Actually Trade Stocks Profitably?"
+          name="twitter:title"
+        />
         <meta
           content="Live AI trading bot running 100% on paper money. Watch it make decisions, track performance, and find out if AI can beat the market."
           name="twitter:description"
