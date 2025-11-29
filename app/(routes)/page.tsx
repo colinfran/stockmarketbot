@@ -21,8 +21,10 @@ const Page: FC = () => {
 
   useEffect(() => {
     if (reports.length) {
-      const loadedReport = reports.sort((a,b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      console.log('loadedreports', loadedReport)
+      const loadedReport = reports.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      )
+      console.log("loadedreports", loadedReport)
       setSelectedReportId(loadedReport[0].id)
     }
   }, [reports])
