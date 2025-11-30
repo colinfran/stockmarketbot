@@ -19,7 +19,7 @@ const HeaderDropdown: FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isIOS, setIsIOS] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
-  const { subscription, subscribeToPush, sendTestNotification } = usePush()
+  const { subscription, subscribeToPush, sendTestNotification, isSupported } = usePush()
 
   useEffect(() => {
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
@@ -54,7 +54,7 @@ const HeaderDropdown: FC = () => {
                 <span>Portfolio</span>
               </Link>
             </DropdownMenuItem>
-            {!subscription && (
+            {isSupported && !subscription && (
               <DropdownMenuItem
                 className="flex w-full cursor-pointer flex-row items-center gap-2"
                 onClick={isIOS && !isStandalone ? () => setDialogOpen(true) : subscribeToPush}
@@ -62,7 +62,7 @@ const HeaderDropdown: FC = () => {
                 <Bell size={16} /> Notifications
               </DropdownMenuItem>
             )}
-            {subscription && (
+            {isSupported && subscription && (
               <DropdownMenuItem
                 className="flex w-full cursor-pointer flex-row items-center gap-2"
                 onClick={sendTestNotification}
