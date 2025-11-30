@@ -26,8 +26,7 @@ const RootLayout: FC<Layout> = ({ children }) => {
         <link href="/favicon-96x96.png" rel="icon" sizes="96x96" type="image/png" />
         <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
         <title>StockMarketBot | Live AI Trading Experiment (Paper Trading)</title>
-        <meta content="yes" name="apple-mobile-web-app-capable" />
-        <meta content="yes" name="apple-mobile-web-app-capable" />
+        <meta content="yes" name="mobile-web-app-capable" />
         <meta content="default" name="apple-mobile-web-app-status-bar-style" />
         <meta content="StockMarketBot" name="apple-mobile-web-app-title" />
         {/* <!-- SEO Meta Tags --> */}

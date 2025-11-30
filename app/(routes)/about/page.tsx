@@ -4,7 +4,7 @@ import { Github, Linkedin, Globe } from "lucide-react"
 import Link from "next/link"
 import { FC } from "react"
 
-const Page: FC = () => {
+const Page: FC = async () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-12 max-w-3xl">

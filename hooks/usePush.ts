@@ -88,6 +88,7 @@ export function usePush(): UsePushNotificationsReturn {
 
       setIsRegistering(false)
     } catch (error) {
+      alert(alertMessage)
       console.error("Failed to subscribe:", error)
       setIsRegistering(false)
     }
@@ -100,6 +101,7 @@ export function usePush(): UsePushNotificationsReturn {
         setSubscription(null)
       }
     } catch (error) {
+      alert(alertMessage)
       console.error("Failed to unsubscribe:", error)
     }
   }
