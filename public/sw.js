@@ -19,9 +19,7 @@ self.addEventListener("push", (event) => {
   const title = data.title || "New Notification"
   const options = {
     body: data.body,
-    icon: data.icon,
-    badge: data.badge,
-    data: data.data || {},
+    icon: "/apple-icon-180x180.png",
   }
 
   event.waitUntil(self.registration.showNotification(title, options))

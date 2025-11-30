@@ -111,8 +111,7 @@ export function usePush(): UsePushNotificationsReturn {
       const registration = await navigator.serviceWorker.ready
       await registration.showNotification("Test Notification", {
         body: "This is a test push notification!",
-        icon: "https://stockmarketbot.app/android-icon-192x192.png",
-        badge: "https://stockmarketbot.app/android-icon-192x192.png",
+        icon: "/apple-icon-180x180.png",
         tag: "stockmarketbot",
         data: {
           dateOfArrival: Date.now(),
