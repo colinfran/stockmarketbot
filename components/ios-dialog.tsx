@@ -9,7 +9,7 @@ type IosDialogType = {
 
 const IosDialog: FC<IosDialogType> = ({ dialogOpen, setDialogOpen }) => {
   return (
-    <Dialog open={true} onOpenChange={setDialogOpen}>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogOverlay className="backdrop-blur-sm" />
       <DialogContent className="flex flex-col sm:max-w-[70dvw] md:max-w-[80dvw] sm:max-h-[90dvh] [&>div>div>div>div]:!flex [&>div>div>div>div]:!flex-col">
         <DialogHeader className="flex flex-row gap-4 items-center">
