@@ -1,7 +1,7 @@
 import { FC } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { DollarSign, TrendingDown, TrendingUp, Wallet } from "lucide-react"
-import { PortfolioPosition } from "@/app/(routes)/portfolio/calculatePositions"
+import { PortfolioPosition } from "@/lib/utils"
 
 type SummaryType = {
   data: {
