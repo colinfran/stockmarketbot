@@ -9,7 +9,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/providers/theme-provider"
 import Header from "@/components/header/header"
 import { DataProvider } from "@/providers/data-provider"
-import ThemeColorMeta from "@/components/meta-theme"
+import PwaBackground from "@/components/pwa-background"
 
 type Layout = {
   children: ReactNode
@@ -84,7 +84,7 @@ const RootLayout: FC<Layout> = ({ children }) => {
               <main className="flex-1 items-start gap-2 md:gap-4">{children}</main>
             </div>
           </DataProvider>
-          <ThemeColorMeta />
+          <PwaBackground />
         </ThemeProvider>
         <Analytics />
       </body>
