@@ -61,7 +61,7 @@ const HeaderDropdown: FC = () => {
             {isSupported && !subscription && (
               <DropdownMenuItem
                 className="flex w-full cursor-pointer flex-row items-center gap-2"
-                onClick={isIOS ? () => setDialogOpen(true): subscribeToPush }
+                onClick={isIOS ? () => setDialogOpen(true) : subscribeToPush}
               >
                 <Bell size={16} /> Notifications
               </DropdownMenuItem>
