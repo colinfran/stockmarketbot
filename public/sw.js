@@ -1,15 +1,15 @@
 self.addEventListener("install", (event) => {
-  console.log("[v0] Service Worker installing.")
+  console.log("Service Worker installing.")
   self.skipWaiting()
 })
 
 self.addEventListener("activate", (event) => {
-  console.log("[v0] Service Worker activating.")
+  console.log("Service Worker activating.")
   event.waitUntil(self.clients.claim())
 })
 
 self.addEventListener("push", (event) => {
-  console.log("[v0] Push event received:", event)
+  console.log("Push event received:", event)
 
   let data = {}
   if (event.data) {
@@ -28,7 +28,7 @@ self.addEventListener("push", (event) => {
 })
 
 self.addEventListener("notificationclick", (event) => {
-  console.log("[v0] Notification clicked:", event)
+  console.log("Notification clicked:", event)
 
   event.notification.close()
 
