@@ -8,7 +8,7 @@ const ThemeColorMeta: FC = () => {
 
   useEffect(() => {
     const currentTheme = resolvedTheme || theme
-    const themeColor = currentTheme === "dark" ? "#252525" : "#ffffff"
+    const themeColor = currentTheme === "dark" ? "#0a0a0a" : "#ffffff"
 
     // Update or create theme-color meta tag
     // prettier-ignore
