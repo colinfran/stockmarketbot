@@ -23,7 +23,7 @@ type UsePushNotificationsReturn = {
   sendTestNotification: () => Promise<void>
 }
 
-export function usePushNotifications(): UsePushNotificationsReturn {
+export function usePush(): UsePushNotificationsReturn {
   const [isSupported, setIsSupported] = useState<boolean>(false)
   const [subscription, setSubscription] = useState<PushSubscription | null>(null)
   const [isRegistering, setIsRegistering] = useState<boolean>(false)

@@ -11,7 +11,7 @@ import Link from "next/link"
 import { Bell, DollarSignIcon, HomeIcon, InfoIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
 import MenuButton from "./menu-button"
-import { usePushNotifications } from "@/hooks/usePush"
+import { usePush } from "@/hooks/usePush"
 import { Dialog, DialogContent, DialogHeader, DialogOverlay, DialogTitle } from "../ui/dialog"
 
 const HeaderDropdown: FC = () => {
@@ -19,14 +19,7 @@ const HeaderDropdown: FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isIOS, setIsIOS] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
-  const {
-    //isSupported,
-    subscription,
-    // isRegistering,
-    subscribeToPush,
-    // unsubscribeFromPush,
-    sendTestNotification,
-  } = usePushNotifications()
+  const {subscription,subscribeToPush,sendTestNotification} = usePush()
 
   useEffect(() => {
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
