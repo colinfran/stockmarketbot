@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { FC } from "react"
 
-const NotFound:FC = () => {
+const NotFound: FC = () => {
   return (
     <div className="flex min-h-screen mt-[-80px] items-center justify-center bg-background px-4">
       <div className="text-center">
@@ -21,5 +21,4 @@ const NotFound:FC = () => {
   )
 }
 
-export default NotFound;
-
+export default NotFound
