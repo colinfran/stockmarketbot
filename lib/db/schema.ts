@@ -10,6 +10,7 @@ export const marketReports = pgTable("market_reports", {
   assessment_sources: jsonb("assessment_sources").notNull(),
   created_at: timestamp("created_at").defaultNow().notNull(),
   ai_model: text("ai_model"),
+  notification: text("notification"),
 })
 
 export const tradeOrders = pgTable("trade_orders", {
@@ -29,4 +30,12 @@ export const tradeOrders = pgTable("trade_orders", {
   submitted_at: timestamp("submitted_at"),
   filled_at: timestamp("filled_at"),
   expires_at: timestamp("expires_at"),
+})
+
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  endpoint: text("endpoint").notNull().unique(),
+  p256dh: text("p256dh").notNull(),
+  auth: text("auth").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 })

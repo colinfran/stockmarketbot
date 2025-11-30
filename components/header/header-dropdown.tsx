@@ -8,12 +8,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
-import { DollarSignIcon, HomeIcon, InfoIcon } from "lucide-react"
+import { Bell, DollarSignIcon, HomeIcon, InfoIcon } from "lucide-react"
 import ThemeButton from "./theme-button"
 import MenuButton from "./menu-button"
+import { usePushNotifications } from "@/hooks/usePush"
 
 const HeaderDropdown: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const {
+    isSupported,
+    subscription,
+    // isRegistering,
+    subscribeToPush,
+    // unsubscribeFromPush,
+    sendTestNotification,
+  } = usePushNotifications()
 
   return (
     <div className="flex w-full items-center justify-end gap-8">
@@ -40,6 +49,23 @@ const HeaderDropdown: FC = () => {
                 <DollarSignIcon size={16} />
                 <span>Portfolio</span>
               </Link>
+            </DropdownMenuItem>
+
+            {isSupported && !subscription && (
+              <>
+                <DropdownMenuItem
+                  className="flex w-full cursor-pointer flex-row items-center gap-2"
+                  onClick={subscribeToPush}
+                >
+                  <Bell size={16} /> Notifications
+                </DropdownMenuItem>
+              </>
+            )}
+            <DropdownMenuItem
+              className="flex w-full cursor-pointer flex-row items-center gap-2"
+              onClick={sendTestNotification}
+            >
+              <Bell size={16} /> Test Push
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <ThemeButton />

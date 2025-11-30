@@ -1,6 +1,5 @@
 import { FC, ReactNode } from "react"
 import { Analytics } from "@vercel/analytics/next"
-import NextTopLoader from "nextjs-toploader"
 import { Geist, Geist_Mono } from "next/font/google"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -66,7 +65,7 @@ const RootLayout: FC<Layout> = ({ children }) => {
         <meta content="Live view of an AI stock trading experiment" property="twitter:image:alt" />
       </head>
       <body className="flex min-h-screen w-full flex-col">
-        <NextTopLoader color={"#808080"} showSpinner={false} zIndex={100} />
+        {/* <NextTopLoader color={"#808080"} showSpinner={false} zIndex={100} /> */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

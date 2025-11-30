@@ -21,6 +21,7 @@ import { z } from "zod"
  */
 
 export const marketReportSchema = z.object({
+  notification: z.string(),
   executive_summary: z.object({
     market_sentiment: z.string(),
     key_drivers: z.array(z.string()),

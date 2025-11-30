@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { generateWeeklyReport } from "./generate"
 import { addToDb } from "./update"
+import { sendNofication } from "../push"
 
 /**
  * Cron route handler for generating and storing the weekly AI market report.
@@ -38,6 +39,15 @@ export async function GET(request: Request): Promise<NextResponse> {
   if (!update.success) {
     return NextResponse.json({ success: false, error: update.error })
   }
+  console.log("Sending notifications")
+  const date = new Date()
+  const pstDate = new Date(date.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }))
+  const formattedDate = `${pstDate.getMonth() + 1}/${pstDate.getDate()}/${pstDate
+    .getFullYear()
+    .toString()
+    .slice(-2)}`
+  const title = `New AI Trading Report is Ready - ${formattedDate}`
+  await sendNofication(title, report.data!.notification!)
   console.log("Finished ai service cron")
   return NextResponse.json({ success: true })
 }

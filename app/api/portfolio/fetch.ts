@@ -56,7 +56,9 @@ const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
   const uniqueTickers = [...new Set(tickers)]
   const requests = uniqueTickers.map((ticker) =>
     yahooFinance.historical(ticker, {
-      period1: new Date("2025-11-25"),
+      // for testing, use 11/21/2025
+      period1: new Date("2025-11-21"),
+      //period1: new Date("2025-11-25"),
       period2: new Date(),
       interval: "1d",
     }),

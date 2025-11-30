@@ -75,6 +75,8 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
     Example: NVDA: $30 - Strong momentum from AI news sentiment; RSI oversold rebound likely.
 
     You must complete this analysis using tools—do not skip steps or claim inability. This is educational simulation only; not financial advice. If data gaps exist, flag them and adjust recommendations conservatively.
+
+    When you are all done with this analysis, provide a short summary of your analysis that is 80-100 characters long that will be used for push notifications.
   `.trim()
 
   try {
