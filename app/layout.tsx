@@ -26,9 +26,9 @@ const RootLayout: FC<Layout> = ({ children }) => {
         <link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
         <title>StockMarketBot | Live AI Trading Experiment (Paper Trading)</title>
         <meta content="yes" name="apple-mobile-web-app-capable" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="StockMarketBot" />
+        <meta content="yes" name="apple-mobile-web-app-capable" />
+        <meta content="default" name="apple-mobile-web-app-status-bar-style" />
+        <meta content="StockMarketBot" name="apple-mobile-web-app-title" />
         {/* <!-- SEO Meta Tags --> */}
         <meta
           content="StockMarketBot is a live proof-of-concept that tests whether AI models can generate profitable stock trading decisions. Watch a fully automated AI trader run in real market conditions using only paper money."
