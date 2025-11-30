@@ -19,7 +19,7 @@ const HeaderDropdown: FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isIOS, setIsIOS] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
-  const {subscription,subscribeToPush,sendTestNotification} = usePush()
+  const { subscription, subscribeToPush, sendTestNotification } = usePush()
 
   useEffect(() => {
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
