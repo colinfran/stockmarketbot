@@ -20,7 +20,7 @@ const HeaderDropdown: FC = () => {
   const [isIOS, setIsIOS] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
   const {
-    isSupported,
+    //isSupported,
     subscription,
     // isRegistering,
     subscribeToPush,

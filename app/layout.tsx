@@ -9,6 +9,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/providers/theme-provider"
 import Header from "@/components/header/header"
 import { DataProvider } from "@/providers/data-provider"
+import ThemeColorMeta from "@/components/meta-theme"
 
 type Layout = {
   children: ReactNode
@@ -71,7 +72,6 @@ const RootLayout: FC<Layout> = ({ children }) => {
         <link href="/manifest.json" rel="manifest" />
       </head>
       <body className="flex min-h-screen w-full flex-col">
-        {/* <NextTopLoader color={"#808080"} showSpinner={false} zIndex={100} /> */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -84,6 +84,7 @@ const RootLayout: FC<Layout> = ({ children }) => {
               <main className="flex-1 items-start gap-2 md:gap-4">{children}</main>
             </div>
           </DataProvider>
+          <ThemeColorMeta />
         </ThemeProvider>
         <Analytics />
       </body>
