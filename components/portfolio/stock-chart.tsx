@@ -13,7 +13,7 @@ const StockChart: FC<StockChartType> = ({ chartData }) => {
     <div className="pt-4">
       <Card className="border-2 w-full">
         <CardContent>
-          <p className="text-sm text-muted-foreground mb-3">30-Day Price History</p>
+          <p className="text-sm text-muted-foreground mb-3">Price History</p>
           <ChartContainer
             className="h-[300px] w-full"
             config={{

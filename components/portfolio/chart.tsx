@@ -22,7 +22,7 @@ const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePer
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-2xl">Total Portfolio Value</CardTitle>
-            <CardDescription>Combined value of all positions over 30 days</CardDescription>
+            <CardDescription>Combined value of all positions over time</CardDescription>
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold">${currentValue.toFixed(2)}</div>
