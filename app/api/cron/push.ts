@@ -4,6 +4,21 @@ import { pushSubscriptions } from "@/lib/db/schema"
 import { eq } from "drizzle-orm"
 import webpush from "web-push"
 
+/**
+ * Sends a web push notification to all active subscribers.
+ * @description Retrieves all entries from the `pushSubscriptions` table and attempts
+ * to deliver a push notification containing the provided `title` and `body`. Uses
+ * VAPID keys to authenticate with the Web Push service. Automatically removes
+ * invalid or expired subscriptions (status codes 404 or 410).
+ *
+ * @function sendNotification
+ * @param {string} title - The title displayed in the push notification.
+ * @param {string} body - The message body displayed in the push notification.
+ * @returns {Promise<void>} A promise that resolves when all notification send
+ * operations have completed. Throws an error if no subscriptions are found or if
+ * a fatal error occurs during the send process.
+ */
+
 export const sendNotification = async (title: string, body: string): Promise<void> => {
   try {
     const subs = await db.select().from(pushSubscriptions)
