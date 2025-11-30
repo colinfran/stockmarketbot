@@ -58,7 +58,7 @@ const HeaderDropdown: FC = () => {
                 <span>Portfolio</span>
               </Link>
             </DropdownMenuItem>
-            {isSupported && !subscription && (
+            {!subscription && (
               <DropdownMenuItem
                 className="flex w-full cursor-pointer flex-row items-center gap-2"
                 onClick={isIOS ? () => setDialogOpen(true) : subscribeToPush}
@@ -66,7 +66,7 @@ const HeaderDropdown: FC = () => {
                 <Bell size={16} /> Notifications
               </DropdownMenuItem>
             )}
-            {isSupported && subscription && (
+            {subscription && (
               <DropdownMenuItem
                 className="flex w-full cursor-pointer flex-row items-center gap-2"
                 onClick={sendTestNotification}
