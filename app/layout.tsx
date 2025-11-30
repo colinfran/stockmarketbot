@@ -18,6 +18,7 @@ const RootLayout: FC<Layout> = ({ children }) => {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link href="/apple-icon-180x180.png" rel="apple-touch-icon" sizes="180x180" />
         <link href="/android-icon-192x192.png" rel="icon" sizes="192x192" type="image/png" />
         <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
@@ -63,6 +64,10 @@ const RootLayout: FC<Layout> = ({ children }) => {
         />
         <meta content="/ogimage-stockmarketbot.jpg" name="twitter:image" />
         <meta content="Live view of an AI stock trading experiment" property="twitter:image:alt" />
+        
+        <meta name="apple-mobile-web-app-title" content="StockMarketBot" />
+        <link rel="manifest" href="/manifest.json" />
+
       </head>
       <body className="flex min-h-screen w-full flex-col">
         {/* <NextTopLoader color={"#808080"} showSpinner={false} zIndex={100} /> */}

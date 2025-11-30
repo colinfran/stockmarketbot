@@ -18,10 +18,9 @@ self.addEventListener("push", (event) => {
 
   const title = data.title || "New Notification"
   const options = {
-    body: data.body || "You have a new notification!",
-    icon: data.icon || "/icon.svg",
-    badge: data.badge || "/icon.svg",
-    vibrate: [200, 100, 200],
+    body: data.body,
+    icon: data.icon,
+    badge: data.badge,
     data: data.data || {},
   }
 
