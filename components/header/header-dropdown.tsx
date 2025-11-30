@@ -18,6 +18,7 @@ const HeaderDropdown: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isIOS, setIsIOS] = useState(false)
+  const [isStandalone, setIsStandalone] = useState(false)
   const {
     isSupported,
     subscription,
@@ -29,7 +30,9 @@ const HeaderDropdown: FC = () => {
 
   useEffect(() => {
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    const standalone = window.matchMedia("(display-mode: standalone)").matches
     setIsIOS(iOS)
+    setIsStandalone(standalone)
   }, [])
 
   return (
@@ -61,7 +64,7 @@ const HeaderDropdown: FC = () => {
             {!subscription && (
               <DropdownMenuItem
                 className="flex w-full cursor-pointer flex-row items-center gap-2"
-                onClick={isIOS ? () => setDialogOpen(true) : subscribeToPush}
+                onClick={isIOS && !isStandalone ? () => setDialogOpen(true) : subscribeToPush}
               >
                 <Bell size={16} /> Notifications
               </DropdownMenuItem>
