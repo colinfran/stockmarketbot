@@ -19,7 +19,7 @@ const HeaderDropdown: FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [isIOS, setIsIOS] = useState(false)
   const [isStandalone, setIsStandalone] = useState(false)
-  const { subscription, subscribeToPush, sendTestNotification } = usePush()
+  const { subscription, subscribeToPush } = usePush()
 
   useEffect(() => {
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
@@ -62,14 +62,14 @@ const HeaderDropdown: FC = () => {
                 <Bell size={16} /> Notifications
               </DropdownMenuItem>
             )}
-            {subscription && (
+            {/* {subscription && (
               <DropdownMenuItem
                 className="flex w-full cursor-pointer flex-row items-center gap-2"
                 onClick={sendTestNotification}
               >
                 <Bell size={16} /> Test Push
               </DropdownMenuItem>
-            )}
+            )} */}
             <DropdownMenuSeparator />
             <ThemeButton />
             <DropdownMenuSeparator />

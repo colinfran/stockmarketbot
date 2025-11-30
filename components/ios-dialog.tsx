@@ -19,14 +19,6 @@ const IosDialog: FC<IosDialogType> = ({ dialogOpen, setDialogOpen }) => {
         <div className="relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="relative">
-            <div className="flex items-center gap-2 mb-3">
-              {/* <div className="w-8 h-8 rounded-full flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-                </svg>
-              </div> */}
-              {/* <p className="text-white font-semibold text-base">Install App Required</p> */}
-            </div>
             <p className="text-white/95 text-sm leading-relaxed mb-4">
               Push notifications require installing this app to your Home Screen. Safari doesn't
               support notifications in the browser.
