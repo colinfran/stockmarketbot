@@ -20,7 +20,7 @@ const RootLayout: FC<Layout> = ({ children }) => {
     <html lang="en" suppressHydrationWarning>
       <head>
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
-        <link href="/apple-icon-180x180.png" rel="apple-touch-icon" sizes="180x180" />
+        <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
         <link href="/android-icon-192x192.png" rel="icon" sizes="192x192" type="image/png" />
         <link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
         <link href="/favicon-96x96.png" rel="icon" sizes="96x96" type="image/png" />
