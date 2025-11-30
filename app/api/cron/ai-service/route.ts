@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { generateWeeklyReport } from "./generate"
 import { addToDb } from "./update"
-import { sendNofication } from "../push"
+import { sendNotification } from "../push"
 
 /**
  * Cron route handler for generating and storing the weekly AI market report.
@@ -47,7 +47,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     .toString()
     .slice(-2)}`
   const title = `New AI Trading Report is Ready - ${formattedDate}`
-  await sendNofication(title, report.data!.notification!)
+  await sendNotification(title, report.data!.notification!)
   console.log("Finished ai service cron")
   return NextResponse.json({ success: true })
 }
