@@ -2,7 +2,6 @@ import { NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import { pushSubscriptions } from "@/lib/db/schema"
 
-
 /**
  * Handles POST requests to the /api/subscribe route.
  * @description Saves a new push subscription to the `pushSubscriptions` table.
