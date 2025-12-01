@@ -23,6 +23,18 @@ import { alpaca } from "../../index"
 
 export async function purchase(latestReport: MarketReportSchema): Promise<Response<AlpacaOrder[]>> {
   try {
+    // Precheck step to verify that the alpaca trading environment is warm
+    // dont purchase any stocks until market is warm, otherwise will get incorrect order status and values.
+    let ready = false
+    while (!ready) {
+      const quote = await alpaca.getLatestQuote("AAPL")
+      if (quote.bidPrice > 0 && quote.askPrice > 0) {
+        ready = true
+      } else {
+        await new Promise(r => setTimeout(r, 1000))
+      }
+    }
+    
     // STEP 1 — set equity amount
     // we are only ever testing with $100
     const equity = 100
