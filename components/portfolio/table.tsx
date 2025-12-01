@@ -40,8 +40,9 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
               </TableHeader>
 
               <TableBody>
-                {data.positions.map((position) => (
+                {data.positions.map((position, index) => (
                   <TableRow
+                    data-testid={`table-row-${index}`}
                     className="border-b border-border hover:bg-muted/50 transition-colors cursor-pointer"
                     key={position.symbol}
                     onClick={() => {

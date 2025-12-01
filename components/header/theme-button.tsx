@@ -10,6 +10,7 @@ const ThemeButton: FC = () => {
 
   return (
     <DropdownMenuItem
+      data-testid="theme-button"
       className="gap-2"
       onClick={(e) => {
         e.preventDefault()
