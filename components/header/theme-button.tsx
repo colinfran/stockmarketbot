@@ -10,8 +10,8 @@ const ThemeButton: FC = () => {
 
   return (
     <DropdownMenuItem
-      data-testid="theme-button"
       className="gap-2"
+      data-testid="theme-button"
       onClick={(e) => {
         e.preventDefault()
         setTheme(resolvedTheme === "dark" ? "light" : "dark")
