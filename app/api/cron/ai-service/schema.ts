@@ -23,7 +23,7 @@ import { z } from "zod"
 export const marketReportSchema = z.object({
   notification: z.string(),
   executive_summary: z.object({
-     market_sentiment: z.enum([
+    market_sentiment: z.enum([
       "Bullish",
       "Bearish",
       "Neutral",

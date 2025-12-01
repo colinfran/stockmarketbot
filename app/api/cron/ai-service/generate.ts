@@ -34,11 +34,11 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
   const startDateStr = format(startDate, "yyyy-MM-dd")
   const sevenDaysAgoStr = format(sevenDaysAgo, "yyyy-MM-dd")
 
-  const month = format(today, "MMMM")   // November
-  const monthNum = format(today, "M")   // 11
-  const year = format(today, "yyyy")    // 2025
+  const month = format(today, "MMMM") // November
+  const monthNum = format(today, "M") // 11
+  const year = format(today, "yyyy") // 2025
   const day = format(today, "d") // 10
-  
+
   const prompt = `
     You are the best stock market predictor in existence because you leverage up-to-date news, data, and information fetched in real-time from reliable internet sources using your available tools.
     Today is ${todayStr}. Predict the US stock market for next week (starting ${startDateStr}). Base all analysis strictly on real-time data you fetch right now—do not use previous years' data or any pre-trained knowledge alone.
@@ -91,7 +91,6 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
 
     When you are all done with this analysis, provide a short summary of your analysis that is 80-100 characters long that will be used for push notifications.
   `.trim()
-
 
   try {
     console.log("Running weekly AI market report...")
