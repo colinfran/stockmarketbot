@@ -45,6 +45,16 @@ export async function GET(request: Request): Promise<NextResponse> {
   if (!submitted.success) {
     return NextResponse.json({ success: false, error: latestReport.error })
   }
+  console.log("Sending notifications")
+  const date = new Date()
+  const pstDate = new Date(date.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }))
+  const formattedDate = `${pstDate.getMonth() + 1}/${pstDate.getDate()}/${pstDate
+    .getFullYear()
+    .toString()
+    .slice(-2)}`
+  const title = `Stock purchase completed - ${formattedDate}`
+  const description = purchasedStocks.data.map(o => `${o.symbol}: ${o.filled_qty} @ $${o.filled_avg_price}`).join("; ");
+  await sendNotification(title, description)
   console.log("Finished purchase service cron")
   return NextResponse.json({ success: true })
 }
