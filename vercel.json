@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/cron/purchase-service",
-      "schedule": "30 14 * * 1"
+      "schedule": "31 14 * * 1"
     }
   ]
 }
