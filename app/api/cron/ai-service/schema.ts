@@ -23,7 +23,14 @@ import { z } from "zod"
 export const marketReportSchema = z.object({
   notification: z.string(),
   executive_summary: z.object({
-    market_sentiment: z.string(),
+     market_sentiment: z.enum([
+      "Bullish",
+      "Bearish",
+      "Neutral",
+      "Cautiously Optimistic",
+      "Cautiously Bearish",
+      "Mixed",
+    ]),
     key_drivers: z.array(z.string()),
   }),
   market_overview: z.object({
@@ -35,7 +42,7 @@ export const marketReportSchema = z.object({
     weak_sectors: z.array(z.object({ sector: z.string(), rationale: z.string() })),
   }),
   risk_assessment: z.object({
-    overall_risk: z.string(),
+    overall_risk: z.enum(["Low", "Medium", "High"]),
     notes: z.array(z.string()),
   }),
   recommendations: z.array(
@@ -45,7 +52,7 @@ export const marketReportSchema = z.object({
       allocation: z.number(),
     }),
   ),
-  assessment_sources: z.array(z.object({ url: z.string(), title: z.string() })),
+  assessment_sources: z.array(z.object({ url: z.string().url(), title: z.string() })),
 })
 
 export type MarketReportSchema = z.infer<typeof marketReportSchema>
