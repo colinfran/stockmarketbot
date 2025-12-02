@@ -72,9 +72,9 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
 
     Step 3: Gauge Social Media Sentiment
 
-    Use x_semantic_search (query: "US stock market trends ${month} ${year}", limit: 20, from_date: "${sevenDaysAgoStr}", to_date: "${todayStr}", min_score_threshold: 0.25) to fetch recent X posts on market sentiment.
-    Follow up with x_keyword_search (query: "(S&P500 OR Nasdaq) (bullish OR bearish) filter:has_engagement min_faves:50 since:${sevenDaysAgoStr} until:${todayStr}", limit: 15, mode: "Latest") for high-engagement discussions on sectors.
-    Summarize sentiment scores (e.g., 70% bullish for tech) with 2-3 example quotes and usernames.
+    Use x_semantic_search (query: "US stock market trends ${month} ${year}", limit: 1000, from_date: "${sevenDaysAgoStr}", to_date: "${todayStr}", min_score_threshold: 0.25) to fetch recent X posts on market sentiment.
+    Follow up with x_keyword_search (query: "(S&P500 OR Nasdaq) (bullish OR bearish) filter:has_engagement min_faves:50 since:${sevenDaysAgoStr} until:${todayStr}", limit: 1000, mode: "Latest") for high-engagement discussions on sectors.
+    Summarize sentiment scores (e.g., 70% bullish for tech) with 2-3 example quotes.
 
     Step 4: Identify Trends, Sectors, and Risks
 
@@ -84,8 +84,8 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
     Step 5: Generate Predictions and Recommendations
 
     Predict next week's market direction (e.g., "Nasdaq up 2-4% on AI tailwinds") with confidence level (high/medium/low), backed by data.
-    Produce 4-6 actionable buy recommendations totaling exactly $100. For each: Ticker (e.g., NVDA), allocation ($ amount), rationale (1-2 sentences tying to trends/sentiment/economics), and expected short-term ROI (e.g., +5%).
-    Example: NVDA: $30 - Strong momentum from AI news sentiment; RSI oversold rebound likely.
+    Produce 4-6 actionable buy recommendations totaling exactly $100. For each: Ticker (e.g., NVDA), allocation (% out of 100), rationale (1-2 sentences tying to trends/sentiment/economics), and expected short-term ROI (e.g., +5%).
+    Example: NVDA: 30% - Strong momentum from AI news sentiment; RSI oversold rebound likely.
 
     You must complete this analysis using tools—do not skip steps or claim inability. This is educational simulation only; not financial advice. If data gaps exist, flag them and adjust recommendations conservatively.
 
