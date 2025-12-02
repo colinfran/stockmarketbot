@@ -43,6 +43,9 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
     You are the best stock market predictor in existence because you leverage up-to-date news, data, and information fetched in real-time from reliable internet sources using your available tools.
     Today is ${todayStr}. Predict the US stock market for next week (starting ${startDateStr}). Base all analysis strictly on real-time data you fetch right now—do not use previous years' data or any pre-trained knowledge alone.
     
+    CRITICAL RULE: You are forbidden from using any pre-trained knowledge about prices, economic data, or news that is older than the tool results you fetch in this exact session. If you cannot fetch something, explicitly say “Data unavailable — excluding from analysis” and reduce confidence.
+
+
     The following tasks are going to require in-depth research on up-to-date sources, news, articles, yahoo finance data. This needs to be your life's work. You are the best at what you do and because of that you put in more effort than all the other AI models.
     
     Follow this exact step-by-step process to gather and analyze data using your tools. You must use tools for every claim; do not hallucinate or use fake data. If a tool fails or data is unavailable, note it explicitly and proceed with available info.
@@ -76,12 +79,32 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
     Follow up with x_keyword_search (query: "(S&P500 OR Nasdaq) (bullish OR bearish) filter:has_engagement min_faves:50 since:${sevenDaysAgoStr} until:${todayStr}", limit: 1000, mode: "Latest") for high-engagement discussions on sectors.
     Summarize sentiment scores (e.g., 70% bullish for tech) with 2-3 example quotes.
 
-    Step 4: Identify Trends, Sectors, and Risks
 
-    Synthesize data from Steps 1-3: Highlight 3-5 promising sectors (e.g., AI/tech if momentum high) and 2 weak ones (e.g., energy if volatility spikes). Assess overall market risk (low/medium/high) based on VIX levels (fetch via Polygon or web_search: "VIX index ${todayStr}").
+    Step 4: 
+    Execute ALL of the following tool calls in parallel right now (fire them simultaneously):
+      1. code_execution → Pull last 10 trading days daily aggregates (open, high, low, close, volume) for SPY, QQQ, IWM, XLF, XLE, XLV, XLK and the current top 15 gainers using polygon.stock_client.get_daily_gainers_losers()
+      2. web_search → num_results:20, query: "stock market today OR S&P 500 OR Nasdaq site:cnbc.com OR site:bloomberg.com OR site:wsj.com OR site:investing.com after:${sevenDaysAgoStr}"
+      3. browse_page → URL: https://finance.yahoo.com/quote/%5EVIX → Extract today’s VIX close, intraday high/low, and 1-week change
+      4. browse_page → URL: https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm → Extract date and summary of the most recent FOMC decision
+      5. x_keyword_search → query: "(S&P OR SPX OR Nasdaq OR $QQQ OR market) (bullish OR bearish OR crash OR rally OR correction) min_faves:100" since:${sevenDaysAgoStr} limit:1000 mode:Latest
+      6. x_semantic_search → query: "stock market outlook next week OR ${month} ${year}" from_date:${sevenDaysAgoStr} limit:800 min_score_threshold:0.28
+    If any tool fails or returns empty, immediately retry with a slightly different query instead of giving up.
+
+    Before any analysis or prediction, list exactly 5 bullet points of concrete, timestamped facts you retrieved in the last 60 seconds. Example format:
+    • VIX closed at 18.42 on Dec 2, 2025 (Polygon / Yahoo Finance)
+    • NVDA after-hours +2.3 % on Blackwell rumor (CNBC 18:42 ET today)
+    • Latest X sentiment last 48 h: 69 % bullish on $NVDA (top post 21k likes, Dec 1)
+    • CME FedWatch: 72 % chance of 25 bp cut Dec 17
+    • November nonfarm payrolls +228k (BLS, released today 08:30 ET)
+
+    You may not continue until these 5 fresh bullets are shown.
+
+    Step 5: Identify Trends, Sectors, and Risks
+
+    Synthesize data from Steps 1-4: Highlight 3-5 promising sectors (e.g., AI/tech if momentum high) and 2 weak ones (e.g., energy if volatility spikes). Assess overall market risk (low/medium/high) based on VIX levels (fetch via Polygon or web_search: "VIX index ${todayStr}").
     Prioritize: Momentum (price/volume surges), volatility (avoid high-beta if risk-averse), sentiment shifts (e.g., X buzz on earnings), and short-term ROI potential (e.g., upcoming catalysts like Dec earnings).
 
-    Step 5: Generate Predictions and Recommendations
+    Step 6: Generate Predictions and Recommendations
 
     Predict next week's market direction (e.g., "Nasdaq up 2-4% on AI tailwinds") with confidence level (high/medium/low), backed by data.
     Produce 4-6 actionable buy recommendations totaling exactly 100%. For each: Ticker (e.g., NVDA), allocation (% out of 100), rationale (1-2 sentences tying to trends/sentiment/economics), and expected short-term ROI (e.g., +5%).
@@ -99,6 +122,7 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
       schema: marketReportSchema,
       prompt,
       temperature: 1,
+      d
     })
     return { success: true, data: object }
   } catch (err) {
