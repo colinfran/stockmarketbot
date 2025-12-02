@@ -31,9 +31,9 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
                 <TableRow className="border-b border-border">
                   <TableHead className="text-left whitespace-nowrap">Symbol</TableHead>
                   <TableHead className="text-right whitespace-nowrap">Shares</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">Total Value</TableHead>
                   <TableHead className="text-right whitespace-nowrap">Avg Cost</TableHead>
                   <TableHead className="text-right whitespace-nowrap">Current Price</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Total Value</TableHead>
                   <TableHead className="text-right whitespace-nowrap">P/L</TableHead>
                   <TableHead className="text-right whitespace-nowrap">P/L %</TableHead>
                 </TableRow>
@@ -58,20 +58,19 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
                       {Number((position.shares).toFixed(8))}
                     </TableCell>
 
+                    <TableCell className="text-right font-medium whitespace-nowrap">
+                      {`$${position.totalValue.toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}`}
+                    </TableCell>
+
                     <TableCell className="text-right whitespace-nowrap">
                       ${position.avgCost.toFixed(2)}
                     </TableCell>
 
                     <TableCell className="text-right whitespace-nowrap">
                       ${position.currentPrice.toFixed(2)}
-                    </TableCell>
-
-                    <TableCell className="text-right font-medium whitespace-nowrap">
-                      $
-                      {position.totalValue.toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
                     </TableCell>
 
                     <TableCell
