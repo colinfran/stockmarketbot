@@ -84,7 +84,7 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
     Step 5: Generate Predictions and Recommendations
 
     Predict next week's market direction (e.g., "Nasdaq up 2-4% on AI tailwinds") with confidence level (high/medium/low), backed by data.
-    Produce 4-6 actionable buy recommendations totaling exactly $100. For each: Ticker (e.g., NVDA), allocation (% out of 100), rationale (1-2 sentences tying to trends/sentiment/economics), and expected short-term ROI (e.g., +5%).
+    Produce 4-6 actionable buy recommendations totaling exactly 100%. For each: Ticker (e.g., NVDA), allocation (% out of 100), rationale (1-2 sentences tying to trends/sentiment/economics), and expected short-term ROI (e.g., +5%).
     Example: NVDA: 30% - Strong momentum from AI news sentiment; RSI oversold rebound likely.
 
     You must complete this analysis using tools—do not skip steps or claim inability. This is educational simulation only; not financial advice. If data gaps exist, flag them and adjust recommendations conservatively.
