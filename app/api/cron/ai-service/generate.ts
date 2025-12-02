@@ -90,14 +90,18 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
       6. x_semantic_search → query: "stock market outlook next week OR ${month} ${year}" from_date:${sevenDaysAgoStr} limit:800 min_score_threshold:0.28
     If any tool fails or returns empty, immediately retry with a slightly different query instead of giving up.
 
-    Before any analysis or prediction, list exactly 5 bullet points of concrete, timestamped facts you retrieved in the last 60 seconds. Example format:
-    • VIX closed at 18.42 on Dec 2, 2025 (Polygon / Yahoo Finance)
-    • NVDA after-hours +2.3 % on Blackwell rumor (CNBC 18:42 ET today)
-    • Latest X sentiment last 48 h: 69 % bullish on $NVDA (top post 21k likes, Dec 1)
-    • CME FedWatch: 72 % chance of 25 bp cut Dec 17
-    • November nonfarm payrolls +228k (BLS, released today 08:30 ET)
+    Step 4: INTERNAL VERIFICATION (do NOT include this section in the final JSON output)
+    Before you write any analysis or the final JSON, you MUST first retrieve and internally verify at least 6 concrete, timestamped facts from the tools you just executed. Examples of what you must have internally confirmed:
+      • Exact VIX closing value today (Dec 2, 2025) and source
+      • SPY or QQQ closing price or % change today
+      • At least one specific number/stat from Polygon gainers or aggregates
+      • Current CME FedWatch probability for the next Fed meeting
+      • Sentiment split (e.g., 68 % bullish) from x_semantic_search or x_keyword_search
+      • One specific headline or quote from the last 48 hours from web_search or browse_page
 
-    You may not continue until these 5 fresh bullets are shown.
+    If you cannot retrieve and confirm all 6 of these with real tool results right now, you MUST retry the failed tools immediately.  
+    Only after you have successfully confirmed these 6 fresh facts internally are you allowed to proceed to the analysis and final JSON output.
+    Under no circumstances include this verification step or the bullets themselves in the customer-facing response.
 
     Step 5: Identify Trends, Sectors, and Risks
 
