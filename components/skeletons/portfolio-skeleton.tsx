@@ -56,9 +56,9 @@ const PortfolioSkeleton: FC = () => {
                 <TableRow className="border-b border-border">
                   <TableHead className="text-left">Symbol</TableHead>
                   <TableHead className="text-right">Shares</TableHead>
+                  <TableHead className="text-right">Total Value</TableHead>
                   <TableHead className="text-right">Avg Cost</TableHead>
                   <TableHead className="text-right">Current Price</TableHead>
-                  <TableHead className="text-right">Total Value</TableHead>
                   <TableHead className="text-right">P/L</TableHead>
                   <TableHead className="text-right">P/L %</TableHead>
                 </TableRow>
