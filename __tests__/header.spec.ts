@@ -1,9 +1,14 @@
 import { test, expect } from "@playwright/test"
 
 test.describe("Header component", () => {
-  test("navigates to home page from header", async ({ page }) => {
+  test("navigates to home page from header icon", async ({ page }) => {
     await page.goto("/portfolio")
     page.getByRole("img", { name: 'logo' }).click();
+    await expect(page).toHaveURL("/")
+  })
+  test("navigates to home page from header text", async ({ page }) => {
+    await page.goto("/portfolio")
+    page.getByText("stockmarketbot").click();
     await expect(page).toHaveURL("/")
   })
   
@@ -33,7 +38,7 @@ test.describe("Header component", () => {
     const html = page.locator("html");
     await expect(html).toHaveClass(/light/);
     await page.locator("header").getByRole("button").click()
-    await page.getByTestId("theme-button").click()
+    await page.getByRole("menuitem", { name: "Theme" }).click()
     await expect(html).toHaveClass(/dark/);
   })
 })
