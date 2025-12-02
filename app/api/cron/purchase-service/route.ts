@@ -53,7 +53,9 @@ export async function GET(request: Request): Promise<NextResponse> {
     .toString()
     .slice(-2)}`
   const title = `Stock purchase completed - ${formattedDate}`
-  const description = purchasedStocks.data.map(o => `${o.symbol}: ${o.filled_qty} @ $${o.filled_avg_price}`).join("; ");
+  const description = purchasedStocks.data
+    .map((o) => `${o.symbol}: ${o.filled_qty} @ $${o.filled_avg_price}`)
+    .join("; ")
   await sendNotification(title, description)
   console.log("Finished purchase service cron")
   return NextResponse.json({ success: true })

@@ -49,7 +49,7 @@ const Info: FC<InfoType> = ({ position }) => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
         <div>
           <p className="text-sm text-muted-foreground mb-1">Shares Owned</p>
-          <p className="text-xl font-semibold">{Number((position.shares).toFixed(8))}</p>
+          <p className="text-xl font-semibold">{Number(position.shares.toFixed(8))}</p>
         </div>
         <div>
           <p className="text-sm text-muted-foreground mb-1">Average Cost</p>

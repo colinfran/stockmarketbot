@@ -31,10 +31,10 @@ export async function purchase(latestReport: MarketReportSchema): Promise<Respon
       if (quote.BidPrice > 0 && quote.AskPrice > 0) {
         ready = true
       } else {
-        await new Promise(r => setTimeout(r, 1000))
+        await new Promise((r) => setTimeout(r, 1000))
       }
     }
-    
+
     // STEP 1 — set equity amount
     // we are only ever testing with $100
     const equity = 100
@@ -62,7 +62,7 @@ export async function purchase(latestReport: MarketReportSchema): Promise<Respon
         side: "buy",
         type: "market",
         time_in_force: "day",
-        extended_hours: true
+        extended_hours: true,
       })) as AlpacaOrder
       console.log("Order submitted:", order.id)
       purchases.push(order)

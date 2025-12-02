@@ -55,7 +55,7 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
                     </TableCell>
 
                     <TableCell className="text-right whitespace-nowrap">
-                      {Number((position.shares).toFixed(8))}
+                      {Number(position.shares.toFixed(8))}
                     </TableCell>
 
                     <TableCell className="text-right font-medium whitespace-nowrap">
