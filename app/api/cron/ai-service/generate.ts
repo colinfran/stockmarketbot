@@ -122,7 +122,7 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
       schema: marketReportSchema,
       prompt,
       temperature: 1,
-      d
+      d,
     })
     return { success: true, data: object }
   } catch (err) {
