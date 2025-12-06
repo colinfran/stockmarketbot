@@ -5,6 +5,7 @@ import { Separator } from "../ui/separator"
 import { BarChart3 } from "lucide-react"
 
 type SummaryType = {
+  description: string,
   summary: {
     key_drivers: string[]
     market_sentiment: string
@@ -12,7 +13,7 @@ type SummaryType = {
   createdAt: string
 }
 
-const Summary: FC<SummaryType> = ({ summary, createdAt }) => {
+const Summary: FC<SummaryType> = ({ summary, createdAt, description }) => {
   return (
     <Card className="border-border">
       <CardHeader>
@@ -28,6 +29,10 @@ const Summary: FC<SummaryType> = ({ summary, createdAt }) => {
           <p className="text-sm leading-relaxed">
             <TextWithLinks text={summary.market_sentiment} />
           </p>
+        </div>
+        <Separator />
+        <div>
+          <p className="text-sm font-medium text-muted-foreground mb-2">{description}</p>
         </div>
         <Separator />
         <div>
