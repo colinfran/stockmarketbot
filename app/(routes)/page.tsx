@@ -58,8 +58,8 @@ const Page: FC = () => {
           {/* Executive Summary */}
           <Summary
             createdAt={selectedReport.created_at}
+            notification={selectedReport.notification}
             summary={selectedReport.executive_summary}
-            description={selectedReport.notification}
           />
 
           {/* Market Overview */}
