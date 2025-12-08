@@ -73,7 +73,7 @@ export async function purchase(latestReport: MarketReportSchema): Promise<Respon
         type: "market",
         time_in_force: "day",
       })) as AlpacaOrder
-      const filledOrder = await waitForFill(submittedOrder.id);
+      const filledOrder = await waitForFill(order.id);
       console.log("Order submitted:", filledOrder.id)
       purchases.push(filledOrder)
     }
