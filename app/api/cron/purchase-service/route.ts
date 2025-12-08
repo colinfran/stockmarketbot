@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { fetchLatestReport } from "./fetch"
 import { purchase } from "./purchase"
 import { addToDb } from "./update"
+import { sendNotification } from "../push"
 
 /**
  * Cron route handler for executing stock purchases based on the latest AI-generated market report.
