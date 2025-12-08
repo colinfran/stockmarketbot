@@ -21,6 +21,16 @@ import { alpaca } from "../../index"
  * If there is an error, `success` is false and `error` contains the error message.
  */
 
+async function waitForFill(orderId: string) {
+  let order = await alpaca.getOrder(orderId);
+  // Poll every 500ms
+  while (order.status !== "filled") {
+    await new Promise((r) => setTimeout(r, 500));
+    order = await alpaca.getOrder(orderId);
+  }
+  return order;
+}
+
 export async function purchase(latestReport: MarketReportSchema): Promise<Response<AlpacaOrder[]>> {
   try {
     // Precheck step to verify that the alpaca trading environment is warm
@@ -63,8 +73,9 @@ export async function purchase(latestReport: MarketReportSchema): Promise<Respon
         type: "market",
         time_in_force: "day",
       })) as AlpacaOrder
-      console.log("Order submitted:", order.id)
-      purchases.push(order)
+      const filledOrder = await waitForFill(submittedOrder.id);
+      console.log("Order submitted:", filledOrder.id)
+      purchases.push(filledOrder)
     }
     return {
       success: true,
