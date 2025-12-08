@@ -27,8 +27,8 @@ export async function purchase(latestReport: MarketReportSchema): Promise<Respon
     // dont purchase any stocks until market is warm, otherwise will get incorrect order status and values.
     let ready = false
     while (!ready) {
-      const quote = await alpaca.getLatestQuote("AAPL")
-      if (quote.BidPrice > 0 && quote.AskPrice > 0) {
+      const clock = await alpaca.getClock()
+      if (clock.is_open) {
         ready = true
       } else {
         await new Promise((r) => setTimeout(r, 1000))
@@ -62,7 +62,6 @@ export async function purchase(latestReport: MarketReportSchema): Promise<Respon
         side: "buy",
         type: "market",
         time_in_force: "day",
-        extended_hours: true,
       })) as AlpacaOrder
       console.log("Order submitted:", order.id)
       purchases.push(order)
