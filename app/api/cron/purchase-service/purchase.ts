@@ -21,7 +21,19 @@ import { alpaca } from "../../index"
  * If there is an error, `success` is false and `error` contains the error message.
  */
 
-async function waitForFill(orderId: string) {
+const waitForWarm = async (): Promise<void> => {
+  let ready = false
+  while (!ready) {
+    const clock = await alpaca.getClock()
+    if (clock.is_open) {
+      ready = true
+    } else {
+      await new Promise((r) => setTimeout(r, 1000))
+    }
+  }
+}
+
+ const waitForFill = async (orderId: string): Promise<AlpacaOrder> => {
   let order = await alpaca.getOrder(orderId);
   // Poll every 500ms
   while (order.status !== "filled") {
@@ -31,19 +43,11 @@ async function waitForFill(orderId: string) {
   return order;
 }
 
-export async function purchase(latestReport: MarketReportSchema): Promise<Response<AlpacaOrder[]>> {
+export const purchase = async (latestReport: MarketReportSchema): Promise<Response<AlpacaOrder[]>> => {
   try {
     // Precheck step to verify that the alpaca trading environment is warm
     // dont purchase any stocks until market is warm, otherwise will get incorrect order status and values.
-    let ready = false
-    while (!ready) {
-      const clock = await alpaca.getClock()
-      if (clock.is_open) {
-        ready = true
-      } else {
-        await new Promise((r) => setTimeout(r, 1000))
-      }
-    }
+    await waitForWarm();
 
     // STEP 1 — set equity amount
     // we are only ever testing with $100

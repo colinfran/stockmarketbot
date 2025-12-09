@@ -11,7 +11,6 @@ export type AlpacaOrder = {
   symbol: string
   side: string
   notional: string
-  qty: number
   filled_qty: number
   filled_avg_price: number
   status: string

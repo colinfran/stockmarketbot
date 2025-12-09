@@ -21,7 +21,6 @@ export const tradeOrders = pgTable("trade_orders", {
   symbol: text("symbol").notNull(),
   side: text("side").notNull(), // "buy" or "sell"
   notional: numeric("notional"),
-  qty: numeric("qty"),
   filled_qty: numeric("filled_qty"),
   filled_avg_price: numeric("filled_avg_price"),
   status: text("status").notNull(), // e.g. "accepted", "filled"
