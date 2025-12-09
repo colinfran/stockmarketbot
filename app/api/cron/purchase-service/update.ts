@@ -26,7 +26,6 @@ export const addToDb = async (arr: AlpacaOrder[], id: string): Promise<Response<
       side: order.side,
       status: order.status,
       notional: order.notional != null ? String(order.notional) : null,
-      qty: order.qty != null ? String(order.qty) : null,
       filled_qty: order.filled_qty != null ? String(order.filled_qty) : null,
       filled_avg_price: order.filled_avg_price != null ? String(order.filled_avg_price) : null,
       created_at: new Date(order.created_at),
