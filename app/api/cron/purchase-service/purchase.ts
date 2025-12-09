@@ -33,21 +33,23 @@ const waitForWarm = async (): Promise<void> => {
   }
 }
 
- const waitForFill = async (orderId: string): Promise<AlpacaOrder> => {
-  let order = await alpaca.getOrder(orderId);
+const waitForFill = async (orderId: string): Promise<AlpacaOrder> => {
+  let order = await alpaca.getOrder(orderId)
   // Poll every 500ms
   while (order.status !== "filled") {
-    await new Promise((r) => setTimeout(r, 500));
-    order = await alpaca.getOrder(orderId);
+    await new Promise((r) => setTimeout(r, 500))
+    order = await alpaca.getOrder(orderId)
   }
-  return order;
+  return order
 }
 
-export const purchase = async (latestReport: MarketReportSchema): Promise<Response<AlpacaOrder[]>> => {
+export const purchase = async (
+  latestReport: MarketReportSchema,
+): Promise<Response<AlpacaOrder[]>> => {
   try {
     // Precheck step to verify that the alpaca trading environment is warm
     // dont purchase any stocks until market is warm, otherwise will get incorrect order status and values.
-    await waitForWarm();
+    await waitForWarm()
 
     // STEP 1 — set equity amount
     // we are only ever testing with $100
@@ -77,7 +79,7 @@ export const purchase = async (latestReport: MarketReportSchema): Promise<Respon
         type: "market",
         time_in_force: "day",
       })) as AlpacaOrder
-      const filledOrder = await waitForFill(order.id);
+      const filledOrder = await waitForFill(order.id)
       console.log("Order submitted:", filledOrder.id)
       purchases.push(filledOrder)
     }
