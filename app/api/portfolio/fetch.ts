@@ -74,7 +74,9 @@ const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
           const rows = await db.select().from(priceCache).where(eq(priceCache.ticker, ticker))
           const existing = rows[0]
           const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD (UTC)
-          const fetchedDate = existing?.fetched_at ? new Date(existing.fetched_at).toISOString().slice(0, 10) : null
+          const fetchedDate = existing?.fetched_at
+            ? new Date(existing.fetched_at).toISOString().slice(0, 10)
+            : null
 
           if (!existing || fetchedDate !== today) {
             await db
@@ -85,7 +87,9 @@ const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
                 set: { data: fetched, fetched_at: new Date() },
               })
           } else {
-            console.log(`Skipping DB update for ${ticker}; already fetched from yahoo finance api today (${today})`)
+            console.log(
+              `Skipping DB update for ${ticker}; already fetched from yahoo finance api today (${today})`,
+            )
           }
         } catch (e) {
           console.error(`Failed to upsert price cache for ${ticker}:`, e)
