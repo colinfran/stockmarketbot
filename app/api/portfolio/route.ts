@@ -23,21 +23,22 @@ import { fetchAllTradeOrders, fetchPriceHistory } from "./fetch"
  */
 
 export async function GET(): Promise<NextResponse> {
+  const history = await fetchPriceHistory()
+  if (!history.success) {
+    return NextResponse.json({ success: false, error: history.error })
+  }
+  const currentPrices = Object.fromEntries(
+    Object.entries(history.data!).map(([t, h]) => {
+      const sorted = Array.isArray(h)
+        ? [...h].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        : []
+      return [t, sorted.at(-1)?.close]
+    }),
+  )
   const orders = await fetchAllTradeOrders()
   if (!orders.success) {
     return NextResponse.json({ success: false, error: orders.error })
   }
-  const tickers = [...new Set(orders.data!.map((o) => o.symbol))]
-  const history = await fetchPriceHistory(tickers)
-  if (!history.success) {
-    return NextResponse.json({ success: false, error: orders.error })
-  }
-  const currentPrices = Object.fromEntries(
-    Object.entries(history.data!).map(([t, h]) => {
-      const sorted = [...h].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      return [t, sorted.at(-1)!.close]
-    }),
-  )
   return NextResponse.json({
     success: true,
     data: {
