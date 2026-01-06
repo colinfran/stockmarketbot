@@ -46,8 +46,12 @@ export type PriceHistoryType = {
  * @description
  * - Deduplicates the provided list of tickers.
  * - Sends all Yahoo Finance historical requests in parallel for performance.
- * - Fetches daily bars from a fixed start date (2025-11-25) up to now.
- * - Shapes the result as an object: `{ TICKER: HistoricalHistoryResult }`
+ * - Fetches daily bars from a fixed start date (2025-11-21) up to now.
+ * - Caches results in the `priceCache` table: cache entries are upserted, but DB writes
+ *   are limited to once per day (the function skips updates if the existing row's `fetched_at`
+ *   is already from today).
+ * - Date comparisons use UTC (YYYY-MM-DD) when deciding whether to skip a DB write.
+ * - Fall back to use cache if Yahoo Finance API fetch fails.
  *
  * @function getPricesSince
  * @param {string[]} tickers - List of stock tickers.
@@ -95,7 +99,7 @@ const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
           console.error(`Failed to upsert price cache for ${ticker}:`, e)
         }
 
-        return [ticker, fetched] as const
+        return [ticker, fetched]
       } catch (error) {
         console.error(`Failed to fetch price for ${ticker}`)
         console.error(error)
@@ -107,7 +111,7 @@ const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
           console.error(`Failed to read price cache for ${ticker} from the DB`)
           console.error(e)
         }
-        return [ticker, null] as const
+        return [ticker, null]
       }
     }),
   )
