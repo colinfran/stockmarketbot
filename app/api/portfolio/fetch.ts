@@ -1,8 +1,9 @@
 import { db } from "@/lib/db"
-import { tradeOrders } from "@/lib/db/schema"
+import { tradeOrders, priceCache } from "@/lib/db/schema"
 import { AlpacaOrder, Response } from "../types"
 import { HistoricalHistoryResult } from "yahoo-finance2/modules/historical"
 import { yahooFinance } from "../index"
+import { eq } from "drizzle-orm"
 
 /**
  * Fetches all trade orders from the database.
@@ -33,10 +34,10 @@ export const fetchAllTradeOrders = async (): Promise<Response<AlpacaOrder[]>> =>
 /**
  * Represents a mapping of tickers to their historical price data.
  * @typedef PriceHistoryType
- * @property {HistoricalHistoryResult} [ticker] - The Yahoo Finance historical price array for a ticker.
+ * @property {HistoricalHistoryResult | null} [ticker] - The Yahoo Finance historical price array for a ticker, or null if fetch failed.
  */
 export type PriceHistoryType = {
-  [k: string]: HistoricalHistoryResult
+  [k: string]: HistoricalHistoryResult | null
 }
 
 /**
@@ -52,19 +53,47 @@ export type PriceHistoryType = {
  * @param {string[]} tickers - List of stock tickers.
  * @returns {Promise<PriceHistoryType>} A map of ticker → historical data.
  */
+
 const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
   const uniqueTickers = [...new Set(tickers)]
-  const requests = uniqueTickers.map((ticker) =>
-    yahooFinance.historical(ticker, {
-      // for testing, use 11/21/2025, after we get the first purchases, we can use 11/25/2025
-      period1: new Date("2025-11-21"),
-      //period1: new Date("2025-11-25"),
-      period2: new Date(),
-      interval: "1d",
+
+  const entries = await Promise.all(
+    uniqueTickers.map(async (ticker) => {
+      try {
+        // throw new Error("Testing error handling for ticker " + ticker)
+        const fetched = await yahooFinance.historical(ticker, {
+          // for testing, use 11/21/2025, after we get the first purchases, we can use 11/25/2025
+          period1: new Date("2025-11-21"),
+          //period1: new Date("2025-11-25"),
+          period2: new Date(),
+          interval: "1d",
+        })
+
+        // Upsert cached value
+        await db
+          .insert(priceCache)
+          .values({ ticker, data: fetched, fetched_at: new Date() })
+          .onConflictDoUpdate({
+            target: priceCache.ticker,
+            set: { data: fetched, fetched_at: new Date() },
+          })
+        return [ticker, fetched] as const
+      } catch (error) {
+        console.error(`Failed to fetch price for ${ticker}:`, error)
+        console.error("Reading from db cache")
+        try {
+          const rows = await db.select().from(priceCache).where(eq(priceCache.ticker, ticker))
+          return [ticker, rows[0].data]
+        } catch (e) {
+          console.error(`Failed to read price cache for ${ticker} from the DB:`, e)
+          /* ignore */
+        }
+        return [ticker, null] as const
+      }
     }),
   )
-  const results = await Promise.all(requests)
-  return Object.fromEntries(uniqueTickers.map((ticker, index) => [ticker, results[index]]))
+
+  return Object.fromEntries(entries)
 }
 
 /**

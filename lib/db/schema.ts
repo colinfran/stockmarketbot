@@ -38,3 +38,9 @@ export const pushSubscriptions = pgTable("push_subscriptions", {
   auth: text("auth").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 })
+
+export const priceCache = pgTable("price_cache", {
+  ticker: text("ticker").primaryKey(),
+  data: jsonb("data").notNull(),
+  fetched_at: timestamp("fetched_at").defaultNow().notNull(),
+})
