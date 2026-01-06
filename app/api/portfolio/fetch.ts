@@ -79,12 +79,12 @@ const getPricesSince = async (): Promise<PriceHistoryType> => {
  */
 export const fetchPriceHistory = async (): Promise<Response<PriceHistoryType>> => {
   try {
-    console.log("Fetch price history from db")
+    console.log("Fetch price history from database")
     const output = await getPricesSince()
-    console.log("Successfully fetched price history from db")
+    console.log("Successfully fetched price history from database")
     return { success: true, data: output }
   } catch (error) {
-    console.error("Error fetching price history from db:", error)
+    console.error("Error fetching price history from database:", error)
     return { success: false, error: (error as Error).message }
   }
 }
