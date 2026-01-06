@@ -97,14 +97,15 @@ const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
 
         return [ticker, fetched] as const
       } catch (error) {
-        console.error(`Failed to fetch price for ${ticker}:`, error)
+        console.error(`Failed to fetch price for ${ticker}`)
+        console.error(error)
         console.error("Reading from db cache")
         try {
           const rows = await db.select().from(priceCache).where(eq(priceCache.ticker, ticker))
           return [ticker, rows[0].data]
         } catch (e) {
-          console.error(`Failed to read price cache for ${ticker} from the DB:`, e)
-          /* ignore */
+          console.error(`Failed to read price cache for ${ticker} from the DB`)
+          console.error(e)
         }
         return [ticker, null] as const
       }
