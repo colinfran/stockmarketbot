@@ -69,14 +69,28 @@ const getPricesSince = async (tickers: string[]): Promise<PriceHistoryType> => {
           interval: "1d",
         })
 
-        // Upsert cached value
-        await db
-          .insert(priceCache)
-          .values({ ticker, data: fetched, fetched_at: new Date() })
-          .onConflictDoUpdate({
-            target: priceCache.ticker,
-            set: { data: fetched, fetched_at: new Date() },
-          })
+        // Upsert cached value, but only once per day to avoid redundant writes
+        try {
+          const rows = await db.select().from(priceCache).where(eq(priceCache.ticker, ticker))
+          const existing = rows[0]
+          const today = new Date().toISOString().slice(0, 10) // YYYY-MM-DD (UTC)
+          const fetchedDate = existing?.fetched_at ? new Date(existing.fetched_at).toISOString().slice(0, 10) : null
+
+          if (!existing || fetchedDate !== today) {
+            await db
+              .insert(priceCache)
+              .values({ ticker, data: fetched, fetched_at: new Date() })
+              .onConflictDoUpdate({
+                target: priceCache.ticker,
+                set: { data: fetched, fetched_at: new Date() },
+              })
+          } else {
+            console.log(`Skipping DB update for ${ticker}; already fetched from yahoo finance api today (${today})`)
+          }
+        } catch (e) {
+          console.error(`Failed to upsert price cache for ${ticker}:`, e)
+        }
+
         return [ticker, fetched] as const
       } catch (error) {
         console.error(`Failed to fetch price for ${ticker}:`, error)
