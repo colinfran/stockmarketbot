@@ -85,8 +85,16 @@ const Page: FC = () => {
       portfolioValueData.push({ date, value: Number(totalValue.toFixed(2)) })
     })
 
-    const firstValue = portfolioValueData[0]?.value || 0
+    // Append today's data point using the live current value so the chart
+    // line connects all the way to the displayed current value.
     const currentValue = calculations.totalValue
+    const today = new Date().toISOString()
+    const lastDataPoint = portfolioValueData[portfolioValueData.length - 1]
+    if (!lastDataPoint || Math.abs(lastDataPoint.value - currentValue) > 0.01) {
+      portfolioValueData.push({ date: today, value: Number(currentValue.toFixed(2)) })
+    }
+
+    const firstValue = portfolioValueData[0]?.value || 0
     const portfolioChangePercent =
       firstValue > 0 ? ((currentValue - firstValue) / firstValue) * 100 : 0
 
