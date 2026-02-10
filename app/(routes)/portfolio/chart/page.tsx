@@ -3,7 +3,7 @@
 import PortfolioChart from "@/components/portfolio/chart"
 import { ChartSkeleton } from "@/components/skeletons/chart-skeleton"
 import { useData } from "@/providers/data-provider"
-import { FC } from "react"
+import { FC, useMemo } from "react"
 
 type PortfolioChartData = {
   data: { date: string; value: number }[]
@@ -11,58 +11,94 @@ type PortfolioChartData = {
   changePercent: number
 }
 
-const Page: FC = () => {
-  const { loading, calculations, currentPrices, priceHistory } = useData()
-
-  if (loading.portfolio || !calculations) {
-    return <ChartSkeleton />
+/**
+ * Calculates shares held for a given symbol on a specific date
+ * by summing up all filled orders on or before that date.
+ */
+const getSharesOnDate = (
+  orders: { symbol: string; side: string; filled_qty: number; filled_at: string }[],
+  symbol: string,
+  date: Date,
+): number => {
+  let shares = 0
+  for (const order of orders) {
+    if (order.symbol !== symbol) continue
+    const filledDate = new Date(order.filled_at)
+    if (filledDate <= date) {
+      const qty = Number(order.filled_qty)
+      if (order.side === "buy") {
+        shares += qty
+      } else if (order.side === "sell") {
+        shares -= qty
+      }
+    }
   }
+  return shares
+}
 
-  const symbols = calculations.positions.map((pos) => pos.symbol)
+const Page: FC = () => {
+  const { loading, calculations, currentPrices, priceHistory, portfolio } = useData()
 
-  const chartData = symbols.map((symbol) => {
-    const position = calculations.positions.find((pos) => pos.symbol === symbol)
-    const currentPrice = position?.currentPrice || currentPrices[symbol] || 100
-    const historicalData = priceHistory[symbol] //(symbol, currentPrice, 30)
-    const firstPrice = historicalData[0].close
-    const changePercent = ((currentPrice - firstPrice) / firstPrice) * 100
+  const portfolioData = useMemo<PortfolioChartData | null>(() => {
+    if (!calculations) return null
+
+    const symbols = calculations.positions.map((pos) => pos.symbol)
+
+    // Build a map of symbol -> sorted historical price bars
+    const symbolPriceData = symbols.reduce(
+      (acc, symbol) => {
+        const history = priceHistory[symbol]
+        if (Array.isArray(history) && history.length > 0) {
+          acc[symbol] = history
+        }
+        return acc
+      },
+      {} as Record<string, typeof priceHistory[string]>,
+    )
+
+    // Get all unique dates from the first symbol that has data
+    const firstSymbolWithData = symbols.find((s) => symbolPriceData[s])
+    if (!firstSymbolWithData) return null
+
+    const dates = symbolPriceData[firstSymbolWithData].map((d) => d.date)
+
+    const portfolioValueData: { date: string; value: number }[] = []
+
+    dates.forEach((date, index) => {
+      const dateObj = new Date(date)
+      // Set to end of day to include orders filled on this date
+      dateObj.setHours(23, 59, 59, 999)
+
+      let totalValue = 0
+
+      symbols.forEach((symbol) => {
+        // Calculate how many shares were held on this specific date
+        const sharesOnDate = getSharesOnDate(portfolio, symbol, dateObj)
+
+        if (sharesOnDate > 0) {
+          const priceData = symbolPriceData[symbol]
+          const priceAtDate = priceData?.[index]?.close || currentPrices[symbol] || 0
+          totalValue += priceAtDate * sharesOnDate
+        }
+      })
+
+      portfolioValueData.push({ date, value: Number(totalValue.toFixed(2)) })
+    })
+
+    const firstValue = portfolioValueData[0]?.value || 0
+    const currentValue = calculations.totalValue
+    const portfolioChangePercent =
+      firstValue > 0 ? ((currentValue - firstValue) / firstValue) * 100 : 0
 
     return {
-      symbol,
-      data: historicalData,
-      currentPrice,
-      changePercent,
+      data: portfolioValueData,
+      currentValue,
+      changePercent: portfolioChangePercent,
     }
-  })
+  }, [calculations, priceHistory, currentPrices, portfolio])
 
-  const portfolioValueData: { date: string; value: number }[] = []
-  const dates = chartData[0]?.data.map((d) => d.date) || []
-
-  dates.forEach((date, index) => {
-    let totalValue = 0
-    chartData.forEach((stock) => {
-      const position = calculations.positions.find((pos) => pos.symbol === stock.symbol)
-      if (position) {
-        const priceAtDate = stock.data[index]?.close || stock.currentPrice
-        totalValue += priceAtDate * position.shares
-      }
-    })
-    portfolioValueData.push({ date, value: Number(totalValue.toFixed(2)) })
-  })
-
-  const firstValue = portfolioValueData[0]?.value || 0
-  const currentValue = calculations.totalValue
-  const portfolioChangePercent =
-    firstValue > 0 ? ((currentValue - firstValue) / firstValue) * 100 : 0
-
-  const portfolioData: PortfolioChartData = {
-    data: portfolioValueData,
-    currentValue,
-    changePercent: portfolioChangePercent,
-  }
-
-  if (!portfolioData) {
-    return null
+  if (loading.portfolio || !calculations || !portfolioData) {
+    return <ChartSkeleton />
   }
 
   return (
