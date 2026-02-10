@@ -6,8 +6,9 @@ import { useData } from "@/providers/data-provider"
 import { FC, useMemo } from "react"
 
 type PortfolioChartData = {
-  data: { date: string; value: number }[]
+  data: { date: string; value: number; invested: number }[]
   currentValue: number
+  totalInvested: number
   changePercent: number
 }
 
@@ -36,6 +37,29 @@ const getSharesOnDate = (
   return shares
 }
 
+/**
+ * Calculates total money invested (cost basis) on or before a specific date.
+ * Buy orders add to the cost basis, sell orders subtract.
+ */
+const getInvestedOnDate = (
+  orders: { side: string; filled_qty: number; filled_avg_price: number; filled_at: string }[],
+  date: Date,
+): number => {
+  let invested = 0
+  for (const order of orders) {
+    const filledDate = new Date(order.filled_at)
+    if (filledDate <= date) {
+      const cost = Number(order.filled_qty) * Number(order.filled_avg_price)
+      if (order.side === "buy") {
+        invested += cost
+      } else if (order.side === "sell") {
+        invested -= cost
+      }
+    }
+  }
+  return invested
+}
+
 const Page: FC = () => {
   const { loading, calculations, currentPrices, priceHistory, portfolio } = useData()
 
@@ -62,7 +86,7 @@ const Page: FC = () => {
 
     const dates = symbolPriceData[firstSymbolWithData].map((d) => d.date)
 
-    const portfolioValueData: { date: string; value: number }[] = []
+    const portfolioValueData: { date: string; value: number; invested: number }[] = []
 
     dates.forEach((date, index) => {
       const dateObj = new Date(date)
@@ -82,16 +106,28 @@ const Page: FC = () => {
         }
       })
 
-      portfolioValueData.push({ date, value: Number(totalValue.toFixed(2)) })
+      // Calculate total money invested up to this date
+      const invested = getInvestedOnDate(portfolio, dateObj)
+
+      portfolioValueData.push({
+        date,
+        value: Number(totalValue.toFixed(2)),
+        invested: Number(invested.toFixed(2)),
+      })
     })
 
     // Append today's data point using the live current value so the chart
     // line connects all the way to the displayed current value.
     const currentValue = calculations.totalValue
-    const today = new Date().toISOString()
+    const today = new Date()
+    const todayInvested = getInvestedOnDate(portfolio, today)
     const lastDataPoint = portfolioValueData[portfolioValueData.length - 1]
     if (!lastDataPoint || Math.abs(lastDataPoint.value - currentValue) > 0.01) {
-      portfolioValueData.push({ date: today, value: Number(currentValue.toFixed(2)) })
+      portfolioValueData.push({
+        date: today.toISOString(),
+        value: Number(currentValue.toFixed(2)),
+        invested: Number(todayInvested.toFixed(2)),
+      })
     }
 
     const firstValue = portfolioValueData[0]?.value || 0
@@ -101,6 +137,7 @@ const Page: FC = () => {
     return {
       data: portfolioValueData,
       currentValue,
+      totalInvested: todayInvested,
       changePercent: portfolioChangePercent,
     }
   }, [calculations, priceHistory, currentPrices, portfolio])
@@ -113,6 +150,7 @@ const Page: FC = () => {
     <PortfolioChart
       changePercent={portfolioData.changePercent}
       currentValue={portfolioData.currentValue}
+      totalInvested={portfolioData.totalInvested}
       data={portfolioData.data}
     />
   )

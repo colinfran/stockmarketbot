@@ -7,12 +7,13 @@ import { TrendingUp } from "lucide-react"
 import { FC } from "react"
 
 type PortfolioChartProps = {
-  data: { date: string; value: number }[]
+  data: { date: string; value: number; invested: number }[]
   currentValue: number
+  totalInvested: number
   changePercent: number
 }
 
-const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePercent }) => {
+const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, totalInvested, changePercent }) => {
   const sortedData = [...data].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   )
@@ -33,6 +34,14 @@ const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePer
               {changePercent >= 0 ? "+" : ""}
               {changePercent.toFixed(2)}%
             </div>
+            <div className="text-sm text-muted-foreground mt-1">
+              Invested: ${totalInvested.toFixed(2)}
+            </div>
+            <div
+              className={`text-sm ${currentValue - totalInvested >= 0 ? "text-green-500" : "text-red-500"}`}
+            >
+              {currentValue - totalInvested >= 0 ? "+" : ""}${(currentValue - totalInvested).toFixed(2)} return
+            </div>
           </div>
         </div>
       </CardHeader>
@@ -42,7 +51,11 @@ const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePer
           config={{
             value: {
               label: "Portfolio Value",
-              color: "red",
+              color: "hsl(var(--foreground))",
+            },
+            invested: {
+              label: "Total Invested",
+              color: "hsl(var(--muted-foreground))",
             },
           }}
         >
@@ -65,7 +78,6 @@ const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePer
               <ChartTooltip
                 content={
                   <ChartTooltipContent
-                    formatter={(value) => [`$${Number(value).toLocaleString()}`, "Value"]}
                     labelFormatter={(value) => {
                       const date = new Date(value)
                       return date.toLocaleDateString("en-US", {
@@ -80,10 +92,21 @@ const PortfolioChart: FC<PortfolioChartProps> = ({ data, currentValue, changePer
               <Line
                 activeDot={{ r: 4 }}
                 dataKey="value"
+                name="Portfolio Value"
                 dot={false}
                 stroke="currentColor"
                 strokeWidth={3}
                 type="monotone"
+              />
+              <Line
+                activeDot={{ r: 3 }}
+                dataKey="invested"
+                name="Total Invested"
+                dot={false}
+                stroke="hsl(var(--muted-foreground))"
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                type="stepAfter"
               />
             </LineChart>
           </ResponsiveContainer>
