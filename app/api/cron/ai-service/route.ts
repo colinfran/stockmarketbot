@@ -24,12 +24,12 @@ import { sendNotification } from "../push"
  */
 
 export async function GET(request: Request): Promise<NextResponse> {
-  // const authHeader = request.headers.get("authorization")
-  // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-  //   return new NextResponse("Unauthorized", {
-  //     status: 401,
-  //   })
-  // }
+  const authHeader = request.headers.get("authorization")
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new NextResponse("Unauthorized", {
+      status: 401,
+    })
+  }
   console.log("Running ai service cron")
   const report = await generateWeeklyReport()
   if (!report.success) {

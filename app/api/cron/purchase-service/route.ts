@@ -27,12 +27,12 @@ import { sendNotification } from "../push"
  */
 
 export async function GET(_request: Request): Promise<NextResponse> {
-  // const authHeader = request.headers.get("authorization")
-  // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-  //   return new NextResponse("Unauthorized", {
-  //     status: 401,
-  //   })
-  // }
+  const authHeader = request.headers.get("authorization")
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new NextResponse("Unauthorized", {
+      status: 401,
+    })
+  }
   console.log("Running purchase service cron")
   const latestReport = await fetchLatestReport()
   if (!latestReport.success || !latestReport.data) {
