@@ -3,23 +3,57 @@ import { AlpacaOrder, Response } from "../../types"
 import { alpaca } from "../../index"
 
 /**
- * Executes purchase orders based on the latest AI-generated market report.
- * @description Takes a MarketReportSchema object containing stock recommendations,
- * validates that allocations sum to 100%, and places fractional buy orders through the Alpaca API.
- * Logs progress at each step and returns a Response object with all submitted orders or an error.
+ * Executes trade orders based on the latest AI-generated market report.
+ * @description Takes a MarketReportSchema object containing stock and option recommendations,
+ * validates allocation constraints, then places stock and options orders via Alpaca.
  *
- * Steps:
- * 1. Set test equity amount (currently $100 for simulation purposes).
- * 2. Validate that allocation percentages total 100.
- * 3. Loop through each recommendation and calculate the dollar allocation.
- * 4. Place fractional buy orders via Alpaca for each ticker.
- *
- * @function purchase
- * @param {MarketReportSchema} latestReport The latest market report containing stock recommendations.
- * @returns {Promise<Response<AlpacaOrder[]>>} A promise resolving to a Response object.
- * If successful, `success` is true and `data` contains an array of submitted AlpacaOrder objects.
- * If there is an error, `success` is false and `error` contains the error message.
+ * Order of execution:
+ * 1. Stock buys/sells using the $100 stock budget.
+ * 2. Vertical spread options using a separate $100 options budget.
  */
+
+type PositionSnapshot = {
+  symbol: string
+  qty: string
+}
+
+type Recommendation = MarketReportSchema["recommendations"][number]
+type StockRecommendation = Extract<Recommendation, { asset_type: "stock" }>
+type OptionVerticalSpreadRecommendation = Extract<
+  Recommendation,
+  { asset_type: "option_vertical_spread" }
+>
+
+type ParsedOptionSymbol = {
+  underlying: string
+  expirationYYMMDD: string
+  optionType: "call" | "put"
+  strike: number
+}
+
+type OptionSnapshotLike = {
+  Symbol?: string
+  LatestQuote?: {
+    BidPrice?: number
+    AskPrice?: number
+  }
+}
+
+type OptionCandidate = {
+  symbol: string
+  expirationYYMMDD: string
+  strike: number
+  optionType: "call" | "put"
+  bid: number
+  ask: number
+  mid: number
+}
+
+type VerticalSelection = {
+  longLeg: OptionCandidate
+  shortLeg: OptionCandidate
+  limitDebit: number
+}
 
 const waitForWarm = async (): Promise<void> => {
   let ready = false
@@ -33,59 +67,350 @@ const waitForWarm = async (): Promise<void> => {
   }
 }
 
-const waitForFill = async (orderId: string): Promise<AlpacaOrder> => {
-  let order = await alpaca.getOrder(orderId)
-  // Poll every 500ms
-  while (order.status !== "filled") {
+const waitForTerminal = async (orderId: string): Promise<AlpacaOrder> => {
+  const terminalStatuses = new Set([
+    "filled",
+    "canceled",
+    "expired",
+    "replaced",
+    "pending_cancel",
+    "stopped",
+    "rejected",
+    "suspended",
+    "calculated",
+  ])
+
+  const maxAttempts = 240 // 2 minutes @ 500ms
+  let attempts = 0
+  let order = (await alpaca.getOrder(orderId)) as AlpacaOrder
+
+  while (!terminalStatuses.has(order.status)) {
     await new Promise((r) => setTimeout(r, 500))
-    order = await alpaca.getOrder(orderId)
+    order = (await alpaca.getOrder(orderId)) as AlpacaOrder
+    attempts += 1
+    if (attempts >= maxAttempts) {
+      throw new Error(`Timed out waiting for order ${orderId} to reach terminal status`)
+    }
   }
+
+  if (order.status !== "filled") {
+    throw new Error(`Order ${orderId} completed with non-filled status: ${order.status}`)
+  }
+
   return order
 }
+
+const roundQty = (value: number): number => {
+  return Math.floor(value * 1_000_000) / 1_000_000
+}
+
+const parseOccOptionSymbol = (symbol: string): ParsedOptionSymbol | null => {
+  const trimmed = symbol.trim()
+  const match = /^([A-Z]{1,6})(\d{6})([CP])(\d{8})$/.exec(trimmed)
+  if (!match) return null
+
+  const [, underlying, expirationYYMMDD, cpFlag, strikeRaw] = match
+  return {
+    underlying,
+    expirationYYMMDD,
+    optionType: cpFlag === "C" ? "call" : "put",
+    strike: Number(strikeRaw) / 1000,
+  }
+}
+
+const toYYMMDD = (date: Date): string => {
+  const yy = String(date.getUTCFullYear()).slice(-2)
+  const mm = String(date.getUTCMonth() + 1).padStart(2, "0")
+  const dd = String(date.getUTCDate()).padStart(2, "0")
+  return `${yy}${mm}${dd}`
+}
+
+const getUnderlyingPrice = async (symbol: string): Promise<number | null> => {
+  try {
+    const trade = (await alpaca.getLatestTrade(symbol)) as { Price?: number }
+    const price = Number(trade?.Price)
+    return Number.isFinite(price) && price > 0 ? price : null
+  } catch (error) {
+    console.warn(`Failed to fetch latest trade for ${symbol}:`, error)
+    return null
+  }
+}
+
+const getChainCandidates = async (
+  recommendation: OptionVerticalSpreadRecommendation,
+  spot: number,
+): Promise<OptionCandidate[]> => {
+  const strikeLow = Number((spot * 0.85).toFixed(2))
+  const strikeHigh = Number((spot * 1.15).toFixed(2))
+
+  const snapshots = (await alpaca.getOptionChain(recommendation.underlying_ticker, {
+    expiration_date: recommendation.expiration_date,
+    strike_price_gte: strikeLow,
+    strike_price_lte: strikeHigh,
+  })) as OptionSnapshotLike[]
+
+  const raw = Array.isArray(snapshots) ? snapshots : []
+
+  return raw
+    .map((snapshot) => {
+      const symbol = snapshot.Symbol || ""
+      const parsed = parseOccOptionSymbol(symbol)
+      if (!parsed) return null
+
+      const bid = Number(snapshot.LatestQuote?.BidPrice ?? 0)
+      const ask = Number(snapshot.LatestQuote?.AskPrice ?? 0)
+      if (!Number.isFinite(bid) || !Number.isFinite(ask) || ask <= 0) return null
+
+      return {
+        symbol,
+        expirationYYMMDD: parsed.expirationYYMMDD,
+        strike: parsed.strike,
+        optionType: parsed.optionType,
+        bid,
+        ask,
+        mid: (bid + ask) / 2,
+      } as OptionCandidate
+    })
+    .filter((x): x is OptionCandidate => Boolean(x))
+    .filter((x) => x.optionType === recommendation.option_type)
+}
+
+const pickNearestExpiry = (
+  candidates: OptionCandidate[],
+  targetExpirationDate: string,
+): OptionCandidate[] => {
+  if (candidates.length === 0) return []
+
+  const targetDate = new Date(`${targetExpirationDate}T00:00:00Z`)
+  const targetYYMMDD = Number.isNaN(targetDate.getTime()) ? null : toYYMMDD(targetDate)
+
+  const expirations = [...new Set(candidates.map((c) => c.expirationYYMMDD))]
+  if (expirations.length === 0) return []
+
+  const selectedExpiration =
+    targetYYMMDD && expirations.includes(targetYYMMDD) ? targetYYMMDD : expirations.sort()[0]
+
+  return candidates.filter((c) => c.expirationYYMMDD === selectedExpiration)
+}
+
+const selectVerticalSpread = (
+  recommendation: OptionVerticalSpreadRecommendation,
+  spot: number,
+  candidates: OptionCandidate[],
+): VerticalSelection | null => {
+  const strikesAsc = [...new Set(candidates.map((c) => c.strike))].sort((a, b) => a - b)
+  if (strikesAsc.length < 2) return null
+
+  const nearestStrike = strikesAsc.reduce((best, current) => {
+    return Math.abs(current - spot) < Math.abs(best - spot) ? current : best
+  }, strikesAsc[0])
+
+  let longStrike: number | null = null
+  let shortStrike: number | null = null
+
+  if (recommendation.option_type === "call") {
+    const longIdx = strikesAsc.findIndex((s) => s >= nearestStrike)
+    const idx = longIdx >= 0 ? longIdx : strikesAsc.length - 2
+    longStrike = strikesAsc[idx]
+    shortStrike = strikesAsc[idx + 1] ?? null
+  } else {
+    const longIdx = [...strikesAsc].reverse().find((s) => s <= nearestStrike)
+    if (longIdx == null) return null
+    longStrike = longIdx
+    const lower = strikesAsc.filter((s) => s < longIdx)
+    shortStrike = lower.length > 0 ? lower[lower.length - 1] : null
+  }
+
+  if (longStrike == null || shortStrike == null) return null
+
+  const longLeg = candidates
+    .filter((c) => c.strike === longStrike)
+    .sort((a, b) => b.bid + b.ask - (a.bid + a.ask))[0]
+  const shortLeg = candidates
+    .filter((c) => c.strike === shortStrike)
+    .sort((a, b) => b.bid + b.ask - (a.bid + a.ask))[0]
+
+  if (!longLeg || !shortLeg) return null
+
+  const conservativeDebit = longLeg.ask - shortLeg.bid
+  const midDebit = longLeg.mid - shortLeg.mid
+  const rawDebit = conservativeDebit > 0 ? conservativeDebit : midDebit
+  const limitDebit = Number(Math.max(rawDebit, 0.01).toFixed(2))
+
+  if (!Number.isFinite(limitDebit) || limitDebit <= 0) return null
+
+  return {
+    longLeg,
+    shortLeg,
+    limitDebit,
+  }
+}
+
+const isOptionRecommendation = (rec: Recommendation): rec is OptionVerticalSpreadRecommendation =>
+  rec.asset_type === "option_vertical_spread"
+
+const isStockRecommendation = (rec: Recommendation): rec is StockRecommendation =>
+  rec.asset_type === "stock"
 
 export const purchase = async (
   latestReport: MarketReportSchema,
 ): Promise<Response<AlpacaOrder[]>> => {
   try {
-    // Precheck step to verify that the alpaca trading environment is warm
-    // dont purchase any stocks until market is warm, otherwise will get incorrect order status and values.
     await waitForWarm()
 
-    // STEP 1 — set equity amount
-    // we are only ever testing with $100
-    const equity = 100
-    console.log("Account equity:", equity)
-    const allocations = latestReport.recommendations.map((item) => ({
-      ticker: item.ticker,
-      percent: item.allocation,
-    }))
-    // STEP 2 — validate input
-    const totalPercent = allocations.reduce((sum, x) => sum + x.percent, 0)
-    if (totalPercent !== 100) {
-      throw new Error("Allocation percentages must total 100")
+    const stockBudget = 100
+    const optionsBudget = 100
+
+    const stockRecommendations = latestReport.recommendations.filter(isStockRecommendation)
+    const optionRecommendations = latestReport.recommendations.filter(isOptionRecommendation)
+
+    const buyRecommendations = stockRecommendations.filter((item) => item.action === "buy")
+    const sellRecommendations = stockRecommendations.filter((item) => item.action === "sell")
+
+    const totalBuyPercent = buyRecommendations.reduce((sum, x) => sum + x.allocation, 0)
+    if (buyRecommendations.length > 0 && totalBuyPercent !== 100) {
+      throw new Error("Buy allocation percentages must total 100")
     }
-    // STEP 3 — loop through allocations
-    const purchases = []
-    for (const item of allocations) {
-      const { ticker, percent } = item
-      // Convert percent → dollar amount
-      const allocationAmount = equity * (percent / 100)
-      console.log(`Buying ~$${allocationAmount.toFixed(2)} of ${ticker}`)
-      // STEP 4 — fractional (notional) buy order
+
+    const totalOptionsPercent = optionRecommendations.reduce((sum, x) => sum + x.allocation, 0)
+    if (totalOptionsPercent > 100) {
+      throw new Error("Options allocation percentages must be <= 100")
+    }
+
+    const executedOrders: AlpacaOrder[] = []
+
+    // 1) Execute stock buys
+    for (const item of buyRecommendations) {
+      const allocationAmount = stockBudget * (item.allocation / 100)
+      console.log(`Buying ~$${allocationAmount.toFixed(2)} of ${item.ticker}`)
+
       const order = (await alpaca.createOrder({
-        symbol: ticker,
+        symbol: item.ticker,
         notional: allocationAmount,
         side: "buy",
         type: "market",
         time_in_force: "day",
       })) as AlpacaOrder
-      const filledOrder = await waitForFill(order.id)
-      console.log("Order submitted:", filledOrder.id)
-      purchases.push(filledOrder)
+
+      const filledOrder = await waitForTerminal(order.id)
+      executedOrders.push(filledOrder)
     }
+
+    // 2) Execute stock sells
+    if (sellRecommendations.length > 0) {
+      const positions = (await alpaca.getPositions()) as PositionSnapshot[]
+      const qtyBySymbol = new Map<string, number>(
+        positions.map((position) => [position.symbol, Number(position.qty)]),
+      )
+
+      for (const item of sellRecommendations) {
+        const heldQty = qtyBySymbol.get(item.ticker) || 0
+
+        if (heldQty <= 0) {
+          console.warn(`Skipping sell for ${item.ticker}: no position held`)
+          continue
+        }
+
+        if (item.allocation <= 0 || item.allocation > 100) {
+          console.warn(
+            `Skipping sell for ${item.ticker}: invalid sell allocation ${item.allocation}`,
+          )
+          continue
+        }
+
+        const qtyToSell = roundQty((heldQty * item.allocation) / 100)
+        if (qtyToSell <= 0) {
+          console.warn(`Skipping sell for ${item.ticker}: computed sell quantity is 0`)
+          continue
+        }
+
+        console.log(
+          `Selling ${qtyToSell} shares of ${item.ticker} (${item.allocation}% of ${heldQty})`,
+        )
+        const order = (await alpaca.createOrder({
+          symbol: item.ticker,
+          qty: String(qtyToSell),
+          side: "sell",
+          type: "market",
+          time_in_force: "day",
+        })) as AlpacaOrder
+
+        const filledOrder = await waitForTerminal(order.id)
+        executedOrders.push(filledOrder)
+      }
+    }
+
+    // 3) Execute option vertical spreads (after stock trades), priced from live chain data.
+    for (const item of optionRecommendations) {
+      const spreadBudget = optionsBudget * (item.allocation / 100)
+      if (spreadBudget <= 0) {
+        console.warn(`Skipping spread for ${item.underlying_ticker}: allocation is <= 0`)
+        continue
+      }
+
+      const spot = await getUnderlyingPrice(item.underlying_ticker)
+      if (!spot) {
+        console.warn(`Skipping spread for ${item.underlying_ticker}: no live underlying price`)
+        continue
+      }
+
+      const candidates = await getChainCandidates(item, spot)
+      const expiryCandidates = pickNearestExpiry(candidates, item.expiration_date)
+      if (expiryCandidates.length < 2) {
+        console.warn(
+          `Skipping spread for ${item.underlying_ticker}: insufficient live chain candidates`,
+        )
+        continue
+      }
+
+      const selected = selectVerticalSpread(item, spot, expiryCandidates)
+      if (!selected) {
+        console.warn(`Skipping spread for ${item.underlying_ticker}: no valid vertical found`)
+        continue
+      }
+
+      const maxAffordableContracts = Math.floor(spreadBudget / (selected.limitDebit * 100))
+      const contractsToTrade = Math.min(item.contracts, maxAffordableContracts)
+      if (contractsToTrade < 1) {
+        console.warn(
+          `Skipping spread for ${item.underlying_ticker}: budget $${spreadBudget.toFixed(2)} too low for live debit ${selected.limitDebit}`,
+        )
+        continue
+      }
+
+      console.log(
+        `Placing ${item.option_type.toUpperCase()} vertical spread for ${item.underlying_ticker} ` +
+          `(${contractsToTrade} contracts, live debit ${selected.limitDebit})`,
+      )
+
+      const order = (await alpaca.createOrder({
+        qty: contractsToTrade,
+        side: "buy",
+        type: "limit",
+        time_in_force: "day",
+        order_class: "mleg",
+        limit_price: selected.limitDebit,
+        legs: [
+          {
+            symbol: selected.longLeg.symbol,
+            ratio_qty: 1,
+            side: "buy",
+          },
+          {
+            symbol: selected.shortLeg.symbol,
+            ratio_qty: 1,
+            side: "sell",
+          },
+        ],
+      })) as AlpacaOrder
+
+      const filledOrder = await waitForTerminal(order.id)
+      executedOrders.push(filledOrder)
+    }
+
     return {
       success: true,
-      data: purchases,
+      data: executedOrders,
     }
   } catch (err) {
     console.error("Error placing orders:", err)

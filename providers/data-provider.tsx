@@ -1,6 +1,6 @@
 "use client"
 import { MarketReportSchema } from "@/app/api/cron/ai-service/schema"
-import { AlpacaOrder, Prices } from "@/app/api/types"
+import { AlpacaOrder, AlpacaPosition, Prices } from "@/app/api/types"
 import { calculatePositions, CalculateType } from "@/lib/utils"
 import React, {
   createContext,
@@ -40,6 +40,8 @@ type ContextProps = {
   error: Error | null
   reports: MarketReport[]
   portfolio: AlpacaOrder[]
+  openPositions: AlpacaPosition[]
+  realizedSpreadPnL: number
   currentPrices: Prices
   calculations?: CalculateType
   priceHistory: PriceHistory
@@ -53,6 +55,8 @@ const defaultContextValue: ContextProps = {
   error: null,
   reports: [],
   portfolio: [],
+  openPositions: [],
+  realizedSpreadPnL: 0,
   currentPrices: {},
   priceHistory: {},
 }
@@ -64,6 +68,8 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const portfolioUrl = "/api/portfolio"
   const [reports, setReports] = useState<MarketReport[]>([])
   const [portfolio, setPortfolio] = useState<AlpacaOrder[]>([])
+  const [openPositions, setOpenPositions] = useState<AlpacaPosition[]>([])
+  const [realizedSpreadPnL, setRealizedSpreadPnL] = useState<number>(0)
   const [currentPrices, setCurrentPrices] = useState<Prices>({})
   const [priceHistory, setPriceHistory] = useState<PriceHistory>({})
   const [loading, setLoading] = useState<{
@@ -112,6 +118,8 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
       const data = (json && json.data) || json
       console.log("portfolio data", data)
       setPortfolio(data.tradeOrders)
+      setOpenPositions(data.openPositions || [])
+      setRealizedSpreadPnL(Number(data.realizedSpreadPnL || 0))
       setPriceHistory(data.priceHistory)
       setCurrentPrices(data.currentPrices)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -136,7 +144,17 @@ export const DataProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
   return (
     <DataContext.Provider
-      value={{ loading, reports, portfolio, currentPrices, priceHistory, calculations, error }}
+      value={{
+        loading,
+        reports,
+        portfolio,
+        openPositions,
+        realizedSpreadPnL,
+        currentPrices,
+        priceHistory,
+        calculations,
+        error,
+      }}
     >
       {children}
     </DataContext.Provider>

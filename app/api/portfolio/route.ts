@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server"
-import { fetchAllTradeOrders, fetchPriceHistory } from "./fetch"
+import {
+  fetchAllTradeOrders,
+  fetchOpenPositions,
+  fetchPriceHistory,
+  fetchRealizedSpreadPnL,
+} from "./fetch"
 
 /**
  * Handles GET requests to the /api/portfolio route.
@@ -39,10 +44,20 @@ export async function GET(): Promise<NextResponse> {
   if (!orders.success) {
     return NextResponse.json({ success: false, error: orders.error })
   }
+  const openPositions = await fetchOpenPositions()
+  if (!openPositions.success) {
+    return NextResponse.json({ success: false, error: openPositions.error })
+  }
+  const realizedSpreadPnL = await fetchRealizedSpreadPnL()
+  if (!realizedSpreadPnL.success) {
+    return NextResponse.json({ success: false, error: realizedSpreadPnL.error })
+  }
   return NextResponse.json({
     success: true,
     data: {
       tradeOrders: orders.data,
+      openPositions: openPositions.data,
+      realizedSpreadPnL: realizedSpreadPnL.data?.totalRealizedPL || 0,
       priceHistory: history.data,
       currentPrices: currentPrices,
     },

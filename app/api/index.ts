@@ -4,14 +4,18 @@ import YahooFinance from "yahoo-finance2"
 /**
  * The LLM model used for all AI requests.
  *
- * `xai/grok-4-fast-reasoning`:
- * - High-speed variant of Grok-4 with enhanced reasoning ability
- * - Supports long context windows (up to ~2M tokens)
- * - Good for multi-step reasoning, analysis, and structured output
- * - More cost-efficient than the full Grok-4 reasoning model
+ * `xai/grok-4.1-fast-reasoning`:
+ * - Latest high-speed variant in the Grok 4.1 series (released early 2026)
+ * - Improved reasoning depth, tool usage, and agentic behavior over Grok-4
+ * - Maintains fast inference while supporting very long context windows (~2M tokens)
+ * - Strong multi-step analysis, structured JSON output, and real-time tool chaining
+ * - More accurate on complex financial/market reasoning and sentiment synthesis
+ *   compared to previous fast variants
+ * - Still significantly more cost-efficient than the full non-fast Grok 4.1 reasoning model
+ * - Recommended upgrade for scripts that need deeper thinking without large latency increase
  */
 
-export const currentModel = "xai/grok-4-fast-reasoning"
+export const currentModel = "xai/grok-4.1-fast-reasoning"
 
 /**
  * Yahoo Finance client instance.

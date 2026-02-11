@@ -94,9 +94,9 @@ const Page: FC = () => {
       portfolioValueData.push({ date: today, value: Number(currentValue.toFixed(2)) })
     }
 
-    const firstValue = portfolioValueData[0]?.value || 0
+    const baselineValue = portfolioValueData.find((point) => point.value > 0)?.value || 0
     const portfolioChangePercent =
-      firstValue > 0 ? ((currentValue - firstValue) / firstValue) * 100 : 0
+      baselineValue > 0 ? ((currentValue - baselineValue) / baselineValue) * 100 : 0
 
     return {
       data: portfolioValueData,

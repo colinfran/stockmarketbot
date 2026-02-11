@@ -46,11 +46,24 @@ export const marketReportSchema = z.object({
     notes: z.array(z.string()),
   }),
   recommendations: z.array(
-    z.object({
-      ticker: z.string(),
-      rationale: z.string(),
-      allocation: z.number(),
-    }),
+    z.union([
+      z.object({
+        asset_type: z.literal("stock").default("stock"),
+        ticker: z.string(),
+        rationale: z.string(),
+        allocation: z.number(),
+        action: z.enum(["buy", "sell"]),
+      }),
+      z.object({
+        asset_type: z.literal("option_vertical_spread"),
+        underlying_ticker: z.string(),
+        option_type: z.enum(["call", "put"]),
+        expiration_date: z.string(),
+        contracts: z.number().int().positive(),
+        allocation: z.number(),
+        rationale: z.string(),
+      }),
+    ]),
   ),
   assessment_sources: z.array(z.object({ url: z.string().url(), title: z.string() })),
 })

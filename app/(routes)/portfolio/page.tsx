@@ -5,10 +5,11 @@ import { Card, CardHeader } from "@/components/ui/card"
 import { useData } from "@/providers/data-provider"
 import PortfolioSkeleton from "@/components/skeletons/portfolio-skeleton"
 import HoldingsTable from "@/components/portfolio/table"
-import Summary from "@/components/portfolio/summary"
+import RecentTrades from "@/components/portfolio/recent-trades"
+import OpenSpreadPositions from "@/components/portfolio/open-spread-positions"
 
 const Page: FC = () => {
-  const { portfolio, loading, calculations } = useData()
+  const { portfolio, openPositions, realizedSpreadPnL, loading, calculations } = useData()
 
   if (loading.portfolio && calculations) {
     return <PortfolioSkeleton />
@@ -24,11 +25,14 @@ const Page: FC = () => {
 
   return (
     <>
-      {/* Portfolio Summary */}
-      <Summary data={calculations!} />
-
       {/* Holdings Table */}
       <HoldingsTable data={calculations!} />
+
+      {/* Recent Buys/Sells */}
+      <RecentTrades orders={portfolio} />
+
+      {/* Open Spread Positions */}
+      <OpenSpreadPositions openPositions={openPositions} realizedSpreadPnL={realizedSpreadPnL} />
     </>
   )
 }

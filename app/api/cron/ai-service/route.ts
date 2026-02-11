@@ -24,12 +24,12 @@ import { sendNotification } from "../push"
  */
 
 export async function GET(request: Request): Promise<NextResponse> {
-  const authHeader = request.headers.get("authorization")
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return new NextResponse("Unauthorized", {
-      status: 401,
-    })
-  }
+  // const authHeader = request.headers.get("authorization")
+  // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  //   return new NextResponse("Unauthorized", {
+  //     status: 401,
+  //   })
+  // }
   console.log("Running ai service cron")
   const report = await generateWeeklyReport()
   if (!report.success) {
@@ -46,7 +46,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     .getFullYear()
     .toString()
     .slice(-2)}`
-  const title = `New AI Trading Report is Ready - ${formattedDate}`
+  const title = `AI Report • ${formattedDate}`
   await sendNotification(title, report.data!.notification!)
   console.log("Finished ai service cron")
   return NextResponse.json({ success: true })
