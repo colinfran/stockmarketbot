@@ -26,7 +26,7 @@ import { sendNotification } from "../push"
  * Returns `{ success: false, error: string }` if any step fails.
  */
 
-export async function GET(_request: Request): Promise<NextResponse> {
+export async function GET(request: Request): Promise<NextResponse> {
   const authHeader = request.headers.get("authorization")
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return new NextResponse("Unauthorized", {
