@@ -22,19 +22,20 @@ type Report = MarketReportSchema & {
 
 export const fetchLatestReport = async (): Promise<Response<Report>> => {
   try {
+    console.log("Fetching latest market report from database")
     // get the most recent report
     const rows = await db
       .select()
       .from(marketReports)
       .orderBy(desc(marketReports.created_at))
       .limit(1)
-
+    
     return {
       success: true,
       data: rows[0] as unknown as Report,
     }
   } catch (err) {
-    console.error("Error placing orders:", err)
+    console.error("Error fetching latest market report:", err)
     return {
       success: false,
       error: err as string,

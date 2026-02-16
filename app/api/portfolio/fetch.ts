@@ -38,10 +38,10 @@ type RealizedSpreadPnL = {
  * @returns {Promise<Response<AlpacaOrder[]>>} A wrapped success/error response.
  */
 export const fetchAllTradeOrders = async (): Promise<Response<AlpacaOrder[]>> => {
-  console.log("Fetch all tradeOrders from database")
+  // console.log("Fetch all tradeOrders from database")
   try {
     const data = await db.select().from(tradeOrders)
-    console.log("Successfully fetched tradeOrders from database")
+    // console.log("Successfully fetched tradeOrders from database")
     return { success: true, data: data as unknown as AlpacaOrder[] }
   } catch (error) {
     console.error("Error fetching tradeOrders from database:", error)
@@ -50,7 +50,7 @@ export const fetchAllTradeOrders = async (): Promise<Response<AlpacaOrder[]>> =>
 }
 
 export const fetchOpenPositions = async (): Promise<Response<AlpacaPosition[]>> => {
-  console.log("Fetch open positions from Alpaca")
+  // console.log("Fetch open positions from Alpaca")
   try {
     const positions = (await alpaca.getPositions()) as AlpacaPosition[]
     const data = positions.map((position) => ({
@@ -86,6 +86,9 @@ const getOptionFills = async (): Promise<ActivityFill[]> => {
       direction: "asc",
       pageSize,
       pageToken,
+      until: undefined,
+      after: undefined,
+      date: undefined,
     })) as ActivityFill[]
 
     if (!Array.isArray(page) || page.length === 0) break
@@ -161,7 +164,7 @@ const computeRealizedOptionPnL = (fills: ActivityFill[]): number => {
 
 export const fetchRealizedSpreadPnL = async (): Promise<Response<RealizedSpreadPnL>> => {
   try {
-    console.log("Fetch realized spread P/L from Alpaca activities")
+    // console.log("Fetch realized spread P/L from Alpaca activities")
     const fills = await getOptionFills()
     const totalRealizedPL = computeRealizedOptionPnL(fills)
     return { success: true, data: { totalRealizedPL } }
@@ -221,9 +224,9 @@ const getPricesSince = async (): Promise<PriceHistoryType> => {
  */
 export const fetchPriceHistory = async (): Promise<Response<PriceHistoryType>> => {
   try {
-    console.log("Fetch price history from database")
+    // console.log("Fetch price history from database")
     const output = await getPricesSince()
-    console.log("Successfully fetched price history from database")
+    // console.log("Successfully fetched price history from database")
     return { success: true, data: output }
   } catch (error) {
     console.error("Error fetching price history from database:", error)

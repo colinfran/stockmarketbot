@@ -1,6 +1,7 @@
 import { MarketReportSchema } from "../ai-service/schema"
 import { AlpacaOrder, Response } from "../../types"
 import { alpaca } from "../../index"
+import { addPendingSpreadOrder } from "./pending"
 
 /**
  * Executes trade orders based on the latest AI-generated market report.
@@ -55,6 +56,11 @@ type VerticalSelection = {
   limitDebit: number
 }
 
+type SpreadAttemptResult =
+  | { status: "filled"; order: AlpacaOrder }
+  | { status: "pending"; orderId: string; orderStatus: string; reason: string }
+  | { status: "skipped"; reason: string }
+
 const waitForWarm = async (): Promise<void> => {
   let ready = false
   while (!ready) {
@@ -98,6 +104,38 @@ const waitForTerminal = async (orderId: string): Promise<AlpacaOrder> => {
   }
 
   return order
+}
+
+const waitForFillOrTimeout = async (orderId: string, timeoutMs: number): Promise<AlpacaOrder> => {
+  const terminalStatuses = new Set([
+    "filled",
+    "canceled",
+    "expired",
+    "replaced",
+    "pending_cancel",
+    "stopped",
+    "rejected",
+    "suspended",
+    "calculated",
+  ])
+
+  const start = Date.now()
+  let order = (await alpaca.getOrder(orderId)) as AlpacaOrder
+
+  while (!terminalStatuses.has(order.status) && Date.now() - start < timeoutMs) {
+    await new Promise((r) => setTimeout(r, 500))
+    order = (await alpaca.getOrder(orderId)) as AlpacaOrder
+  }
+
+  return order
+}
+
+const cancelOrderSafe = async (orderId: string): Promise<void> => {
+  try {
+    await alpaca.cancelOrder(orderId)
+  } catch (error) {
+    console.warn(`Failed to cancel order ${orderId}:`, error)
+  }
 }
 
 const roundQty = (value: number): number => {
@@ -252,8 +290,95 @@ const isOptionRecommendation = (rec: Recommendation): rec is OptionVerticalSprea
 const isStockRecommendation = (rec: Recommendation): rec is StockRecommendation =>
   rec.asset_type === "stock"
 
+export const attemptVerticalSpread = async (
+  recommendation: OptionVerticalSpreadRecommendation,
+  spreadBudget: number,
+  maxWaitMs: number,
+): Promise<SpreadAttemptResult> => {
+  if (spreadBudget <= 0) {
+    return {
+      status: "skipped",
+      reason: `Allocation is <= 0 for ${recommendation.underlying_ticker}`,
+    }
+  }
+
+  const spot = await getUnderlyingPrice(recommendation.underlying_ticker)
+  if (!spot) {
+    return {
+      status: "skipped",
+      reason: `No live underlying price for ${recommendation.underlying_ticker}`,
+    }
+  }
+
+  const candidates = await getChainCandidates(recommendation, spot)
+  const expiryCandidates = pickNearestExpiry(candidates, recommendation.expiration_date)
+  if (expiryCandidates.length < 2) {
+    return {
+      status: "skipped",
+      reason: `Insufficient live chain candidates for ${recommendation.underlying_ticker}`,
+    }
+  }
+
+  const selected = selectVerticalSpread(recommendation, spot, expiryCandidates)
+  if (!selected) {
+    return {
+      status: "skipped",
+      reason: `No valid vertical found for ${recommendation.underlying_ticker}`,
+    }
+  }
+
+  const maxAffordableContracts = Math.floor(spreadBudget / (selected.limitDebit * 100))
+  const contractsToTrade = Math.min(recommendation.contracts, maxAffordableContracts)
+  if (contractsToTrade < 1) {
+    return {
+      status: "skipped",
+      reason: `Budget $${spreadBudget.toFixed(2)} too low for live debit ${selected.limitDebit}`,
+    }
+  }
+
+  console.log(
+    `Placing ${recommendation.option_type.toUpperCase()} vertical spread for ${recommendation.underlying_ticker} ` +
+      `(${contractsToTrade} contracts, live debit ${selected.limitDebit})`,
+  )
+
+  const order = (await alpaca.createOrder({
+    qty: contractsToTrade,
+    side: "buy",
+    type: "limit",
+    time_in_force: "day",
+    order_class: "mleg",
+    limit_price: selected.limitDebit,
+    legs: [
+      {
+        symbol: selected.longLeg.symbol,
+        ratio_qty: 1,
+        side: "buy",
+      },
+      {
+        symbol: selected.shortLeg.symbol,
+        ratio_qty: 1,
+        side: "sell",
+      },
+    ],
+  })) as AlpacaOrder
+
+  const finalOrder = await waitForFillOrTimeout(order.id, maxWaitMs)
+  if (finalOrder.status === "filled") {
+    return { status: "filled", order: finalOrder }
+  }
+
+  await cancelOrderSafe(order.id)
+  return {
+    status: "pending",
+    orderId: order.id,
+    orderStatus: finalOrder.status,
+    reason: `Order not filled (${finalOrder.status})`,
+  }
+}
+
 export const purchase = async (
   latestReport: MarketReportSchema,
+  reportId: string,
 ): Promise<Response<AlpacaOrder[]>> => {
   try {
     await waitForWarm()
@@ -343,69 +468,31 @@ export const purchase = async (
     // 3) Execute option vertical spreads (after stock trades), priced from live chain data.
     for (const item of optionRecommendations) {
       const spreadBudget = optionsBudget * (item.allocation / 100)
-      if (spreadBudget <= 0) {
-        console.warn(`Skipping spread for ${item.underlying_ticker}: allocation is <= 0`)
+      const attempt = await attemptVerticalSpread(item, spreadBudget, 30_000)
+
+      if (attempt.status === "filled") {
+        executedOrders.push(attempt.order)
         continue
       }
 
-      const spot = await getUnderlyingPrice(item.underlying_ticker)
-      if (!spot) {
-        console.warn(`Skipping spread for ${item.underlying_ticker}: no live underlying price`)
-        continue
-      }
-
-      const candidates = await getChainCandidates(item, spot)
-      const expiryCandidates = pickNearestExpiry(candidates, item.expiration_date)
-      if (expiryCandidates.length < 2) {
+      if (attempt.status === "pending") {
         console.warn(
-          `Skipping spread for ${item.underlying_ticker}: insufficient live chain candidates`,
+          `Spread order pending for ${item.underlying_ticker}; will retry later (${attempt.orderStatus})`,
         )
+        const pending = await addPendingSpreadOrder({
+          marketReportId: reportId,
+          recommendation: item,
+          orderId: attempt.orderId,
+          status: attempt.orderStatus,
+          error: attempt.reason,
+        })
+        if (!pending.success) {
+          console.warn(`Failed to store pending spread: ${pending.error}`)
+        }
         continue
       }
 
-      const selected = selectVerticalSpread(item, spot, expiryCandidates)
-      if (!selected) {
-        console.warn(`Skipping spread for ${item.underlying_ticker}: no valid vertical found`)
-        continue
-      }
-
-      const maxAffordableContracts = Math.floor(spreadBudget / (selected.limitDebit * 100))
-      const contractsToTrade = Math.min(item.contracts, maxAffordableContracts)
-      if (contractsToTrade < 1) {
-        console.warn(
-          `Skipping spread for ${item.underlying_ticker}: budget $${spreadBudget.toFixed(2)} too low for live debit ${selected.limitDebit}`,
-        )
-        continue
-      }
-
-      console.log(
-        `Placing ${item.option_type.toUpperCase()} vertical spread for ${item.underlying_ticker} ` +
-          `(${contractsToTrade} contracts, live debit ${selected.limitDebit})`,
-      )
-
-      const order = (await alpaca.createOrder({
-        qty: contractsToTrade,
-        side: "buy",
-        type: "limit",
-        time_in_force: "day",
-        order_class: "mleg",
-        limit_price: selected.limitDebit,
-        legs: [
-          {
-            symbol: selected.longLeg.symbol,
-            ratio_qty: 1,
-            side: "buy",
-          },
-          {
-            symbol: selected.shortLeg.symbol,
-            ratio_qty: 1,
-            side: "sell",
-          },
-        ],
-      })) as AlpacaOrder
-
-      const filledOrder = await waitForTerminal(order.id)
-      executedOrders.push(filledOrder)
+      console.warn(`Skipping spread for ${item.underlying_ticker}: ${attempt.reason}`)
     }
 
     return {

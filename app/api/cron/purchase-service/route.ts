@@ -3,6 +3,16 @@ import { fetchLatestReport } from "./fetch"
 import { purchase } from "./purchase"
 import { addToDb } from "./update"
 import { sendNotification } from "../push"
+import { alpaca } from "../../index"
+
+const getNyDateString = (date: Date): string => {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date)
+}
 
 /**
  * Cron route handler for executing trades based on the latest AI-generated market report.
@@ -34,11 +44,22 @@ export async function GET(request: Request): Promise<NextResponse> {
     })
   }
   console.log("Running purchase service cron")
+  const clock = await alpaca.getClock()
+  if (!clock.is_open) {
+    const today = getNyDateString(new Date())
+    const calendar = await alpaca.getCalendar({ start: today, end: today })
+    if (!Array.isArray(calendar) || calendar.length === 0) {
+      console.log("Market holiday detected; skipping execution")
+      return NextResponse.json({ success: false, error: "Market holiday" })
+    }
+    console.log("Market closed; skipping execution")
+    return NextResponse.json({ success: false, error: "Market closed" })
+  }
   const latestReport = await fetchLatestReport()
   if (!latestReport.success || !latestReport.data) {
     return NextResponse.json({ success: false, error: latestReport.error })
   }
-  const purchasedStocks = await purchase(latestReport.data)
+  const purchasedStocks = await purchase(latestReport.data, latestReport.data.id)
   if (!purchasedStocks.success) {
     return NextResponse.json({ success: false, error: purchasedStocks.error })
   }

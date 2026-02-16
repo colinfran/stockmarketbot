@@ -29,11 +29,13 @@ export async function GET(request: Request): Promise<NextResponse> {
     })
   }
   console.log("Running price history service cron")
+  console.log("Fetch all tradeOrders from database")
   const orders = await fetchAllTradeOrders()
   if (!orders.success) {
     return NextResponse.json({ success: false, error: orders.error })
   }
-  const tickers = [...new Set(orders.data!.map((o) => o.symbol))]
+  console.log("Successfully fetched tradeOrders from database")
+  const tickers = [...new Set(orders.data!.map((o) => o.symbol).filter((symbol): symbol is string => symbol !== undefined))]
   const report = await updatePriceHistoryCache(tickers)
   if (!report.success) {
     return NextResponse.json({ success: false, error: report.error })
