@@ -44,9 +44,10 @@ const getPtTimeParts = (date: Date): { weekday: string; hour: number; minute: nu
   }
 }
 
-const isMondayAfter635Pt = (date: Date): boolean => {
+const isWeekdayAfter635Pt = (date: Date): boolean => {
   const { weekday, hour, minute } = getPtTimeParts(date)
-  if (weekday !== "Mon") return false
+  const isWeekday = weekday !== "Sat" && weekday !== "Sun"
+  if (!isWeekday) return false
   if (hour > 6) return true
   return hour === 6 && minute >= 35
 }
@@ -60,7 +61,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
   console.log("Running pending spread retry cron")
 
-  if (!isMondayAfter630Pt(new Date())) {
+  if (!isWeekdayAfter635Pt(new Date())) {
     return NextResponse.json({ success: true, skipped: true, reason: "Outside schedule" })
   }
 

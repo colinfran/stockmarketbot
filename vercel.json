@@ -10,7 +10,7 @@
     },
     {
       "path": "/api/cron/pending-spread-service",
-      "schedule": "*/10 * * * 1"
+      "schedule": "*/10 * * * 1-5"
     },
     {
       "path": "/api/cron/purchase-catchup-service",
