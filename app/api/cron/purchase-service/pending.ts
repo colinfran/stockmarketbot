@@ -29,9 +29,7 @@ type PendingInsert = {
   error?: string
 }
 
-export const addPendingSpreadOrder = async (
-  insert: PendingInsert,
-): Promise<Response<NoData>> => {
+export const addPendingSpreadOrder = async (insert: PendingInsert): Promise<Response<NoData>> => {
   try {
     await db.insert(pendingSpreadOrders).values({
       market_report_id: insert.marketReportId,
@@ -80,7 +78,12 @@ export const fetchPendingSpreadOrdersByReport = async (
 
 export const updatePendingSpreadOrder = async (
   id: string,
-  patch: Partial<Pick<PendingSpreadOrder, "attempts" | "last_attempt_at" | "last_order_id" | "last_status" | "last_error">>,
+  patch: Partial<
+    Pick<
+      PendingSpreadOrder,
+      "attempts" | "last_attempt_at" | "last_order_id" | "last_status" | "last_error"
+    >
+  >,
 ): Promise<Response<NoData>> => {
   try {
     await db.update(pendingSpreadOrders).set(patch).where(eq(pendingSpreadOrders.id, id))

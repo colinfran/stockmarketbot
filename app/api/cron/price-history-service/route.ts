@@ -35,7 +35,11 @@ export async function GET(request: Request): Promise<NextResponse> {
     return NextResponse.json({ success: false, error: orders.error })
   }
   console.log("Successfully fetched tradeOrders from database")
-  const tickers = [...new Set(orders.data!.map((o) => o.symbol).filter((symbol): symbol is string => symbol !== undefined))]
+  const tickers = [
+    ...new Set(
+      orders.data!.map((o) => o.symbol).filter((symbol): symbol is string => symbol !== undefined),
+    ),
+  ]
   const report = await updatePriceHistoryCache(tickers)
   if (!report.success) {
     return NextResponse.json({ success: false, error: report.error })

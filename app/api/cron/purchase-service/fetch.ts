@@ -29,7 +29,7 @@ export const fetchLatestReport = async (): Promise<Response<Report>> => {
       .from(marketReports)
       .orderBy(desc(marketReports.created_at))
       .limit(1)
-    
+
     return {
       success: true,
       data: rows[0] as unknown as Report,

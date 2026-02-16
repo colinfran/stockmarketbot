@@ -86,10 +86,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     return NextResponse.json({ success: true, skipped: true, reason: "No market reports" })
   }
 
-  const pending = await fetchPendingSpreadOrdersByReport(
-    latestReport[0].id,
-    MAX_PENDING_PER_RUN,
-  )
+  const pending = await fetchPendingSpreadOrdersByReport(latestReport[0].id, MAX_PENDING_PER_RUN)
   if (!pending.success) {
     return NextResponse.json({ success: false, error: pending.error })
   }
