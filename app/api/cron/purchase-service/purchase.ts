@@ -1,7 +1,6 @@
 import { MarketReportSchema } from "../ai-service/schema"
 import { AlpacaOrder, Response } from "../../types"
 import { alpaca } from "../../index"
-import { addPendingSpreadOrder } from "./pending"
 
 /**
  * Executes trade orders based on the latest AI-generated market report.

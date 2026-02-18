@@ -6,7 +6,6 @@ import { useData } from "@/providers/data-provider"
 import PortfolioSkeleton from "@/components/skeletons/portfolio-skeleton"
 import HoldingsTable from "@/components/portfolio/table"
 import RecentTrades from "@/components/portfolio/recent-trades"
-import OpenSpreadPositions from "@/components/portfolio/open-spread-positions"
 
 const Page: FC = () => {
   const { portfolio, openPositions, realizedSpreadPnL, loading, calculations } = useData()

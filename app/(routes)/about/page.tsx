@@ -33,7 +33,8 @@ const Page: FC = async () => {
               {/* Recommendations are executed automatically via the Alpaca paper-trading API: stock
               buys/sells first (using a $100 stock budget), then options vertical spreads (using a
               separate $100 options budget). */}
-                Using a $100 stock budget, those buys/sells recommendations are automatically executed via the Alpaca paper-trading API. 
+              Using a $100 stock budget, those buys/sells recommendations are automatically executed
+              via the Alpaca paper-trading API.
             </p>
           </div>
         </div>

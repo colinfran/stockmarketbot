@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { TrendingDown, ChartCandlestick, TrendingUp } from "lucide-react"
+import { TrendingDown, TrendingUp } from "lucide-react"
 import TextWithLinks from "../text-with-link"
 import { Badge } from "../ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
