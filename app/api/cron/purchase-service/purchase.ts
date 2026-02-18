@@ -411,7 +411,7 @@ export const purchase = async (
 
       const order = (await alpaca.createOrder({
         symbol: item.ticker,
-        notional: allocationAmount,
+        notional: String(allocationAmount),
         side: "buy",
         type: "market",
         time_in_force: "day",
