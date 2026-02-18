@@ -26,11 +26,7 @@ export const fetchLatestReport = async (): Promise<Response<Report>> => {
     console.log("Fetching latest market report from database")
     // get the most recent report
     const rows = await withRetry(() =>
-      db
-        .select()
-        .from(marketReports)
-        .orderBy(desc(marketReports.created_at))
-        .limit(1),
+      db.select().from(marketReports).orderBy(desc(marketReports.created_at)).limit(1),
     )
 
     return {
