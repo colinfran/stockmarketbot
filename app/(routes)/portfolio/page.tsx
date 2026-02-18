@@ -32,7 +32,7 @@ const Page: FC = () => {
       <RecentTrades orders={portfolio} />
 
       {/* Open Spread Positions */}
-      <OpenSpreadPositions openPositions={openPositions} realizedSpreadPnL={realizedSpreadPnL} />
+      {/* <OpenSpreadPositions openPositions={openPositions} realizedSpreadPnL={realizedSpreadPnL} /> */}
     </>
   )
 }

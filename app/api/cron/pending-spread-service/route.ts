@@ -98,6 +98,13 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   const rows = pending.data ?? []
+  
+  // DISABLED: Spread trading temporarily disabled due to stale recommendations issue.
+  // Re-enable when implementing real-time spread generation at execution time.
+  console.log(`Found ${rows.length} pending spread orders (spread trading temporarily disabled)`)
+  return NextResponse.json({ success: true, skipped: true, reason: "Spread trading disabled", data: { processed: 0, filled: 0 } })
+  
+  /*
   if (rows.length === 0) {
     return NextResponse.json({ success: true, data: { processed: 0, filled: 0 } })
   }
@@ -159,4 +166,5 @@ export async function GET(request: Request): Promise<NextResponse> {
 
   console.log("Finished pending spread retry cron")
   return NextResponse.json({ success: true, data: { processed: rows.length, filled } })
+  */
 }

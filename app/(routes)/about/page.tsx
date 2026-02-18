@@ -23,17 +23,17 @@ const Page: FC = async () => {
             <h3 className="text-lg font-semibold mb-2">Every Friday at 8:00 PM PST</h3>
             <p className="text-muted-foreground leading-relaxed">
               {`The AI model (${currentModel}) analyzes the market using live data, financial reports, and
-              social sentiment to generate stock recommendations (buys and possible sells) plus
-              optional debit vertical spread ideas (bull call / bear put).`}
+              social sentiment to generate stock recommendations (buys and possible sells).`}
             </p>
           </div>
 
           <div>
             <h3 className="text-lg font-semibold mb-2">Every Monday at 6:30 AM PST</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Recommendations are executed automatically via the Alpaca paper-trading API: stock
+              {/* Recommendations are executed automatically via the Alpaca paper-trading API: stock
               buys/sells first (using a $100 stock budget), then options vertical spreads (using a
-              separate $100 options budget).
+              separate $100 options budget). */}
+                Using a $100 stock budget, those buys/sells recommendations are automatically executed via the Alpaca paper-trading API. 
             </p>
           </div>
         </div>

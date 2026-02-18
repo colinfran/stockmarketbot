@@ -113,7 +113,7 @@ const Recommendations: FC<RecommendationsType> = ({ recommendations }) => {
         </Card>
       )}
 
-      {optionRecommendations.length > 0 && (
+      {/* {optionRecommendations.length > 0 && (
         <Card className="border-border">
           <CardHeader>
             <div className="flex items-center gap-2">
@@ -171,7 +171,7 @@ const Recommendations: FC<RecommendationsType> = ({ recommendations }) => {
             </div>
           </CardContent>
         </Card>
-      )}
+      )} */}
     </>
   )
 }

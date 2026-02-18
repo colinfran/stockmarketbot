@@ -290,91 +290,91 @@ const isOptionRecommendation = (rec: Recommendation): rec is OptionVerticalSprea
 const isStockRecommendation = (rec: Recommendation): rec is StockRecommendation =>
   rec.asset_type === "stock"
 
-export const attemptVerticalSpread = async (
-  recommendation: OptionVerticalSpreadRecommendation,
-  spreadBudget: number,
-  maxWaitMs: number,
-): Promise<SpreadAttemptResult> => {
-  if (spreadBudget <= 0) {
-    return {
-      status: "skipped",
-      reason: `Allocation is <= 0 for ${recommendation.underlying_ticker}`,
-    }
-  }
+// export const attemptVerticalSpread = async (
+//   recommendation: OptionVerticalSpreadRecommendation,
+//   spreadBudget: number,
+//   maxWaitMs: number,
+// ): Promise<SpreadAttemptResult> => {
+//   if (spreadBudget <= 0) {
+//     return {
+//       status: "skipped",
+//       reason: `Allocation is <= 0 for ${recommendation.underlying_ticker}`,
+//     }
+//   }
 
-  const spot = await getUnderlyingPrice(recommendation.underlying_ticker)
-  if (!spot) {
-    return {
-      status: "skipped",
-      reason: `No live underlying price for ${recommendation.underlying_ticker}`,
-    }
-  }
+//   const spot = await getUnderlyingPrice(recommendation.underlying_ticker)
+//   if (!spot) {
+//     return {
+//       status: "skipped",
+//       reason: `No live underlying price for ${recommendation.underlying_ticker}`,
+//     }
+//   }
 
-  const candidates = await getChainCandidates(recommendation, spot)
-  const expiryCandidates = pickNearestExpiry(candidates, recommendation.expiration_date)
-  if (expiryCandidates.length < 2) {
-    return {
-      status: "skipped",
-      reason: `Insufficient live chain candidates for ${recommendation.underlying_ticker}`,
-    }
-  }
+//   const candidates = await getChainCandidates(recommendation, spot)
+//   const expiryCandidates = pickNearestExpiry(candidates, recommendation.expiration_date)
+//   if (expiryCandidates.length < 2) {
+//     return {
+//       status: "skipped",
+//       reason: `Insufficient live chain candidates for ${recommendation.underlying_ticker}`,
+//     }
+//   }
 
-  const selected = selectVerticalSpread(recommendation, spot, expiryCandidates)
-  if (!selected) {
-    return {
-      status: "skipped",
-      reason: `No valid vertical found for ${recommendation.underlying_ticker}`,
-    }
-  }
+//   const selected = selectVerticalSpread(recommendation, spot, expiryCandidates)
+//   if (!selected) {
+//     return {
+//       status: "skipped",
+//       reason: `No valid vertical found for ${recommendation.underlying_ticker}`,
+//     }
+//   }
 
-  const maxAffordableContracts = Math.floor(spreadBudget / (selected.limitDebit * 100))
-  const contractsToTrade = Math.min(recommendation.contracts, maxAffordableContracts)
-  if (contractsToTrade < 1) {
-    return {
-      status: "skipped",
-      reason: `Budget $${spreadBudget.toFixed(2)} too low for live debit ${selected.limitDebit}`,
-    }
-  }
+//   const maxAffordableContracts = Math.floor(spreadBudget / (selected.limitDebit * 100))
+//   const contractsToTrade = Math.min(recommendation.contracts, maxAffordableContracts)
+//   if (contractsToTrade < 1) {
+//     return {
+//       status: "skipped",
+//       reason: `Budget $${spreadBudget.toFixed(2)} too low for live debit ${selected.limitDebit}`,
+//     }
+//   }
 
-  console.log(
-    `Placing ${recommendation.option_type.toUpperCase()} vertical spread for ${recommendation.underlying_ticker} ` +
-      `(${contractsToTrade} contracts, live debit ${selected.limitDebit})`,
-  )
+//   console.log(
+//     `Placing ${recommendation.option_type.toUpperCase()} vertical spread for ${recommendation.underlying_ticker} ` +
+//       `(${contractsToTrade} contracts, live debit ${selected.limitDebit})`,
+//   )
 
-  const order = (await alpaca.createOrder({
-    qty: contractsToTrade,
-    side: "buy",
-    type: "limit",
-    time_in_force: "day",
-    order_class: "mleg",
-    limit_price: selected.limitDebit,
-    legs: [
-      {
-        symbol: selected.longLeg.symbol,
-        ratio_qty: 1,
-        side: "buy",
-      },
-      {
-        symbol: selected.shortLeg.symbol,
-        ratio_qty: 1,
-        side: "sell",
-      },
-    ],
-  })) as AlpacaOrder
+//   const order = (await alpaca.createOrder({
+//     qty: contractsToTrade,
+//     side: "buy",
+//     type: "limit",
+//     time_in_force: "day",
+//     order_class: "mleg",
+//     limit_price: selected.limitDebit,
+//     legs: [
+//       {
+//         symbol: selected.longLeg.symbol,
+//         ratio_qty: 1,
+//         side: "buy",
+//       },
+//       {
+//         symbol: selected.shortLeg.symbol,
+//         ratio_qty: 1,
+//         side: "sell",
+//       },
+//     ],
+//   })) as AlpacaOrder
 
-  const finalOrder = await waitForFillOrTimeout(order.id, maxWaitMs)
-  if (finalOrder.status === "filled") {
-    return { status: "filled", order: finalOrder }
-  }
+//   const finalOrder = await waitForFillOrTimeout(order.id, maxWaitMs)
+//   if (finalOrder.status === "filled") {
+//     return { status: "filled", order: finalOrder }
+//   }
 
-  await cancelOrderSafe(order.id)
-  return {
-    status: "pending",
-    orderId: order.id,
-    orderStatus: finalOrder.status,
-    reason: `Order not filled (${finalOrder.status})`,
-  }
-}
+//   await cancelOrderSafe(order.id)
+//   return {
+//     status: "pending",
+//     orderId: order.id,
+//     orderStatus: finalOrder.status,
+//     reason: `Order not filled (${finalOrder.status})`,
+//   }
+// }
 
 export const purchase = async (
   latestReport: MarketReportSchema,
@@ -387,7 +387,7 @@ export const purchase = async (
     const optionsBudget = 100
 
     const stockRecommendations = latestReport.recommendations.filter(isStockRecommendation)
-    const optionRecommendations = latestReport.recommendations.filter(isOptionRecommendation)
+    // const optionRecommendations = latestReport.recommendations.filter(isOptionRecommendation)
 
     const buyRecommendations = stockRecommendations.filter((item) => item.action === "buy")
     const sellRecommendations = stockRecommendations.filter((item) => item.action === "sell")
@@ -397,10 +397,10 @@ export const purchase = async (
       throw new Error("Buy allocation percentages must total 100")
     }
 
-    const totalOptionsPercent = optionRecommendations.reduce((sum, x) => sum + x.allocation, 0)
-    if (totalOptionsPercent > 100) {
-      throw new Error("Options allocation percentages must be <= 100")
-    }
+    // const totalOptionsPercent = optionRecommendations.reduce((sum, x) => sum + x.allocation, 0)
+    // if (totalOptionsPercent > 100) {
+    //   throw new Error("Options allocation percentages must be <= 100")
+    // }
 
     const executedOrders: AlpacaOrder[] = []
 
@@ -466,6 +466,10 @@ export const purchase = async (
     }
 
     // 3) Execute option vertical spreads (after stock trades), priced from live chain data.
+    // DISABLED: Spread recommendations can become stale between Friday report generation
+    // and Monday/Tuesday execution (especially after holidays). Re-enable when implementing
+    // real-time spread generation at execution time.
+    /*
     for (const item of optionRecommendations) {
       const spreadBudget = optionsBudget * (item.allocation / 100)
       const attempt = await attemptVerticalSpread(item, spreadBudget, 30_000)
@@ -494,6 +498,8 @@ export const purchase = async (
 
       console.warn(`Skipping spread for ${item.underlying_ticker}: ${attempt.reason}`)
     }
+    */
+    // console.log(`Skipping ${optionRecommendations.length} spread recommendations (spread trading temporarily disabled)`)
 
     return {
       success: true,
