@@ -3,6 +3,7 @@ import { alpaca } from "../../index"
 import { db } from "@/lib/db"
 import { marketReports, tradeOrders } from "@/lib/db/schema"
 import { desc, eq } from "drizzle-orm"
+import { withRetry } from "@/lib/db/retry"
 import { fetchLatestReport } from "../purchase-service/fetch"
 import { purchase } from "../purchase-service/purchase"
 import { addToDb } from "../purchase-service/update"
@@ -68,21 +69,25 @@ export async function GET(request: Request): Promise<NextResponse> {
     return NextResponse.json({ success: true, skipped: true, reason: "Market closed" })
   }
 
-  const latestReportMeta = await db
-    .select({ id: marketReports.id })
-    .from(marketReports)
-    .orderBy(desc(marketReports.created_at))
-    .limit(1)
+  const latestReportMeta = await withRetry(() =>
+    db
+      .select({ id: marketReports.id })
+      .from(marketReports)
+      .orderBy(desc(marketReports.created_at))
+      .limit(1),
+  )
 
   if (!latestReportMeta[0]?.id) {
     return NextResponse.json({ success: true, skipped: true, reason: "No market reports" })
   }
 
-  const existingOrder = await db
-    .select({ id: tradeOrders.id })
-    .from(tradeOrders)
-    .where(eq(tradeOrders.market_report_id, latestReportMeta[0].id))
-    .limit(1)
+  const existingOrder = await withRetry(() =>
+    db
+      .select({ id: tradeOrders.id })
+      .from(tradeOrders)
+      .where(eq(tradeOrders.market_report_id, latestReportMeta[0].id))
+      .limit(1),
+  )
 
   if (existingOrder.length > 0) {
     return NextResponse.json({ success: true, skipped: true, reason: "Already purchased" })

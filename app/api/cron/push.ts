@@ -2,6 +2,7 @@
 import { db } from "@/lib/db"
 import { pushSubscriptions } from "@/lib/db/schema"
 import { eq } from "drizzle-orm"
+import { withRetry } from "@/lib/db/retry"
 import webpush from "web-push"
 
 /**
@@ -21,7 +22,7 @@ import webpush from "web-push"
 
 export const sendNotification = async (title: string, body: string): Promise<void> => {
   try {
-    const subs = await db.select().from(pushSubscriptions)
+    const subs = await withRetry(() => db.select().from(pushSubscriptions))
     if (subs.length === 0) {
       throw new Error("No subscriptions found")
     }

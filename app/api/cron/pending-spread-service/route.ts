@@ -3,6 +3,7 @@ import { alpaca } from "../../index"
 import { db } from "@/lib/db"
 import { marketReports } from "@/lib/db/schema"
 import { desc } from "drizzle-orm"
+import { withRetry } from "@/lib/db/retry"
 import { addToDb } from "../purchase-service/update"
 import { attemptVerticalSpread } from "../purchase-service/purchase"
 import {
@@ -77,17 +78,21 @@ export async function GET(request: Request): Promise<NextResponse> {
     return NextResponse.json({ success: true, skipped: true, reason: "Market closed" })
   }
 
-  const latestReport = await db
-    .select({ id: marketReports.id })
-    .from(marketReports)
-    .orderBy(desc(marketReports.created_at))
-    .limit(1)
+  const latestReport = await withRetry(() =>
+    db
+      .select({ id: marketReports.id })
+      .from(marketReports)
+      .orderBy(desc(marketReports.created_at))
+      .limit(1),
+  )
 
   if (!latestReport[0]?.id) {
     return NextResponse.json({ success: true, skipped: true, reason: "No market reports" })
   }
 
-  const pending = await fetchPendingSpreadOrdersByReport(latestReport[0].id, MAX_PENDING_PER_RUN)
+  const pending = await withRetry(() =>
+    fetchPendingSpreadOrdersByReport(latestReport[0].id, MAX_PENDING_PER_RUN),
+  )
   if (!pending.success) {
     return NextResponse.json({ success: false, error: pending.error })
   }

@@ -1,5 +1,6 @@
 import { db } from "@/lib/db"
 import { tradeOrders } from "@/lib/db/schema"
+import { withRetry } from "@/lib/db/retry"
 import { AlpacaOrder, NoData, Response } from "../../types"
 
 /**
@@ -47,7 +48,7 @@ export const addToDb = async (arr: AlpacaOrder[], id: string): Promise<Response<
       order_type: order.order_type || (order as AlpacaOrder & { type?: string }).type || null,
       market_report_id: id,
     }))
-    await db.insert(tradeOrders).values(arrClean)
+    await withRetry(() => db.insert(tradeOrders).values(arrClean))
     console.log("Successfully added stock purchases to database")
     return { success: true }
   } catch (error) {
