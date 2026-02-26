@@ -28,8 +28,8 @@ type RecommendationsType = {
   recommendations: Recommendation[]
 }
 
-const isOptionRecommendation = (rec: Recommendation): rec is OptionVerticalSpreadRecommendation =>
-  rec.asset_type === "option_vertical_spread"
+// const isOptionRecommendation = (rec: Recommendation): rec is OptionVerticalSpreadRecommendation =>
+//   rec.asset_type === "option_vertical_spread"
 
 const isStockRecommendation = (rec: Recommendation): rec is StockRecommendation =>
   rec.asset_type !== "option_vertical_spread"
