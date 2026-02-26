@@ -36,10 +36,13 @@ To run the stockmarketbot app:
 
 3. Set up environment variables:
 
-   - Create a `.env` file.
-   - Add your app keys plus:
-     - `MONGODB_URI`
+   - Copy `.env.example` to `.env`:
 
+   ```bash
+   cp .env.example .env
+   ```
+   - Open `.env` and replace all placeholder/example values with your real credentials and secrets.
+   
 4. Start the development server:
 
    ```bash
