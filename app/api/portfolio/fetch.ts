@@ -1,5 +1,4 @@
-import { db } from "@/lib/db"
-import { tradeOrders, priceCache } from "@/lib/db/schema"
+import { getCollections } from "@/lib/db"
 import { AlpacaOrder, AlpacaPosition, Response } from "../types"
 import { HistoricalHistoryResult } from "yahoo-finance2/modules/historical"
 import { alpaca } from "../index"
@@ -40,7 +39,8 @@ type RealizedSpreadPnL = {
 export const fetchAllTradeOrders = async (): Promise<Response<AlpacaOrder[]>> => {
   // console.log("Fetch all tradeOrders from database")
   try {
-    const data = await db.select().from(tradeOrders)
+    const { tradeOrders } = await getCollections()
+    const data = await tradeOrders.find({}, { projection: { _id: 0 } }).toArray()
     // console.log("Successfully fetched tradeOrders from database")
     return { success: true, data: data as unknown as AlpacaOrder[] }
   } catch (error) {
@@ -198,7 +198,8 @@ export type PriceHistoryType = {
 
 const getPricesSince = async (): Promise<PriceHistoryType> => {
   try {
-    const rows = await db.select().from(priceCache)
+    const { priceCache } = await getCollections()
+    const rows = await priceCache.find({}, { projection: { _id: 0 } }).toArray()
     const entries = rows.map((r) => [r.ticker, r.data] as [string, HistoricalHistoryResult])
     return Object.fromEntries(entries)
   } catch (error) {

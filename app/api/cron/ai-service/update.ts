@@ -1,7 +1,5 @@
 import { MarketReportSchema } from "./schema"
-import { db } from "@/lib/db"
-import { marketReports } from "@/lib/db/schema"
-import { InferInsertModel } from "drizzle-orm"
+import { getCollections } from "@/lib/db"
 import { Response, NoData } from "../../types"
 import { currentModel } from "../../index"
 
@@ -21,9 +19,13 @@ import { currentModel } from "../../index"
 export const addToDb = async (report: MarketReportSchema): Promise<Response<NoData>> => {
   console.log("Adding report to database")
   try {
-    await db
-      .insert(marketReports)
-      .values({ ...report, ai_model: currentModel } as InferInsertModel<typeof marketReports>)
+    const { marketReports } = await getCollections()
+    await marketReports.insertOne({
+      ...report,
+      id: crypto.randomUUID(),
+      ai_model: currentModel,
+      created_at: new Date(),
+    })
     console.log("Successfully added report to database")
     return { success: true }
   } catch (error) {

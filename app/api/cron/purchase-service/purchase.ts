@@ -19,46 +19,46 @@ type PositionSnapshot = {
 
 type Recommendation = MarketReportSchema["recommendations"][number]
 type StockRecommendation = Extract<Recommendation, { asset_type: "stock" }>
-type OptionVerticalSpreadRecommendation = Extract<
-  Recommendation,
-  { asset_type: "option_vertical_spread" }
->
+// type OptionVerticalSpreadRecommendation = Extract<
+//   Recommendation,
+//   { asset_type: "option_vertical_spread" }
+// >
 
-type ParsedOptionSymbol = {
-  underlying: string
-  expirationYYMMDD: string
-  optionType: "call" | "put"
-  strike: number
-}
+// type ParsedOptionSymbol = {
+//   underlying: string
+//   expirationYYMMDD: string
+//   optionType: "call" | "put"
+//   strike: number
+// }
 
-type OptionSnapshotLike = {
-  Symbol?: string
-  LatestQuote?: {
-    BidPrice?: number
-    AskPrice?: number
-  }
-}
+// type OptionSnapshotLike = {
+//   Symbol?: string
+//   LatestQuote?: {
+//     BidPrice?: number
+//     AskPrice?: number
+//   }
+// }
 
-type OptionCandidate = {
-  symbol: string
-  expirationYYMMDD: string
-  strike: number
-  optionType: "call" | "put"
-  bid: number
-  ask: number
-  mid: number
-}
+// type OptionCandidate = {
+//   symbol: string
+//   expirationYYMMDD: string
+//   strike: number
+//   optionType: "call" | "put"
+//   bid: number
+//   ask: number
+//   mid: number
+// }
 
-type VerticalSelection = {
-  longLeg: OptionCandidate
-  shortLeg: OptionCandidate
-  limitDebit: number
-}
+// type VerticalSelection = {
+//   longLeg: OptionCandidate
+//   shortLeg: OptionCandidate
+//   limitDebit: number
+// }
 
-type SpreadAttemptResult =
-  | { status: "filled"; order: AlpacaOrder }
-  | { status: "pending"; orderId: string; orderStatus: string; reason: string }
-  | { status: "skipped"; reason: string }
+// type SpreadAttemptResult =
+//   | { status: "filled"; order: AlpacaOrder }
+//   | { status: "pending"; orderId: string; orderStatus: string; reason: string }
+//   | { status: "skipped"; reason: string }
 
 const waitForWarm = async (): Promise<void> => {
   let ready = false
@@ -105,186 +105,186 @@ const waitForTerminal = async (orderId: string): Promise<AlpacaOrder> => {
   return order
 }
 
-const waitForFillOrTimeout = async (orderId: string, timeoutMs: number): Promise<AlpacaOrder> => {
-  const terminalStatuses = new Set([
-    "filled",
-    "canceled",
-    "expired",
-    "replaced",
-    "pending_cancel",
-    "stopped",
-    "rejected",
-    "suspended",
-    "calculated",
-  ])
+// const waitForFillOrTimeout = async (orderId: string, timeoutMs: number): Promise<AlpacaOrder> => {
+//   const terminalStatuses = new Set([
+//     "filled",
+//     "canceled",
+//     "expired",
+//     "replaced",
+//     "pending_cancel",
+//     "stopped",
+//     "rejected",
+//     "suspended",
+//     "calculated",
+//   ])
 
-  const start = Date.now()
-  let order = (await alpaca.getOrder(orderId)) as AlpacaOrder
+//   const start = Date.now()
+//   let order = (await alpaca.getOrder(orderId)) as AlpacaOrder
 
-  while (!terminalStatuses.has(order.status) && Date.now() - start < timeoutMs) {
-    await new Promise((r) => setTimeout(r, 500))
-    order = (await alpaca.getOrder(orderId)) as AlpacaOrder
-  }
+//   while (!terminalStatuses.has(order.status) && Date.now() - start < timeoutMs) {
+//     await new Promise((r) => setTimeout(r, 500))
+//     order = (await alpaca.getOrder(orderId)) as AlpacaOrder
+//   }
 
-  return order
-}
+//   return order
+// }
 
-const cancelOrderSafe = async (orderId: string): Promise<void> => {
-  try {
-    await alpaca.cancelOrder(orderId)
-  } catch (error) {
-    console.warn(`Failed to cancel order ${orderId}:`, error)
-  }
-}
+// const cancelOrderSafe = async (orderId: string): Promise<void> => {
+//   try {
+//     await alpaca.cancelOrder(orderId)
+//   } catch (error) {
+//     console.warn(`Failed to cancel order ${orderId}:`, error)
+//   }
+// }
 
 const roundQty = (value: number): number => {
   return Math.floor(value * 1_000_000) / 1_000_000
 }
 
-const parseOccOptionSymbol = (symbol: string): ParsedOptionSymbol | null => {
-  const trimmed = symbol.trim()
-  const match = /^([A-Z]{1,6})(\d{6})([CP])(\d{8})$/.exec(trimmed)
-  if (!match) return null
+// const parseOccOptionSymbol = (symbol: string): ParsedOptionSymbol | null => {
+//   const trimmed = symbol.trim()
+//   const match = /^([A-Z]{1,6})(\d{6})([CP])(\d{8})$/.exec(trimmed)
+//   if (!match) return null
 
-  const [, underlying, expirationYYMMDD, cpFlag, strikeRaw] = match
-  return {
-    underlying,
-    expirationYYMMDD,
-    optionType: cpFlag === "C" ? "call" : "put",
-    strike: Number(strikeRaw) / 1000,
-  }
-}
+//   const [, underlying, expirationYYMMDD, cpFlag, strikeRaw] = match
+//   return {
+//     underlying,
+//     expirationYYMMDD,
+//     optionType: cpFlag === "C" ? "call" : "put",
+//     strike: Number(strikeRaw) / 1000,
+//   }
+// }
 
-const toYYMMDD = (date: Date): string => {
-  const yy = String(date.getUTCFullYear()).slice(-2)
-  const mm = String(date.getUTCMonth() + 1).padStart(2, "0")
-  const dd = String(date.getUTCDate()).padStart(2, "0")
-  return `${yy}${mm}${dd}`
-}
+// const toYYMMDD = (date: Date): string => {
+//   const yy = String(date.getUTCFullYear()).slice(-2)
+//   const mm = String(date.getUTCMonth() + 1).padStart(2, "0")
+//   const dd = String(date.getUTCDate()).padStart(2, "0")
+//   return `${yy}${mm}${dd}`
+// }
 
-const getUnderlyingPrice = async (symbol: string): Promise<number | null> => {
-  try {
-    const trade = (await alpaca.getLatestTrade(symbol)) as { Price?: number }
-    const price = Number(trade?.Price)
-    return Number.isFinite(price) && price > 0 ? price : null
-  } catch (error) {
-    console.warn(`Failed to fetch latest trade for ${symbol}:`, error)
-    return null
-  }
-}
+// const getUnderlyingPrice = async (symbol: string): Promise<number | null> => {
+//   try {
+//     const trade = (await alpaca.getLatestTrade(symbol)) as { Price?: number }
+//     const price = Number(trade?.Price)
+//     return Number.isFinite(price) && price > 0 ? price : null
+//   } catch (error) {
+//     console.warn(`Failed to fetch latest trade for ${symbol}:`, error)
+//     return null
+//   }
+// }
 
-const getChainCandidates = async (
-  recommendation: OptionVerticalSpreadRecommendation,
-  spot: number,
-): Promise<OptionCandidate[]> => {
-  const strikeLow = Number((spot * 0.85).toFixed(2))
-  const strikeHigh = Number((spot * 1.15).toFixed(2))
+// const getChainCandidates = async (
+//   recommendation: OptionVerticalSpreadRecommendation,
+//   spot: number,
+// ): Promise<OptionCandidate[]> => {
+//   const strikeLow = Number((spot * 0.85).toFixed(2))
+//   const strikeHigh = Number((spot * 1.15).toFixed(2))
 
-  const snapshots = (await alpaca.getOptionChain(recommendation.underlying_ticker, {
-    expiration_date: recommendation.expiration_date,
-    strike_price_gte: strikeLow,
-    strike_price_lte: strikeHigh,
-  })) as OptionSnapshotLike[]
+//   const snapshots = (await alpaca.getOptionChain(recommendation.underlying_ticker, {
+//     expiration_date: recommendation.expiration_date,
+//     strike_price_gte: strikeLow,
+//     strike_price_lte: strikeHigh,
+//   })) as OptionSnapshotLike[]
 
-  const raw = Array.isArray(snapshots) ? snapshots : []
+//   const raw = Array.isArray(snapshots) ? snapshots : []
 
-  return raw
-    .map((snapshot) => {
-      const symbol = snapshot.Symbol || ""
-      const parsed = parseOccOptionSymbol(symbol)
-      if (!parsed) return null
+//   return raw
+//     .map((snapshot) => {
+//       const symbol = snapshot.Symbol || ""
+//       const parsed = parseOccOptionSymbol(symbol)
+//       if (!parsed) return null
 
-      const bid = Number(snapshot.LatestQuote?.BidPrice ?? 0)
-      const ask = Number(snapshot.LatestQuote?.AskPrice ?? 0)
-      if (!Number.isFinite(bid) || !Number.isFinite(ask) || ask <= 0) return null
+//       const bid = Number(snapshot.LatestQuote?.BidPrice ?? 0)
+//       const ask = Number(snapshot.LatestQuote?.AskPrice ?? 0)
+//       if (!Number.isFinite(bid) || !Number.isFinite(ask) || ask <= 0) return null
 
-      return {
-        symbol,
-        expirationYYMMDD: parsed.expirationYYMMDD,
-        strike: parsed.strike,
-        optionType: parsed.optionType,
-        bid,
-        ask,
-        mid: (bid + ask) / 2,
-      } as OptionCandidate
-    })
-    .filter((x): x is OptionCandidate => Boolean(x))
-    .filter((x) => x.optionType === recommendation.option_type)
-}
+//       return {
+//         symbol,
+//         expirationYYMMDD: parsed.expirationYYMMDD,
+//         strike: parsed.strike,
+//         optionType: parsed.optionType,
+//         bid,
+//         ask,
+//         mid: (bid + ask) / 2,
+//       } as OptionCandidate
+//     })
+//     .filter((x): x is OptionCandidate => Boolean(x))
+//     .filter((x) => x.optionType === recommendation.option_type)
+// }
 
-const pickNearestExpiry = (
-  candidates: OptionCandidate[],
-  targetExpirationDate: string,
-): OptionCandidate[] => {
-  if (candidates.length === 0) return []
+// const pickNearestExpiry = (
+//   candidates: OptionCandidate[],
+//   targetExpirationDate: string,
+// ): OptionCandidate[] => {
+//   if (candidates.length === 0) return []
 
-  const targetDate = new Date(`${targetExpirationDate}T00:00:00Z`)
-  const targetYYMMDD = Number.isNaN(targetDate.getTime()) ? null : toYYMMDD(targetDate)
+//   const targetDate = new Date(`${targetExpirationDate}T00:00:00Z`)
+//   const targetYYMMDD = Number.isNaN(targetDate.getTime()) ? null : toYYMMDD(targetDate)
 
-  const expirations = [...new Set(candidates.map((c) => c.expirationYYMMDD))]
-  if (expirations.length === 0) return []
+//   const expirations = [...new Set(candidates.map((c) => c.expirationYYMMDD))]
+//   if (expirations.length === 0) return []
 
-  const selectedExpiration =
-    targetYYMMDD && expirations.includes(targetYYMMDD) ? targetYYMMDD : expirations.sort()[0]
+//   const selectedExpiration =
+//     targetYYMMDD && expirations.includes(targetYYMMDD) ? targetYYMMDD : expirations.sort()[0]
 
-  return candidates.filter((c) => c.expirationYYMMDD === selectedExpiration)
-}
+//   return candidates.filter((c) => c.expirationYYMMDD === selectedExpiration)
+// }
 
-const selectVerticalSpread = (
-  recommendation: OptionVerticalSpreadRecommendation,
-  spot: number,
-  candidates: OptionCandidate[],
-): VerticalSelection | null => {
-  const strikesAsc = [...new Set(candidates.map((c) => c.strike))].sort((a, b) => a - b)
-  if (strikesAsc.length < 2) return null
+// const selectVerticalSpread = (
+//   recommendation: OptionVerticalSpreadRecommendation,
+//   spot: number,
+//   candidates: OptionCandidate[],
+// ): VerticalSelection | null => {
+//   const strikesAsc = [...new Set(candidates.map((c) => c.strike))].sort((a, b) => a - b)
+//   if (strikesAsc.length < 2) return null
 
-  const nearestStrike = strikesAsc.reduce((best, current) => {
-    return Math.abs(current - spot) < Math.abs(best - spot) ? current : best
-  }, strikesAsc[0])
+//   const nearestStrike = strikesAsc.reduce((best, current) => {
+//     return Math.abs(current - spot) < Math.abs(best - spot) ? current : best
+//   }, strikesAsc[0])
 
-  let longStrike: number | null = null
-  let shortStrike: number | null = null
+//   let longStrike: number | null = null
+//   let shortStrike: number | null = null
 
-  if (recommendation.option_type === "call") {
-    const longIdx = strikesAsc.findIndex((s) => s >= nearestStrike)
-    const idx = longIdx >= 0 ? longIdx : strikesAsc.length - 2
-    longStrike = strikesAsc[idx]
-    shortStrike = strikesAsc[idx + 1] ?? null
-  } else {
-    const longIdx = [...strikesAsc].reverse().find((s) => s <= nearestStrike)
-    if (longIdx == null) return null
-    longStrike = longIdx
-    const lower = strikesAsc.filter((s) => s < longIdx)
-    shortStrike = lower.length > 0 ? lower[lower.length - 1] : null
-  }
+//   if (recommendation.option_type === "call") {
+//     const longIdx = strikesAsc.findIndex((s) => s >= nearestStrike)
+//     const idx = longIdx >= 0 ? longIdx : strikesAsc.length - 2
+//     longStrike = strikesAsc[idx]
+//     shortStrike = strikesAsc[idx + 1] ?? null
+//   } else {
+//     const longIdx = [...strikesAsc].reverse().find((s) => s <= nearestStrike)
+//     if (longIdx == null) return null
+//     longStrike = longIdx
+//     const lower = strikesAsc.filter((s) => s < longIdx)
+//     shortStrike = lower.length > 0 ? lower[lower.length - 1] : null
+//   }
 
-  if (longStrike == null || shortStrike == null) return null
+//   if (longStrike == null || shortStrike == null) return null
 
-  const longLeg = candidates
-    .filter((c) => c.strike === longStrike)
-    .sort((a, b) => b.bid + b.ask - (a.bid + a.ask))[0]
-  const shortLeg = candidates
-    .filter((c) => c.strike === shortStrike)
-    .sort((a, b) => b.bid + b.ask - (a.bid + a.ask))[0]
+//   const longLeg = candidates
+//     .filter((c) => c.strike === longStrike)
+//     .sort((a, b) => b.bid + b.ask - (a.bid + a.ask))[0]
+//   const shortLeg = candidates
+//     .filter((c) => c.strike === shortStrike)
+//     .sort((a, b) => b.bid + b.ask - (a.bid + a.ask))[0]
 
-  if (!longLeg || !shortLeg) return null
+//   if (!longLeg || !shortLeg) return null
 
-  const conservativeDebit = longLeg.ask - shortLeg.bid
-  const midDebit = longLeg.mid - shortLeg.mid
-  const rawDebit = conservativeDebit > 0 ? conservativeDebit : midDebit
-  const limitDebit = Number(Math.max(rawDebit, 0.01).toFixed(2))
+//   const conservativeDebit = longLeg.ask - shortLeg.bid
+//   const midDebit = longLeg.mid - shortLeg.mid
+//   const rawDebit = conservativeDebit > 0 ? conservativeDebit : midDebit
+//   const limitDebit = Number(Math.max(rawDebit, 0.01).toFixed(2))
 
-  if (!Number.isFinite(limitDebit) || limitDebit <= 0) return null
+//   if (!Number.isFinite(limitDebit) || limitDebit <= 0) return null
 
-  return {
-    longLeg,
-    shortLeg,
-    limitDebit,
-  }
-}
+//   return {
+//     longLeg,
+//     shortLeg,
+//     limitDebit,
+//   }
+// }
 
-const isOptionRecommendation = (rec: Recommendation): rec is OptionVerticalSpreadRecommendation =>
-  rec.asset_type === "option_vertical_spread"
+// const isOptionRecommendation = (rec: Recommendation): rec is OptionVerticalSpreadRecommendation =>
+//   rec.asset_type === "option_vertical_spread"
 
 const isStockRecommendation = (rec: Recommendation): rec is StockRecommendation =>
   rec.asset_type === "stock"
@@ -377,13 +377,13 @@ const isStockRecommendation = (rec: Recommendation): rec is StockRecommendation 
 
 export const purchase = async (
   latestReport: MarketReportSchema,
-  reportId: string,
+  // reportId: string,
 ): Promise<Response<AlpacaOrder[]>> => {
   try {
     await waitForWarm()
 
     const stockBudget = 100
-    const optionsBudget = 100
+    // const optionsBudget = 100
 
     const stockRecommendations = latestReport.recommendations.filter(isStockRecommendation)
     // const optionRecommendations = latestReport.recommendations.filter(isOptionRecommendation)

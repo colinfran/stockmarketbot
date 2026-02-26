@@ -43,6 +43,7 @@ export async function GET(request: Request): Promise<NextResponse> {
       status: 401,
     })
   }
+
   console.log("Running purchase service cron")
   const clock = await alpaca.getClock()
   if (!clock.is_open) {
@@ -59,7 +60,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   if (!latestReport.success || !latestReport.data) {
     return NextResponse.json({ success: false, error: latestReport.error })
   }
-  const purchasedStocks = await purchase(latestReport.data, latestReport.data.id)
+  const purchasedStocks = await purchase(latestReport.data /*, latestReport.data.id */)
   if (!purchasedStocks.success) {
     return NextResponse.json({ success: false, error: purchasedStocks.error })
   }

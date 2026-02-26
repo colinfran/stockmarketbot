@@ -8,7 +8,7 @@ import HoldingsTable from "@/components/portfolio/table"
 import RecentTrades from "@/components/portfolio/recent-trades"
 
 const Page: FC = () => {
-  const { portfolio, openPositions, realizedSpreadPnL, loading, calculations } = useData()
+  const { portfolio, /*openPositions, realizedSpreadPnL, */ loading, calculations } = useData()
 
   if (loading.portfolio && calculations) {
     return <PortfolioSkeleton />

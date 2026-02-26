@@ -28,6 +28,7 @@ export async function GET(request: Request): Promise<NextResponse> {
       status: 401,
     })
   }
+
   console.log("Running price history service cron")
   console.log("Fetch all tradeOrders from database")
   const orders = await fetchAllTradeOrders()

@@ -1,6 +1,4 @@
-import { db } from "@/lib/db"
-import { marketReports } from "@/lib/db/schema"
-import { desc } from "drizzle-orm"
+import { getCollections } from "@/lib/db"
 import { withRetry } from "@/lib/db/retry"
 import { MarketReportSchema } from "../ai-service/schema"
 import { Response } from "../../types"
@@ -25,9 +23,14 @@ export const fetchLatestReport = async (): Promise<Response<Report>> => {
   try {
     console.log("Fetching latest market report from database")
     // get the most recent report
-    const rows = await withRetry(() =>
-      db.select().from(marketReports).orderBy(desc(marketReports.created_at)).limit(1),
-    )
+    const rows = await withRetry(async () => {
+      const { marketReports } = await getCollections()
+      return marketReports
+        .find({}, { projection: { _id: 0 } })
+        .sort({ created_at: -1 })
+        .limit(1)
+        .toArray()
+    })
 
     return {
       success: true,

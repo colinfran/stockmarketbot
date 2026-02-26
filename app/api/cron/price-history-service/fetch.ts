@@ -1,6 +1,5 @@
-import { db } from "@/lib/db"
+import { getCollections } from "@/lib/db"
 import { yahooFinance } from "../.."
-import { priceCache } from "@/lib/db/schema"
 import { Response } from "../../types"
 import { HistoricalHistoryResult } from "yahoo-finance2/modules/historical"
 
@@ -70,13 +69,12 @@ export const updatePriceHistoryCache = async (tickers: string[]): Promise<Respon
     uniqueTickers.map(async (ticker) => {
       try {
         const fetched = await fetchHistoricalWithRetry(ticker)
-        await db
-          .insert(priceCache)
-          .values({ ticker, data: fetched, fetched_at: new Date() })
-          .onConflictDoUpdate({
-            target: priceCache.ticker,
-            set: { data: fetched, fetched_at: new Date() },
-          })
+        const { priceCache } = await getCollections()
+        await priceCache.updateOne(
+          { ticker },
+          { $set: { ticker, data: fetched, fetched_at: new Date() } },
+          { upsert: true },
+        )
         console.log(`Updated price cache for ${ticker} in db`)
       } catch (error) {
         console.error(`Failed to fetch or insert price for ${ticker}`)

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
-import { db } from "@/lib/db"
-import { pushSubscriptions } from "@/lib/db/schema"
+import { getCollections } from "@/lib/db"
 
 /**
  * Handles POST requests to the /api/subscribe route.
@@ -16,14 +15,22 @@ import { pushSubscriptions } from "@/lib/db/schema"
 export const POST = async (request: Request): Promise<NextResponse> => {
   try {
     const subscription = await request.json()
-    await db
-      .insert(pushSubscriptions)
-      .values({
-        endpoint: subscription.endpoint,
-        p256dh: subscription.keys.p256dh,
-        auth: subscription.keys.auth,
-      })
-      .onConflictDoNothing()
+    const { pushSubscriptions } = await getCollections()
+    await pushSubscriptions.updateOne(
+      { endpoint: subscription.endpoint },
+      {
+        $setOnInsert: {
+          id: crypto.randomUUID(),
+          created_at: new Date(),
+        },
+        $set: {
+          endpoint: subscription.endpoint,
+          p256dh: subscription.keys.p256dh,
+          auth: subscription.keys.auth,
+        },
+      },
+      { upsert: true },
+    )
 
     console.log("New subscription stored:", subscription.endpoint)
 

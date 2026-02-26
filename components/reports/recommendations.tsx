@@ -38,9 +38,9 @@ const Recommendations: FC<RecommendationsType> = ({ recommendations }) => {
   const stockRecommendations = recommendations.filter(isStockRecommendation)
   const buyRecommendations = stockRecommendations.filter((rec) => rec.action !== "sell")
   const sellRecommendations = stockRecommendations.filter((rec) => rec.action === "sell")
-  const optionRecommendations = recommendations.filter(isOptionRecommendation)
+  // const optionRecommendations = recommendations.filter(isOptionRecommendation)
   const stockBuyTotal = buyRecommendations.reduce((sum, rec) => sum + rec.allocation, 0)
-  const optionTotal = optionRecommendations.reduce((sum, rec) => sum + rec.allocation, 0)
+  // const optionTotal = optionRecommendations.reduce((sum, rec) => sum + rec.allocation, 0)
 
   return (
     <>

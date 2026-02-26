@@ -30,6 +30,7 @@ export async function GET(request: Request): Promise<NextResponse> {
       status: 401,
     })
   }
+
   console.log("Running ai service cron")
   const report = await generateWeeklyReport()
   if (!report.success) {

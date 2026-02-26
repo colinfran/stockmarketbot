@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { db } from "@/lib/db"
-import { pushSubscriptions } from "@/lib/db/schema"
-import { eq } from "drizzle-orm"
+import { getCollections } from "@/lib/db"
 import { withRetry } from "@/lib/db/retry"
 import webpush from "web-push"
 
@@ -22,7 +20,10 @@ import webpush from "web-push"
 
 export const sendNotification = async (title: string, body: string): Promise<void> => {
   try {
-    const subs = await withRetry(() => db.select().from(pushSubscriptions))
+    const subs = await withRetry(async () => {
+      const { pushSubscriptions } = await getCollections()
+      return pushSubscriptions.find({}, { projection: { _id: 0 } }).toArray()
+    })
     if (subs.length === 0) {
       throw new Error("No subscriptions found")
     }
@@ -54,7 +55,8 @@ export const sendNotification = async (title: string, body: string): Promise<voi
         const statusCode = error?.statusCode
         if (statusCode === 410 || statusCode === 404) {
           console.log(`Deleting invalid subscription ${sub.id} (status: ${statusCode})`)
-          await db.delete(pushSubscriptions).where(eq(pushSubscriptions.id, sub.id))
+          const { pushSubscriptions } = await getCollections()
+          await pushSubscriptions.deleteOne({ id: sub.id })
         }
       }
     })
