@@ -39,21 +39,11 @@ To run the stockmarketbot app:
    - Create a `.env` file.
    - Add your app keys plus:
      - `MONGODB_URI`
-     - `MONGODB_DB_NAME` (optional, defaults to `stockmarketbot`)
-   - If you are migrating existing Postgres data, keep `DATABASE_URL` available for the migration script.
 
-4. (Optional) Migrate existing Postgres data to MongoDB:
-
-   ```bash
-   npm run migrate:postgres-to-mongo
-   ```
-
-   - Use `npm run migrate:postgres-to-mongo -- --wipe` to clear MongoDB target collections before import.
-
-5. Start the development server:
+4. Start the development server:
 
    ```bash
    npm run dev
    ```
 
-6. Open your browser and visit `http://localhost:3000`.
+5. Open your browser and visit `http://localhost:3000`.
