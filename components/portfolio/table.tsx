@@ -10,6 +10,7 @@ type TableType = {
   data: {
     totalCost: number
     totalProfitLoss: number
+    totalRealizedSellProfit: number
     totalValue: number
     positions: PortfolioPosition[]
   }
@@ -28,7 +29,7 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
           <CardDescription>Detailed breakdown of your stock positions</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-3 md:grid-cols-3 mb-6">
+          <div className="grid gap-3 md:grid-cols-4 mb-6">
             <div className="rounded-md border bg-muted/20 p-3">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-medium text-muted-foreground">Total Value</p>
@@ -84,6 +85,25 @@ const HoldingsTable: FC<TableType> = ({ data }) => {
               </div>
               <p className="text-xl font-semibold mt-1">{data.positions.length}</p>
               <p className="text-xs text-muted-foreground mt-1">Active holdings</p>
+            </div>
+
+            <div className="rounded-md border bg-muted/20 p-3">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium text-muted-foreground">Profit From Sells</p>
+                <DollarSign className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+              <p
+                className={`text-xl font-semibold mt-1 ${
+                  data.totalRealizedSellProfit >= 0 ? "text-green-500" : "text-red-500"
+                }`}
+              >
+                {data.totalRealizedSellProfit >= 0 ? "+" : ""}$
+                {data.totalRealizedSellProfit.toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">Realized from closed sells</p>
             </div>
           </div>
 

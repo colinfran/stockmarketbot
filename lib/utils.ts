@@ -22,6 +22,7 @@ export type CalculateType = {
   totalValue: number
   totalCost: number
   totalProfitLoss: number
+  totalRealizedSellProfit: number
 }
 
 type ParsedOptionSymbol = {
@@ -175,23 +176,52 @@ export const buildOpenSpreads = (openPositions: AlpacaPosition[]): OpenSpread[] 
 export const calculatePositions = (ordersList: AlpacaOrder[], prices: Prices): CalculateType => {
   // Aggregate orders by symbol
   const positionMap = new Map<string, { shares: number; totalCost: number }>()
+  const buyLotsBySymbol = new Map<string, { qty: number; price: number }[]>()
+  let totalRealizedSellProfit = 0
 
   ordersList.forEach((order) => {
+    if (!order.symbol) return
+
     const existing = positionMap.get(order.symbol) || { shares: 0, totalCost: 0 }
 
     const filledQty = Number(order.filled_qty)
     const filledAvg = Number(order.filled_avg_price)
+
+    if (!Number.isFinite(filledQty) || !Number.isFinite(filledAvg) || filledQty <= 0) return
 
     if (order.side === "buy") {
       positionMap.set(order.symbol, {
         shares: existing.shares + filledQty,
         totalCost: existing.totalCost + filledQty * filledAvg,
       })
+
+      const buyLots = buyLotsBySymbol.get(order.symbol) || []
+      buyLots.push({ qty: filledQty, price: filledAvg })
+      buyLotsBySymbol.set(order.symbol, buyLots)
     } else if (order.side === "sell") {
       positionMap.set(order.symbol, {
         shares: existing.shares - filledQty,
         totalCost: existing.totalCost - filledQty * filledAvg,
       })
+
+      const buyLots = buyLotsBySymbol.get(order.symbol) || []
+      let remainingQty = filledQty
+
+      while (remainingQty > 0 && buyLots.length > 0) {
+        const buyLot = buyLots[0]
+        const matchedQty = Math.min(remainingQty, buyLot.qty)
+
+        totalRealizedSellProfit += (filledAvg - buyLot.price) * matchedQty
+
+        buyLot.qty -= matchedQty
+        remainingQty -= matchedQty
+
+        if (buyLot.qty <= 1e-8) {
+          buyLots.shift()
+        }
+      }
+
+      buyLotsBySymbol.set(order.symbol, buyLots)
     }
   })
 
@@ -231,5 +261,6 @@ export const calculatePositions = (ordersList: AlpacaOrder[], prices: Prices): C
     totalValue: portfolioValue,
     totalCost: portfolioCost,
     totalProfitLoss: portfolioPL,
+    totalRealizedSellProfit,
   }
 }
