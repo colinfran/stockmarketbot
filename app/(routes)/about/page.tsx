@@ -43,7 +43,7 @@ const Page: FC = async () => {
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-4">Tech Stack</h2>
           <p className="text-muted-foreground leading-relaxed">
-              {`Next.js, Vercel, MongoDB, Tailwind CSS, shadcn/ui, Grok API (${currentModel}),
+            {`Next.js, Vercel, MongoDB, Tailwind CSS, shadcn/ui, Grok API (${currentModel}),
               Alpaca Sandbox API`}
           </p>
         </div>
