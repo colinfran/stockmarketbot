@@ -45,8 +45,8 @@ export const marketReportSchema = z.object({
     overall_risk: z.enum(["Low", "Medium", "High"]),
     notes: z.array(z.string()).min(3).max(5),
   }),
-  recommendations: z.array(
-    z.union([
+  recommendations: z
+    .array(
       z.object({
         asset_type: z.literal("stock").default("stock"),
         ticker: z.string(),
@@ -54,29 +54,13 @@ export const marketReportSchema = z.object({
         allocation: z.number(),
         action: z.enum(["buy", "sell"]),
       }),
-      z.object({
-        asset_type: z.literal("option_vertical_spread"),
-        underlying_ticker: z.string(),
-        option_type: z.enum(["call", "put"]),
-        expiration_date: z.string(),
-        contracts: z.number().int().positive(),
-        allocation: z.number(),
-        rationale: z.string(),
-      }),
-    ]),
-  )
+    )
     .min(6)
-    .max(8)
-    .refine(
-      (recs) =>
-        recs.some(
-          (rec) => rec.asset_type === "stock" && (rec.action === "buy" || rec.action === "sell"),
-        ),
-      {
-        message: "At least one stock buy or sell recommendation is required",
-      },
-    ),
-  assessment_sources: z.array(z.object({ url: z.string().url(), title: z.string() })).min(4).max(8),
+    .max(8),
+  assessment_sources: z
+    .array(z.object({ url: z.string().url(), title: z.string() }))
+    .min(4)
+    .max(8),
 })
 
 export type MarketReportSchema = z.infer<typeof marketReportSchema>

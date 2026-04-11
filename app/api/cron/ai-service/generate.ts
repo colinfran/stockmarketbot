@@ -41,25 +41,16 @@ const normalizeToTarget = (values: number[], target: number): number[] => {
   return rounded
 }
 
-const normalizeRecommendations = (
-  recommendations: Recommendation[],
-  fallbackExpirationDate: string,
-): Recommendation[] => {
+const normalizeRecommendations = (recommendations: Recommendation[]): Recommendation[] => {
   const normalized = recommendations.map((rec) => ({ ...rec }))
 
   const stockBuyIndices: number[] = []
   const stockBuyAllocations: number[] = []
-  const optionIndices: number[] = []
-  const optionAllocations: number[] = []
 
   normalized.forEach((rec, idx) => {
     if (rec.asset_type === "stock" && rec.action === "buy") {
       stockBuyIndices.push(idx)
       stockBuyAllocations.push(Number(rec.allocation) || 0)
-    }
-    if (rec.asset_type === "option_vertical_spread") {
-      optionIndices.push(idx)
-      optionAllocations.push(Number(rec.allocation) || 0)
     }
   })
 
@@ -67,24 +58,6 @@ const normalizeRecommendations = (
     const fixedStockBuyAllocations = normalizeToTarget(stockBuyAllocations, 100)
     stockBuyIndices.forEach((idx, i) => {
       normalized[idx].allocation = fixedStockBuyAllocations[i]
-    })
-  }
-
-  if (optionIndices.length > 0) {
-    const fixedOptionAllocations = normalizeToTarget(optionAllocations, 100)
-    optionIndices.forEach((idx, i) => {
-      normalized[idx].allocation = fixedOptionAllocations[i]
-    })
-  } else {
-    normalized.push({
-      asset_type: "option_vertical_spread",
-      underlying_ticker: "SPY",
-      option_type: "call",
-      expiration_date: fallbackExpirationDate,
-      contracts: 1,
-      allocation: 100,
-      rationale:
-        "Fallback vertical spread recommendation added because the model returned no options. Live strikes and pricing are selected at execution time.",
     })
   }
 
@@ -166,7 +139,7 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
     Follow this exact step-by-step process to gather and analyze data using your tools. You must use tools for every claim; do not hallucinate or use fake data. If a tool fails or data is unavailable, note it explicitly, retry with adjusted queries (e.g., 'latest available' instead of exact dates), and proceed with available info. Track all key sources (URLs and titles from web_search, browse_page, X tools, etc.) throughout and include them in the final assessment_sources array with exact links used in your analysis.
 
     Step 1: Fetch Historical and Real-Time Market Data
-    Use code_execution with the polygon library (or yfinance as fallback) to pull the past 7 days closing prices (${sevenDaysAgoStr} to ${todayStr}), volume, volatility (e.g., standard deviation), momentum indicators (e.g., RSI, MACD), and options implied volatility for major indices (S&P 500, Nasdaq) and top sectors (tech, energy, healthcare, finance). Focus on 10-20 high-momentum tickers (e.g., query for top gainers/losers via Polygon aggregates, and fetch options chains for top 5).
+    Use code_execution with the polygon library (or yfinance as fallback) to pull the past 7 days closing prices (${sevenDaysAgoStr} to ${todayStr}), volume, volatility (e.g., standard deviation), and momentum indicators (e.g., RSI, MACD) for major indices (S&P 500, Nasdaq) and top sectors (tech, energy, healthcare, finance). Focus on 10-20 high-momentum tickers (e.g., query for top gainers/losers via Polygon aggregates).
     Example code snippet:
     import polygon
     import yfinance as yf  # Fallback if polygon fails
@@ -178,15 +151,11 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
     # Fetch for SPY example
     try:
         aggs = client.get_aggs('SPY', 1, 'day', start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
-        # Options example: options = client.list_options_contracts(underlying_ticker='SPY', limit=5)
     except:
         data = yf.download('SPY', start=start_date, end=end_date)
         aggs = data.to_dict()  # Adapt as needed
-        spy = yf.Ticker('SPY')
-        options = spy.option_chain(spy.options[0])  # Nearest expiration
     volatility = np.std([a.close for a in aggs])
     print(aggs)  # Output key stats
-    print(options.calls.head())  # Sample options data
 
     Simultaneously, use web_search (query: "US stock market summary past week site:yahoo.finance.com OR site:cnbc.com OR site:seekingalpha.com OR site:investing.com", num_results: 20) to get recent price trends, sector performance, and earnings previews. If no results, retry with "latest US stock market trends".
 
@@ -219,7 +188,7 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
     Summarize overall sentiment scores (e.g., 65% bullish across X and Reddit) with 4-6 example quotes/posts, broken down by sectors.
 
     Step 4: Execute ALL of the following tool calls in parallel right now (fire them simultaneously):
-      1. code_execution → Pull last 10 trading days daily aggregates (open, high, low, close, volume, RSI via talib if available) for SPY, QQQ, IWM, XLF, XLE, XLV, XLK, and top 20 gainers/losers using polygon.stock_client.get_daily_gainers_losers() or yfinance.Ticker('SPY').history(); also fetch options IV for top tickers.
+      1. code_execution → Pull last 10 trading days daily aggregates (open, high, low, close, volume, RSI via talib if available) for SPY, QQQ, IWM, XLF, XLE, XLV, XLK, and top 20 gainers/losers using polygon.stock_client.get_daily_gainers_losers() or yfinance.Ticker('SPY').history().
       2. web_search → num_results:30, query: "stock market news trends analysis ${month} ${year} site:cnbc.com OR site:bloomberg.com OR site:wsj.com OR site:seekingalpha.com OR site:investing.com after:${sevenDaysAgoStr}"
       3. browse_page → URL: https://finance.yahoo.com/quote/%5EVIX → Extract today’s VIX close, intraday high/low, 1-week change, and historical context.
       4. browse_page → URL: https://www.cmegroup.com/trading/interest-rates/countdown-to-fomc.html → Extract current Fed funds probabilities and market-implied rate path.
@@ -233,7 +202,7 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
     Before analysis or final JSON, verify at least 8-10 concrete, timestamped facts from tools. Examples:
       • Exact VIX closing value and source
       • SPY or QQQ closing price or % change today
-      • At least two specific numbers/stats from Polygon/yfinance (e.g., RSI, IV)
+      • At least two specific numbers/stats from Polygon/yfinance (e.g., RSI, volatility)
       • Current CME FedWatch probability for next meeting
       • Sentiment split (e.g., 68% bullish on X, 55% on Reddit)
       • One specific headline or quote from last 48 hours from news/Reddit
@@ -246,22 +215,12 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
 
     Step 6: Generate Predictions and Recommendations
     Predict next week's direction (e.g., "Nasdaq up 2-4% on tech earnings") with confidence (high/medium/low), backed by synthesized data.
-    Produce 6-10 actionable recommendations:
+    Produce 6-8 actionable stock recommendations only:
     1) Stocks (asset_type="stock")
       - Fields: asset_type, ticker, action, allocation, rationale
       - action: "buy" or "sell"
       - Buy allocations: % of a dedicated $100 stock budget, total exactly 100.
-      - This stock-buy total is independent of options allocations.
       - Sell allocations: % of current holdings (1-100), only for held tickers.
-
-    2) Options vertical spreads (asset_type="option_vertical_spread")
-      - Structures: Bull call spread or Bear put spread (debit spreads).
-      - IMPORTANT: output intent only. Do NOT output option leg symbols or pricing.
-      - Fields: asset_type, underlying_ticker, option_type, expiration_date, contracts, allocation, rationale
-      - expiration_date is target date only (YYYY-MM-DD); execution will select live chain and strikes on Monday.
-      - You MUST include at least one option_vertical_spread recommendation in every report.
-      - Allocations: % of a separate dedicated $100 options budget, total exactly 100.
-      - Options allocations must NOT reduce or share the stock-buy 100% budget.
 
     This is educational simulation only; not financial advice. If data gaps, flag and adjust conservatively.
 
@@ -305,7 +264,7 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
 
         const normalizedReport: MarketReportSchema = {
           ...object,
-          recommendations: normalizeRecommendations(object.recommendations, startDateStr),
+          recommendations: normalizeRecommendations(object.recommendations),
         }
         return { success: true, data: normalizedReport }
       } catch (err) {
