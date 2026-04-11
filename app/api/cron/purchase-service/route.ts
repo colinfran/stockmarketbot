@@ -65,6 +65,12 @@ export async function GET(request: Request): Promise<NextResponse> {
     return NextResponse.json({ success: false, error: purchasedStocks.error })
   }
   const executedOrders = purchasedStocks.data ?? []
+  if (executedOrders.length === 0) {
+    return NextResponse.json({
+      success: false,
+      error: "No stock orders were executed for the latest report",
+    })
+  }
   const submitted = await addToDb(executedOrders, latestReport.data.id)
   if (!submitted.success) {
     return NextResponse.json({ success: false, error: submitted.error })

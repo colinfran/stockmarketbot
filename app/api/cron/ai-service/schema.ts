@@ -21,7 +21,7 @@ import { z } from "zod"
  */
 
 export const marketReportSchema = z.object({
-  notification: z.string(),
+  notification: z.string().max(178),
   executive_summary: z.object({
     market_sentiment: z.enum([
       "Bullish",
@@ -31,7 +31,7 @@ export const marketReportSchema = z.object({
       "Cautiously Bearish",
       "Mixed",
     ]),
-    key_drivers: z.array(z.string()),
+    key_drivers: z.array(z.string()).min(3).max(5),
   }),
   market_overview: z.object({
     near_term_outlook: z.string(),
@@ -43,7 +43,7 @@ export const marketReportSchema = z.object({
   }),
   risk_assessment: z.object({
     overall_risk: z.enum(["Low", "Medium", "High"]),
-    notes: z.array(z.string()),
+    notes: z.array(z.string()).min(3).max(5),
   }),
   recommendations: z.array(
     z.union([
@@ -64,8 +64,19 @@ export const marketReportSchema = z.object({
         rationale: z.string(),
       }),
     ]),
-  ),
-  assessment_sources: z.array(z.object({ url: z.string().url(), title: z.string() })),
+  )
+    .min(6)
+    .max(8)
+    .refine(
+      (recs) =>
+        recs.some(
+          (rec) => rec.asset_type === "stock" && (rec.action === "buy" || rec.action === "sell"),
+        ),
+      {
+        message: "At least one stock buy or sell recommendation is required",
+      },
+    ),
+  assessment_sources: z.array(z.object({ url: z.string().url(), title: z.string() })).min(4).max(8),
 })
 
 export type MarketReportSchema = z.infer<typeof marketReportSchema>

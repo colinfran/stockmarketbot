@@ -391,8 +391,12 @@ export const purchase = async (
     const buyRecommendations = stockRecommendations.filter((item) => item.action === "buy")
     const sellRecommendations = stockRecommendations.filter((item) => item.action === "sell")
 
+    if (buyRecommendations.length === 0 && sellRecommendations.length === 0) {
+      throw new Error("No executable stock recommendations in latest report")
+    }
+
     const totalBuyPercent = buyRecommendations.reduce((sum, x) => sum + x.allocation, 0)
-    if (buyRecommendations.length > 0 && totalBuyPercent !== 100) {
+    if (buyRecommendations.length > 0 && Math.abs(totalBuyPercent - 100) > 0.05) {
       throw new Error("Buy allocation percentages must total 100")
     }
 
@@ -406,6 +410,10 @@ export const purchase = async (
     // 1) Execute stock buys
     for (const item of buyRecommendations) {
       const allocationAmount = stockBudget * (item.allocation / 100)
+      if (allocationAmount <= 0) {
+        console.warn(`Skipping buy for ${item.ticker}: computed allocation is <= 0`)
+        continue
+      }
       console.log(`Buying ~$${allocationAmount.toFixed(2)} of ${item.ticker}`)
 
       const order = (await alpaca.createOrder({

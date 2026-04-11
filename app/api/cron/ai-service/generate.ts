@@ -152,7 +152,7 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
           .join("\n")
       : "No current holdings."
 
-  const prompt = `
+  const basePrompt = `
     You are the best stock market predictor in existence because you leverage up-to-date news, data, and information fetched in real-time from reliable internet sources using your available tools.
     
     Today is ${todayStr}. Predict the US stock market for next week (starting ${startDateStr}). Base all analysis strictly on real-time data you fetch right now—do not use previous years' data or any pre-trained knowledge alone.
@@ -268,19 +268,53 @@ export const generateWeeklyReport = async (): Promise<Response<MarketReportSchem
     When done, provide a short summary of your analysis for push notifications. This summary should be a max of 178 characters. Don't show character count in summary.
   `.trim()
 
+  const compactOutputGuardrails = `
+    FINAL OUTPUT HARD LIMITS:
+    - Return compact JSON only, with no markdown and no prose outside the JSON object.
+    - Include at least one stock recommendation with action set to "buy" or "sell".
+    - Keep notification <= 178 characters.
+    - Keep key_drivers between 3 and 5 items.
+    - Keep risk_assessment.notes between 3 and 5 items.
+    - Keep recommendations between 6 and 8 total items.
+    - Keep assessment_sources between 4 and 8 items.
+    - Keep each rationale concise (1 sentence).
+  `.trim()
+
+  const prompt = `${basePrompt}\n\n${compactOutputGuardrails}`
+
+  const maxAttempts = 3
+  const retryTemperatures = [0.8, 0.4, 0.2]
+
   try {
     console.log("Running weekly AI market report...")
-    const { object } = await generateObject({
-      model: currentModel,
-      schema: marketReportSchema,
-      prompt,
-      temperature: 1,
-    })
-    const normalizedReport: MarketReportSchema = {
-      ...object,
-      recommendations: normalizeRecommendations(object.recommendations, startDateStr),
+    let lastError: Error | null = null
+
+    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+      try {
+        const isRetry = attempt > 0
+        const retrySuffix = isRetry
+          ? `\n\nRETRY ${attempt + 1}/${maxAttempts}: Your previous response could not be parsed as complete JSON. Keep the output shorter and strictly valid JSON.`
+          : ""
+
+        const { object } = await generateObject({
+          model: currentModel,
+          schema: marketReportSchema,
+          prompt: `${prompt}${retrySuffix}`,
+          temperature: retryTemperatures[attempt] ?? 0.2,
+        })
+
+        const normalizedReport: MarketReportSchema = {
+          ...object,
+          recommendations: normalizeRecommendations(object.recommendations, startDateStr),
+        }
+        return { success: true, data: normalizedReport }
+      } catch (err) {
+        lastError = err as Error
+        console.warn(`AI market report attempt ${attempt + 1}/${maxAttempts} failed:`, err)
+      }
     }
-    return { success: true, data: normalizedReport }
+
+    throw lastError ?? new Error("Failed to generate market report after retries")
   } catch (err) {
     console.error("Error generating market report:", err)
     return { success: false, error: (err as Error).message }
