@@ -64,7 +64,10 @@ const normalizeRecommendations = (recommendations: Recommendation[]): Recommenda
 
   normalized.forEach((rec) => {
     if (rec.asset_type === "stock" && rec.action === "sell") {
-      rec.allocation = Math.min(Math.max(roundTo2(Number(rec.allocation) || 0), 1), MAX_SELL_ALLOCATION_PERCENT)
+      rec.allocation = Math.min(
+        Math.max(roundTo2(Number(rec.allocation) || 0), 1),
+        MAX_SELL_ALLOCATION_PERCENT,
+      )
     }
   })
 
