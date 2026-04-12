@@ -19,6 +19,7 @@ type PositionSnapshot = {
 
 type Recommendation = MarketReportSchema["recommendations"][number]
 type StockRecommendation = Extract<Recommendation, { asset_type: "stock" }>
+const MAX_SELL_ALLOCATION_PERCENT = 50
 // type OptionVerticalSpreadRecommendation = Extract<
 //   Recommendation,
 //   { asset_type: "option_vertical_spread" }
@@ -443,7 +444,7 @@ export const purchase = async (
           continue
         }
 
-        if (item.allocation <= 0 || item.allocation > 100) {
+        if (item.allocation <= 0 || item.allocation > MAX_SELL_ALLOCATION_PERCENT) {
           console.warn(
             `Skipping sell for ${item.ticker}: invalid sell allocation ${item.allocation}`,
           )
