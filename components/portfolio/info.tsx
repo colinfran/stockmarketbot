@@ -13,11 +13,14 @@ type InfoType = {
 
 const Info: FC<InfoType> = ({ position }) => {
   const { priceHistory, portfolio } = useData()
-  const chartData = priceHistory[position.symbol].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-  )
-  const priceChange = position.currentPrice - chartData[0].close
-  const priceChangePercent = (priceChange / chartData[0].close) * 100
+  const rawHistory = priceHistory[position.symbol]
+  const chartData = rawHistory
+    ? [...rawHistory].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    : []
+  const hasPriceHistory = chartData.length > 0
+  const priceChange = hasPriceHistory ? position.currentPrice - chartData[0].close : null
+  const priceChangePercent =
+    hasPriceHistory && chartData[0].close ? ((priceChange! / chartData[0].close) * 100) : null
   const stockOrders = portfolio.filter((item) => item.symbol === position.symbol)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
@@ -30,18 +33,20 @@ const Info: FC<InfoType> = ({ position }) => {
         <p className="text-sm text-muted-foreground mb-1">Current Stock Price</p>
         <div className="flex items-baseline gap-3">
           <p className="text-4xl font-bold">${position.currentPrice.toFixed(2)}</p>
-          <div
-            className={`flex items-center gap-1 text-sm font-medium ${priceChange >= 0 ? "text-green-500" : "text-red-500"}`}
-          >
-            {priceChange >= 0 ? (
-              <TrendingUp className="h-4 w-4" />
-            ) : (
-              <TrendingDown className="h-4 w-4" />
-            )}
-            {priceChange >= 0 ? "+" : ""}
-            {priceChange.toFixed(2)} ({priceChange >= 0 ? "+" : ""}
-            {priceChangePercent.toFixed(2)}%)
-          </div>
+          {priceChange !== null && priceChangePercent !== null && (
+            <div
+              className={`flex items-center gap-1 text-sm font-medium ${priceChange >= 0 ? "text-green-500" : "text-red-500"}`}
+            >
+              {priceChange >= 0 ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              {priceChange >= 0 ? "+" : ""}
+              {priceChange.toFixed(2)} ({priceChange >= 0 ? "+" : ""}
+              {priceChangePercent.toFixed(2)}%)
+            </div>
+          )}
         </div>
       </div>
 
@@ -82,7 +87,11 @@ const Info: FC<InfoType> = ({ position }) => {
       </div>
 
       {/* Chart */}
-      <StockChart chartData={chartData} />
+      {hasPriceHistory ? (
+        <StockChart chartData={chartData} />
+      ) : (
+        <p className="text-sm text-muted-foreground pt-4">Price history not yet available.</p>
+      )}
       {/* Purchase History */}
       <PurchaseHistory stockOrders={stockOrders} />
     </ScrollArea>

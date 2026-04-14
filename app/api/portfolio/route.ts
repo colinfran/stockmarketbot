@@ -5,6 +5,7 @@ import {
   fetchPriceHistory,
   fetchRealizedSpreadPnL,
 } from "./fetch"
+import { updatePriceHistoryCache } from "../cron/price-history-service/fetch"
 
 /**
  * Handles GET requests to the /api/portfolio route.
@@ -44,6 +45,33 @@ export async function GET(): Promise<NextResponse> {
   if (!orders.success) {
     return NextResponse.json({ success: false, error: orders.error })
   }
+
+  // For any tickers in orders that are missing from the price cache, fetch and store
+  // their full history now so the chart and current price are available immediately.
+  const orderedTickers = [
+    ...new Set(orders.data!.map((o) => o.symbol).filter((s): s is string => !!s)),
+  ]
+  const missingTickers = orderedTickers.filter((t) => currentPrices[t] === undefined)
+  if (missingTickers.length > 0) {
+    console.log(`Fetching missing price history for: ${missingTickers.join(", ")}`)
+    await updatePriceHistoryCache(missingTickers)
+    // Re-read the cache so the new history is included in this response
+    const updated = await fetchPriceHistory()
+    if (updated.success && updated.data) {
+      for (const ticker of missingTickers) {
+        const bars = updated.data[ticker]
+        if (Array.isArray(bars) && bars.length > 0) {
+          history.data![ticker] = bars
+          const sorted = [...bars].sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+          )
+          const latest = sorted.at(-1)?.close
+          if (latest != null) currentPrices[ticker] = latest
+        }
+      }
+    }
+  }
+
   const openPositions = await fetchOpenPositions()
   if (!openPositions.success) {
     return NextResponse.json({ success: false, error: openPositions.error })
